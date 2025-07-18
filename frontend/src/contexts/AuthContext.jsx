@@ -20,19 +20,27 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  const login = async (email, password) => {
+  const login = async (username, password) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-      const { token, user } = response.data;
+      const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
+      const { token } = response.data; // The backend only sends a token
       localStorage.setItem('token', token);
       setToken(token);
-      setUser(user);
       setIsLoggedIn(true);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      console.log('User logged in!');
+      
+      // Fetch user data separately after login
+      // This part is new - we need to get user details
+      const userResponse = await axios.get('http://localhost:5000/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUser(userResponse.data);
+
+      console.log('User logged in!', userResponse.data);
     } catch (error) {
       console.error('Login failed', error);
       // Handle login error (e.g., show a notification)
+      throw error; // Re-throw the error to be caught by the calling component
     }
   };
 
