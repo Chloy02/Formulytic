@@ -2,9 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Navbar from './components/Navbar'; // Assuming your Navbar is in src/components/Navbar.jsx
-import axios from 'axios';
-import { useAuth } from './contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 // --- Styled Components based on Tailwind CSS classes ---
 
@@ -288,8 +285,6 @@ const SubmitFormButton = styled(NavButton)` /* For final submit */
 // --- Main Questionnaire Page Component ---
 
 const QuestionnaireFormPage = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
   // State for form fields (Section 1 examples)
   const [name, setName] = useState('');
   const [districtTaluk, setDistrictTaluk] = useState('');
@@ -301,7 +296,6 @@ const QuestionnaireFormPage = () => {
   const [incomeBefore, setIncomeBefore] = useState('');
   const [receivedBenefits, setReceivedBenefits] = useState('');
   const [schemeTypes, setSchemeTypes] = useState([]); // Array for multiple checkboxes
-  const [utilization, setUtilization] = useState([]); // NEW: State for utilization checkboxes
   const [otherBenefits, setOtherBenefits] = useState('');
   const [otherBenefitsSpecify, setOtherBenefitsSpecify] = useState(''); // Conditional
   const [benefitDate, setBenefitDate] = useState('');
@@ -374,42 +368,20 @@ const QuestionnaireFormPage = () => {
     }
   };
 
-  const handleSubmitForm = async (e) => {
+  const handleSubmitForm = (e) => {
     e.preventDefault();
-    const formData = {
-      answers: {
-        section1: {
-          respondentName: name,
-          district: districtTaluk,
-          age,
-          gender,
-          education,
-          employmentBefore,
-          occupationBefore,
-          incomeBefore,
-          receivedBenefits,
-          schemeTypes,
-          otherBenefits,
-          otherBenefitsSpecify,
-          benefitDate,
-          casteCategory,
-          scSubcaste,
-          stIdentity,
-        },
-        // Add other sections here
-      },
-    };
-
-    try {
-      await axios.post('http://localhost:5000/api/responses', formData);
-      setShowSuccessMessage(true);
-      setTimeout(() => {
-        navigate('/dashboard'); // or wherever you want to redirect after submission
-      }, 2000);
-    } catch (error) {
-      console.error('Failed to submit questionnaire', error);
-      // Handle submission error
-    }
+    // Here you would gather all form data from states and send to backend
+    console.log('Final Questionnaire Data:', {
+      // Section 1 data
+      name, districtTaluk, age, gender, education,
+      employmentBefore, occupationBefore, incomeBefore,
+      receivedBenefits, schemeTypes, otherBenefits, otherBenefitsSpecify,
+      benefitDate, casteCategory, scSubcaste, stIdentity,
+      // ... (add states for Section 2, 3, 4, 5, 6 here)
+    });
+    // Simulate successful submission
+    setShowSuccessMessage(true);
+    // In a real app, you might navigate to a thank you page or reset the form
   };
 
   return (
@@ -649,27 +621,27 @@ const QuestionnaireFormPage = () => {
                 <Label>Utilization of benefit amount (Select all that apply):</Label>
                 <CheckboxGroup>
                   <CheckboxOption>
-                    <input type="checkbox" id="utilization_housing" name="utilization[]" value="housing" checked={utilization.includes('housing')} onChange={(e) => setUtilization(e.target.checked ? [...utilization, e.target.value] : utilization.filter(u => u !== e.target.value))} />
+                    <input type="checkbox" id="utilization_housing" name="utilization[]" value="housing" checked={schemeTypes.includes('housing')} onChange={(e) => setSchemeTypes(e.target.checked ? [...schemeTypes, e.target.value] : schemeTypes.filter(u => u !== e.target.value))} />
                     <span>Housing</span>
                   </CheckboxOption>
                   <CheckboxOption>
-                    <input type="checkbox" id="utilization_business" name="utilization[]" value="business" checked={utilization.includes('business')} onChange={(e) => setUtilization(e.target.checked ? [...utilization, e.target.value] : utilization.filter(u => u !== e.target.value))} />
+                    <input type="checkbox" id="utilization_business" name="utilization[]" value="business" checked={schemeTypes.includes('business')} onChange={(e) => setSchemeTypes(e.target.checked ? [...schemeTypes, e.target.value] : schemeTypes.filter(u => u !== e.target.value))} />
                     <span>Business</span>
                   </CheckboxOption>
                   <CheckboxOption>
-                    <input type="checkbox" id="utilization_education" name="utilization[]" value="education" checked={utilization.includes('education')} onChange={(e) => setUtilization(e.target.checked ? [...utilization, e.target.value] : utilization.filter(u => u !== e.target.value))} />
+                    <input type="checkbox" id="utilization_education" name="utilization[]" value="education" checked={schemeTypes.includes('education')} onChange={(e) => setSchemeTypes(e.target.checked ? [...schemeTypes, e.target.value] : schemeTypes.filter(u => u !== e.target.value))} />
                     <span>Education</span>
                   </CheckboxOption>
                   <CheckboxOption>
-                    <input type="checkbox" id="utilization_medical" name="utilization[]" value="medical" checked={utilization.includes('medical')} onChange={(e) => setUtilization(e.target.checked ? [...utilization, e.target.value] : utilization.filter(u => u !== e.target.value))} />
+                    <input type="checkbox" id="utilization_medical" name="utilization[]" value="medical" checked={schemeTypes.includes('medical')} onChange={(e) => setSchemeTypes(e.target.checked ? [...schemeTypes, e.target.value] : schemeTypes.filter(u => u !== e.target.value))} />
                     <span>Medical</span>
                   </CheckboxOption>
                   <CheckboxOption>
-                    <input type="checkbox" id="utilization_daily_needs" name="utilization[]" value="daily_needs" checked={utilization.includes('daily_needs')} onChange={(e) => setUtilization(e.target.checked ? [...utilization, e.target.value] : utilization.filter(u => u !== e.target.value))} />
+                    <input type="checkbox" id="utilization_daily_needs" name="utilization[]" value="daily_needs" checked={schemeTypes.includes('daily_needs')} onChange={(e) => setSchemeTypes(e.target.checked ? [...schemeTypes, e.target.value] : schemeTypes.filter(u => u !== e.target.value))} />
                     <span>Daily Needs</span>
                   </CheckboxOption>
                   <CheckboxOption>
-                    <input type="checkbox" id="utilization_savings" name="utilization[]" value="savings" checked={utilization.includes('savings')} onChange={(e) => setUtilization(e.target.checked ? [...utilization, e.target.value] : utilization.filter(u => u !== e.target.value))} />
+                    <input type="checkbox" id="utilization_savings" name="utilization[]" value="savings" checked={schemeTypes.includes('savings')} onChange={(e) => setSchemeTypes(e.target.checked ? [...schemeTypes, e.target.value] : schemeTypes.filter(u => u !== e.target.value))} />
                     <span>Savings (FD)</span>
                   </CheckboxOption>
                   {/* Assuming 'others' for utilization can also be handled by an 'others_utilization' state */}
@@ -677,7 +649,7 @@ const QuestionnaireFormPage = () => {
                     <input type="checkbox" id="utilization_others" name="utilization[]" value="others_utilization" />
                     <span>Others:</span>
                   </CheckboxOption>
-                  {utilization.includes('others_utilization') && (
+                  {schemeTypes.includes('others_utilization') && (
                       <Input type="text" name="utilization_others_specify" placeholder="Please specify" style={{ marginTop: '0.25rem' }} />
                   )}
                 </CheckboxGroup>
