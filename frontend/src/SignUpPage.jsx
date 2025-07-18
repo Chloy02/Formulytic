@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Navbar from './components/Navbar'; // Import Navbar
-import { Link, useNavigate } from 'react-router-dom'; // Keep Link import
-import axios from 'axios';
+import { Link } from 'react-router-dom'; // Keep Link import
 
 // Styled Components for the Sign-Up Page
 
@@ -158,26 +157,15 @@ const SubmitButton = styled.button`
 
 
 const SignUpPage = () => {
-  const [username, setUsername] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('user'); // Default role
-  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      await axios.post('http://localhost:5000/api/auth/register', {
-        username,
-        email,
-        password,
-        role,
-      });
-      navigate('/signin');
-    } catch (error) {
-      console.error('Signup failed', error);
-      // Handle signup error
-    }
+    console.log({ fullName, email, password, role });
+    alert('Sign Up button clicked! Check console for data.');
   };
 
   return (
@@ -194,13 +182,13 @@ const SignUpPage = () => {
 
           <form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="fullName">Full Name</Label>
               <Input
                 type="text"
-                id="username"
-                placeholder="john.doe"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="fullName"
+                placeholder="John Doe"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
                 required
               />
             </FormGroup>

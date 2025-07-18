@@ -117,38 +117,37 @@ const ForgotPasswordLink = styled(Link)`
 `;
 
 const SubmitButton = styled.button`
-// ... existing styles ...
-`;
-
-const ErrorMessage = styled.p`
-  color: #e53e3e; /* A reddish color for errors */
-  background-color: #fff5f5; /* A light red background */
-  border: 1px solid #e53e3e;
-  padding: 10px;
+  width: 100%;
+  padding: 15px;
+  background-color: #1a202c;
+  color: #fff;
+  border: none;
   border-radius: 5px;
-  margin-top: 20px;
-  text-align: center;
-  font-size: 14px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #000;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 `;
 
 const SignInPage = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null); // State to hold error messages
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Reset error on new submission
-    try {
-      await login(username, password);
-      navigate('/questionnaire');
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || 'An unexpected error occurred. Please try again.';
-      setError(errorMessage);
-      console.error('Login failed:', errorMessage);
-    }
+    await login(email, password);
+    navigate('/dashboard'); // Redirect to a protected route after login
   };
 
   return (
@@ -165,13 +164,13 @@ const SignInPage = () => {
 
           <form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                type="text"
-                id="username"
-                placeholder="your_username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                id="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </FormGroup>
@@ -190,7 +189,6 @@ const SignInPage = () => {
             </FormGroup>
 
             <SubmitButton type="submit">Sign in</SubmitButton>
-            {error && <ErrorMessage>{error}</ErrorMessage>}
           </form>
         </SignInCard>
       </ContentArea>
