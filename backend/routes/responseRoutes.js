@@ -5,11 +5,10 @@ const {
   getAllResponses,
   getResponseById,
 } = require('../controllers/responseController');
+const { verifyToken } = require('../middleware/authMiddleware');
 
-const auth = require('../middleware/authMiddleware');
-
-router.post('/responses', auth, submitResponse);
-router.get('/responses', auth, getAllResponses);
-router.get('/responses/:id', auth, getResponseById);
+router.post('/', verifyToken, submitResponse);
+router.get('/', verifyToken, getAllResponses);
+router.get('/:id', verifyToken, getResponseById);
 
 module.exports = router;

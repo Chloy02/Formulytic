@@ -112,16 +112,32 @@ const SignUpButton = styled(AuthButtonBase)`
 `;
 
 
+import { useAuth } from '../contexts/AuthContext'; // Import useAuth hook
+
 const Navbar = () => {
+  const { isLoggedIn, user, logout } = useAuth(); // Get auth state and functions
+
   return (
     <NavbarContainer>
-      <NavBrand to="/">Logo</NavBrand> {/* Link to the landing page */}
+      <NavBrand to="/">Formulytic</NavBrand>
       <NavLinks>
-        <NavLinkItem><NavLinkA to="/">Questionnaire</NavLinkA></NavLinkItem> {/* Link to home, which is your questionnaire section for now */}
+        <NavLinkItem><NavLinkA to="/questionnaire">Questionnaire</NavLinkA></NavLinkItem>
+        {isLoggedIn && user?.role === 'admin' && (
+          <NavLinkItem><NavLinkA to="/admin-dashboard">Admin Dashboard</NavLinkA></NavLinkItem>
+        )}
       </NavLinks>
       <AuthButtons>
-        <SignInButton to="/signin">Sign In</SignInButton> {/* Link to Sign In page */}
-        <SignUpButton to="/signup">Sign Up</SignUpButton> {/* Link to Sign Up page */}
+        {isLoggedIn ? (
+          <>
+            <span style={{ alignSelf: 'center', fontWeight: '500' }}>Welcome, {user?.username}!</span>
+            <AuthButtonBase as="button" onClick={logout}>Logout</AuthButtonBase>
+          </>
+        ) : (
+          <>
+            <SignInButton to="/signin">Sign In</SignInButton>
+            <SignUpButton to="/signup">Sign Up</SignUpButton>
+          </>
+        )}
       </AuthButtons>
     </NavbarContainer>
   );
