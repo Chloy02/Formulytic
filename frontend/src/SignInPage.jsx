@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Navbar from './components/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from './contexts/AuthContext';
 
 const PageWrapper = styled.div`
   font-family: 'Inter', sans-serif;
@@ -140,11 +141,13 @@ const SubmitButton = styled.button`
 const SignInPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ email, password });
-    alert('Sign In button clicked! Check console for data.');
+    await login(email, password);
+    navigate('/dashboard'); // Redirect to a protected route after login
   };
 
   return (
