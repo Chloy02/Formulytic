@@ -490,8 +490,8 @@ const CTAButtons = styled.div`
 `;
 
 const CTAPrimaryButton = styled(Link)` /* CHANGED: Now styled from Link */
-  background-color: #fff;
-  color: #28a745; /* Green text */
+  background-color: #007bff; /* Changed to match navbar button */
+  color: #fff; /* Changed to white text */
   padding: 15px 30px;
   font-size: 18px;
   text-decoration: none; 
@@ -504,7 +504,7 @@ const CTAPrimaryButton = styled(Link)` /* CHANGED: Now styled from Link */
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #f0f0f0;
+    background-color: #0056b3; /* Changed to match navbar button hover */
   }
 
   @media (max-width: 768px) {

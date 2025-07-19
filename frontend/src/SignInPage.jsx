@@ -117,7 +117,25 @@ const ForgotPasswordLink = styled(Link)`
 `;
 
 const SubmitButton = styled.button`
-// ... existing styles ...
+  width: 100%;
+  padding: 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 `;
 
 const ErrorMessage = styled.p`
@@ -165,11 +183,11 @@ const SignInPage = () => {
 
           <form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">Username or Email</Label>
               <Input
                 type="text"
                 id="username"
-                placeholder="your_username"
+                placeholder="your_username or email@example.com"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required

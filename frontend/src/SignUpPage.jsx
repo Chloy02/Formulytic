@@ -137,7 +137,7 @@ const RadioOption = styled.div`
 const SubmitButton = styled.button`
   width: 100%;
   padding: 15px;
-  background-color: #1a202c;
+  background-color: #007bff; /* Changed to match navbar and landing page */
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -147,7 +147,7 @@ const SubmitButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #000;
+    background-color: #0056b3; /* Changed to match navbar and landing page */
   }
 
   &:disabled {

@@ -75,7 +75,7 @@ const NavLinkA = styled(Link)` /* Styled Link for consistency */
 const Navbar2 = () => {
   return (
     <NavbarContainer>
-      <NavBrand to="/">Logo</NavBrand> {/* Link to the landing page */}
+      <NavBrand to="/">Formulytic</NavBrand> {/* Link to the landing page */}
       <NavLinks>
         <NavLinkItem><NavLinkA to="/AdminDashboard">Questionnaire</NavLinkA></NavLinkItem> {/* Link to home, which is your questionnaire section for now */}
       </NavLinks>
