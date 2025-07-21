@@ -1,10 +1,12 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Fade, Slide } from 'react-awesome-reveal';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Navbar2 from '../components/Navbar2';
+import { useAuth } from '../contexts/AuthContext';
 
 // --- Styled Components ---
 
@@ -207,6 +209,21 @@ const FeatureItem = styled.div`
 `;
 
 export default function Home() {
+  const { isLoggedIn, user } = useAuth();
+  const router = useRouter();
+
+  // Redirect admin users to admin dashboard
+  useEffect(() => {
+    if (isLoggedIn && user && user.role === 'admin') {
+      router.push('/admin-dashboard');
+    }
+  }, [isLoggedIn, user, router]);
+
+  // Don't render content for admin users (they'll be redirected)
+  if (isLoggedIn && user && user.role === 'admin') {
+    return null;
+  }
+
   return (
     <LandingPageContainer>
       <Navbar2 />
@@ -233,7 +250,9 @@ export default function Home() {
                 <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
               </svg>
             </PrimaryButton>
-            <SecondaryButton href="/signin">Sign In</SecondaryButton>
+            {!isLoggedIn && (
+              <SecondaryButton href="/signin">Sign In</SecondaryButton>
+            )}
           </HeroButtons>
           <FeatureList>
             <FeatureItem>
@@ -250,7 +269,7 @@ export default function Home() {
             </FeatureItem>
             <FeatureItem>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.75 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z"/>
+                <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.5 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z"/>
               </svg>
               Progress is saved
             </FeatureItem>

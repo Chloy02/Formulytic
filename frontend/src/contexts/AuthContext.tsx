@@ -26,6 +26,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
+  const logout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+    setIsLoggedIn(false);
+    delete axios.defaults.headers.common['Authorization'];
+    console.log('User logged out!');
+  };
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/auth/me');
+      setUser(response.data.user);
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+      // If token is invalid, logout
+      logout();
+    }
+  };
+
   useEffect(() => {
     // Only access localStorage on the client side
     const storedToken = localStorage.getItem('token');
@@ -33,6 +53,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(storedToken);
       axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
       setIsLoggedIn(true);
+      // Fetch user data when token exists
+      fetchUserData();
     }
   }, []);
 
@@ -60,15 +82,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.error('Login failed', error);
       throw error;
     }
-  };
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
-    setUser(null);
-    setIsLoggedIn(false);
-    delete axios.defaults.headers.common['Authorization'];
-    console.log('User logged out!');
   };
 
   return (

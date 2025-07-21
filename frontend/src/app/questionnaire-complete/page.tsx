@@ -460,9 +460,14 @@ export default function QuestionnairePage() {
       return;
     }
 
+    if (user && user.role === 'admin') {
+      router.push('/admin-dashboard');
+      return;
+    }
+
     // Load draft if exists
     loadDraft();
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, user, router]);
 
   const loadDraft = async () => {
     try {
