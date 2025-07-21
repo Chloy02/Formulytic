@@ -3,7 +3,7 @@ const Response = require('../models/responseModel');
 exports.submitResponse = async (req, res) => {
   try {
     const response = await Response.create({
-      submittedBy: req.user._id,
+      submittedBy: req.user.id, // Changed from _id to id
       answers: req.body.answers,
       status: 'submitted'
     });
@@ -15,9 +15,13 @@ exports.submitResponse = async (req, res) => {
 
 exports.saveDraft = async (req, res) => {
   try {
+    console.log('Save draft request body:', JSON.stringify(req.body, null, 2));
+    console.log('User object from token:', req.user);
+    console.log('User ID:', req.user.id); // Changed from _id to id
+    
     // Check if user already has a draft
     let draft = await Response.findOne({ 
-      submittedBy: req.user._id, 
+      submittedBy: req.user.id, // Changed from _id to id
       status: 'draft' 
     });
 
@@ -26,17 +30,21 @@ exports.saveDraft = async (req, res) => {
       draft.answers = req.body.answers;
       draft.lastSaved = new Date();
       await draft.save();
+      console.log('Draft updated successfully');
     } else {
       // Create new draft
       draft = await Response.create({
-        submittedBy: req.user._id,
+        submittedBy: req.user.id, // Changed from _id to id
         answers: req.body.answers,
         status: 'draft'
       });
+      console.log('New draft created successfully');
     }
     
     res.status(201).json({ message: 'Draft saved', response: draft });
   } catch (err) {
+    console.error('Error saving draft:', err);
+    console.error('Error details:', err.message);
     res.status(500).json({ message: err.message });
   }
 };
@@ -44,7 +52,7 @@ exports.saveDraft = async (req, res) => {
 exports.getDraft = async (req, res) => {
   try {
     const draft = await Response.findOne({ 
-      submittedBy: req.user._id, 
+      submittedBy: req.user.id, // Changed from _id to id
       status: 'draft' 
     });
     

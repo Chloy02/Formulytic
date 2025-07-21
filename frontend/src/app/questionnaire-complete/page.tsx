@@ -471,7 +471,12 @@ export default function QuestionnairePage() {
 
   const loadDraft = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/responses/draft');
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:5000/api/responses/draft', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       if (response.data) {
         setFormData(response.data.answers);
         setSuccess('Draft loaded successfully!');
@@ -513,7 +518,15 @@ export default function QuestionnairePage() {
   const saveDraft = async () => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/responses/draft', { answers: formData });
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:5000/api/responses/draft', 
+        { answers: formData },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
       setSuccess('Draft saved successfully!');
       setTimeout(() => setSuccess(''), 3000);
     } catch (error: any) {
@@ -527,7 +540,15 @@ export default function QuestionnairePage() {
   const submitForm = async () => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/responses', { answers: formData });
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:5000/api/responses', 
+        { answers: formData },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
       setSuccess('Response submitted successfully!');
       setTimeout(() => {
         router.push('/');
