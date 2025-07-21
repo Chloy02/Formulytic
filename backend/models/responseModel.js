@@ -10,6 +10,15 @@ const responseSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  status: {
+    type: String,
+    enum: ['draft', 'submitted'],
+    default: 'draft'
+  },
+  lastSaved: {
+    type: Date,
+    default: Date.now,
+  },
   answers: {
     section1: {
       respondentName: String,

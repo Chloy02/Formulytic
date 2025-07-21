@@ -3,15 +3,25 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
-dotenv.config();
+dotenv.config({ path: __dirname + '/.env' });
 
 const authRoutes = require('./routes/authRoutes');
+const responseRoutes = require('./routes/responseRoutes');
 
 const app = express();
-app.use(cors());
+
+// More specific CORS configuration
+const corsOptions = {
+  origin: ['http://localhost:3000', 'http://localhost:3001'], // Support both Next.js default and alternative ports
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/responses', responseRoutes);
 
 console.log('Mongo URI:', process.env.MONGO_URI);
 mongoose.connect(process.env.MONGO_URI)
