@@ -6,12 +6,14 @@ const cors = require('cors');
 dotenv.config();
 
 const authRoutes = require('./routes/authRoutes');
+const responsesRoute = require('./routes/responses');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/responses', responsesRoute);
 
 console.log('Mongo URI:', process.env.MONGO_URI);
 mongoose.connect(process.env.MONGO_URI)
