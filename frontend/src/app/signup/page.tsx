@@ -1,27 +1,31 @@
+"use client";
+
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Navbar from './components/Navbar'; // Import Navbar
-import { Link } from 'react-router-dom'; // Keep Link import
+import Navbar2 from '../../components/Navbar2';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 // Styled Components for the Sign-Up Page
 
-const PageWrapper = styled.div` /* NEW: Outer wrapper for the entire page */
+const PageWrapper = styled.div`
   font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Takes full height */
-  background-color: #f0f4f8; /* Light background color for the page */
+  min-height: 100vh;
+  background-color: #f0f4f8;
   color: #333;
   width: 100%;
-  overflow-x: hidden; /* Prevent horizontal scrollbar */
+  overflow-x: hidden;
 `;
 
-const ContentArea = styled.div` /* NEW: Area for main content below Navbar */
-  flex-grow: 1; /* Allows this area to take up all available vertical space */
+const ContentArea = styled.div`
+  flex-grow: 1;
   display: flex;
-  justify-content: center; /* Center card horizontally */
-  align-items: center; /* Center card vertically */
-  padding: 20px; /* Padding around the card */
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
   box-sizing: border-box;
 `;
 
@@ -31,7 +35,7 @@ const SignupCard = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 450px; /* Max width for the card as in the image */
+  max-width: 450px;
   box-sizing: border-box;
 
   @media (max-width: 600px) {
@@ -155,40 +159,50 @@ const SubmitButton = styled.button`
   }
 `;
 
-
-const SignUpPage = () => {
-  const [fullName, setFullName] = useState('');
+export default function SignUpPage() {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user'); // Default role
+  const [role, setRole] = useState('user');
+  const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ fullName, email, password, role });
-    alert('Sign Up button clicked! Check console for data.');
+    try {
+      await axios.post('http://localhost:5000/api/auth/register', {
+        username,
+        email,
+        password,
+        role,
+      });
+      router.push('/signin');
+    } catch (error) {
+      console.error('Signup failed', error);
+      // Handle signup error
+    }
   };
 
   return (
-    <PageWrapper> {/* NEW: Use PageWrapper as the root */}
-      <Navbar /> {/* Navbar stays at the top */}
-      <ContentArea> {/* NEW: ContentArea fills remaining space and centers the card */}
+    <PageWrapper>
+      <Navbar2 />
+      <ContentArea>
         <SignupCard>
           <CardHeader>
             <CardTitle>Sign up</CardTitle>
             <SignInLinkText>
-              Already have an account? <Link to="/signin">Sign In</Link>
+              Already have an account? <Link href="/signin">Sign In</Link>
             </SignInLinkText>
           </CardHeader>
 
           <form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="fullName">Full Name</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
                 type="text"
-                id="fullName"
-                placeholder="John Doe"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                id="username"
+                placeholder="john.doe"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </FormGroup>
@@ -249,6 +263,4 @@ const SignUpPage = () => {
       </ContentArea>
     </PageWrapper>
   );
-};
-
-export default SignUpPage;
+}

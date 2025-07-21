@@ -1,7 +1,8 @@
-// src/components/Navbar.jsx
+"use client";
+
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import Link from 'next/link';
 
 const NavbarContainer = styled.nav`
   display: flex;
@@ -11,20 +12,20 @@ const NavbarContainer = styled.nav`
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   width: 100%;
-  position: sticky; /* Makes navbar stick to the top when scrolling */
+  position: sticky;
   top: 0;
-  z-index: 1000; /* Ensures navbar stays on top of other content */
+  z-index: 1000;
 
   @media (max-width: 768px) {
     padding: 15px 15px;
   }
 `;
 
-const NavBrand = styled(Link)` /* Make the logo a clickable link to home */
+const NavBrand = styled(Link)`
   font-size: 24px;
   font-weight: bold;
   color: #333;
-  text-decoration: none; /* Remove underline */
+  text-decoration: none;
 
   &:hover {
     color: #007bff;
@@ -42,7 +43,7 @@ const NavLinks = styled.ul`
   padding: 0;
 
   @media (max-width: 600px) {
-    display: none; /* Hide regular nav links on very small screens, or implement a mobile menu */
+    display: none;
   }
 `;
 
@@ -54,7 +55,7 @@ const NavLinkItem = styled.li`
   }
 `;
 
-const NavLinkA = styled(Link)` /* Styled Link for consistency */
+const NavLinkA = styled(Link)`
   text-decoration: none;
   color: #555;
   font-weight: 500;
@@ -65,21 +66,15 @@ const NavLinkA = styled(Link)` /* Styled Link for consistency */
   }
 `;
 
-
-
-
-
-
-
-
 const Navbar2 = () => {
   return (
     <NavbarContainer>
-      <NavBrand to="/">Logo</NavBrand> {/* Link to the landing page */}
+      <NavBrand href="/">Formulytic</NavBrand>
       <NavLinks>
-        <NavLinkItem><NavLinkA to="/AdminDashboard">Questionnaire</NavLinkA></NavLinkItem> {/* Link to home, which is your questionnaire section for now */}
+        <NavLinkItem><NavLinkA href="/signin">Sign In</NavLinkA></NavLinkItem>
+        <NavLinkItem><NavLinkA href="/signup">Sign Up</NavLinkA></NavLinkItem>
+        <NavLinkItem><NavLinkA href="/admin-signup">Admin</NavLinkA></NavLinkItem>
       </NavLinks>
-
     </NavbarContainer>
   );
 };
