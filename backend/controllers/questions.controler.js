@@ -29,8 +29,11 @@ async function getAllQuestions(req, res) {
         const url = req.originalUrl;
 
         let questions = '';
+        console.log('Fetching questions from URL:', url);
 
         questions = await getQuestions('published');
+
+        console.log('Fetching questions from URL:', url);
 
         if (url.includes('/draft')) {
             questions = await getQuestions(url.split('/').pop());
