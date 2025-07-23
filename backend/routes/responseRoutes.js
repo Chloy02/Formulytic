@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+
+// Import the controller functions you just wrote.
 const {
   submitResponse,
   saveDraft,
@@ -8,8 +10,10 @@ const {
   getResponseById,
   deleteResponse,
 } = require('../controllers/responseController');
+// Import authentication middleware
 const { verifyToken } = require('../middleware/authMiddleware');
 
+// Define routes with verifyToken middleware
 router.post('/', verifyToken, submitResponse);
 router.post('/draft', verifyToken, saveDraft);
 router.get('/draft', verifyToken, getDraft);

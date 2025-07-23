@@ -1,7 +1,21 @@
 const Response = require('../models/responseModel');
+const responseSchema = require('../routes/responseSchema');
 
+/**
+ * =================================================================
+ * SUBMIT A NEW RESPONSE
+ * @route   POST /api/responses
+ * @desc    Allows a logged-in user to submit their completed form.
+ * @access  Private (requires user login)
+ * =================================================================
+ */
 exports.submitResponse = async (req, res) => {
   try {
+    // Validate answers against responseSchema
+    const { error } = responseSchema.validate(req.body.answers);
+    if (error) {
+      return res.status(400).json({ message: 'Validation failed', details: error.details });
+    }
     const response = await Response.create({
       submittedBy: req.user.id, // Changed from _id to id
       answers: req.body.answers,
@@ -77,15 +91,38 @@ exports.getAllResponses = async (req, res) => {
   }
 };
 
+/**
+ * =================================================================
+ * GET A SINGLE RESPONSE (FOR ADMINS)
+ * @route   GET /api/responses/:id
+ * @desc    Fetches the full details of one specific submission.
+ * @access  Private (Admin only)
+ * =================================================================
+ */
 exports.getResponseById = async (req, res) => {
-  if (req.user.role !== 'admin') return res.status(403).json({ message: 'Access denied' });
-
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Access denied' });
+  }
   try {
-    const response = await Response.findById(req.params.id).populate('submittedBy', 'username');
-    if (!response) return res.status(404).json({ message: 'Not found' });
-    res.json(response);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    // Find a single response by its unique MongoDB document ID (_id).
+    const response = await Response.findById(req.params.id).populate('submittedBy', 'username role');
+
+    // If no response is found with that ID.
+    if (!response) {
+      return res.status(404).json({ success: false, message: 'Response not found.' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: response,
+    });
+
+  } catch (error) {
+    console.error('Server Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching the response.',
+    });
   }
 };
 
