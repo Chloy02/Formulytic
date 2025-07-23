@@ -12,13 +12,13 @@ router.post('/', async (req, res) => {
   const { submittedBy, answers } = req.body;
 
   // Basic check to ensure the required top-level fields are present
-  if (!submittedBy || !answers) {
+  if (!submittedBy || typeof submittedBy !== 'string' || submittedBy.trim() === '' ||
+      !answers || typeof answers !== 'object' || Array.isArray(answers) || Object.keys(answers).length === 0) {
     return res.status(400).json({
       success: false,
-      error: 'Missing required fields: submittedBy and answers are required.',
+      error: 'Invalid input: submittedBy must be a non-empty string and answers must be a non-empty object.',
     });
   }
-
   try {
     // Create a new Response document using the provided data
     // Mongoose will automatically validate the entire nested 'answers' object against your schema
@@ -30,11 +30,20 @@ router.post('/', async (req, res) => {
     // Save the validated document to the database
     const savedResponse = await newResponse.save();
 
-    // Respond with a 201 (Created) status and the saved data 🎉
+    // Create a filtered version of the response with only safe fields
+    const safeResponse = {
+      id: savedResponse._id,
+      submittedBy: savedResponse.submittedBy,
+      answers: savedResponse.answers,
+      status: savedResponse.status,
+      submittedAt: savedResponse.createdAt
+    };
+
+    // Respond with a 201 (Created) status and only the safe data
     res.status(201).json({
       success: true,
       message: 'Response submitted successfully!',
-      data: savedResponse,
+      data: safeResponse,
     });
 
   } catch (error) {
@@ -51,12 +60,14 @@ router.post('/', async (req, res) => {
     }
 
     // Handle other potential server errors
-    console.error('Server Error:', error);
+    console.error('Server Error:', {
+      message: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
     res.status(500).json({
       success: false,
       error: 'An unexpected error occurred on the server.',
-    });
-  }
+    });  }
 });
 
 module.exports = router;

@@ -6,12 +6,7 @@ const cors = require('cors');
 dotenv.config({ path: __dirname + '/.env' });
 
 const authRoutes = require('./routes/authRoutes');
-<<<<<<< HEAD
-const responsesRoute = require('./routes/responses');
-=======
 const responseRoutes = require('./routes/responseRoutes');
->>>>>>> main
-
 const app = express();
 
 // More specific CORS configuration
@@ -25,12 +20,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
-<<<<<<< HEAD
-app.use('/api/responses', responsesRoute);
-=======
 app.use('/api/responses', responseRoutes);
->>>>>>> main
-
 console.log('Mongo URI:', process.env.MONGO_URI);
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
