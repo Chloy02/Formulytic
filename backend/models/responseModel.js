@@ -10,11 +10,20 @@ const responseSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  status: {
+    type: String,
+    enum: ['draft', 'submitted'],
+    default: 'draft'
+  },
+  lastSaved: {
+    type: Date,
+    default: Date.now,
+  },
   answers: {
     section1: {
       respondentName: String,
       district: String,
-      age: Number,
+      age: mongoose.Schema.Types.Mixed, // Allow both string and number
       gender: String,
       education: String,
       employmentBefore: String,
@@ -23,7 +32,7 @@ const responseSchema = new mongoose.Schema({
       receivedBenefit: String,
       schemes: [String],
       otherBenefits: String,
-      dateOfBenefit: Date,
+      dateOfBenefit: mongoose.Schema.Types.Mixed, // Allow both string and date
       utilization: [String],
       casteCategory: String,
       subCaste: String,
@@ -36,7 +45,7 @@ const responseSchema = new mongoose.Schema({
       occupationAfter: String,
       incomeAfter: String,
       socioEconomicStatusBefore: String,
-      financialSecurityScale: Number,
+      financialSecurityScale: mongoose.Schema.Types.Mixed, // Allow both string and number
       spouseEmploymentAfter: String,
       socioEconomicStatusAfter: String,
       socialLifeImpact: String,
@@ -45,7 +54,7 @@ const responseSchema = new mongoose.Schema({
       startedNewLivelihood: String,
     },
     section3: {
-      progressiveChangeScale: Number,
+      progressiveChangeScale: mongoose.Schema.Types.Mixed, // Allow both string and number
       feltSociallyAccepted: String,
       discriminationReduction: String,
       feltMoreSecure: String,
@@ -80,12 +89,12 @@ const responseSchema = new mongoose.Schema({
       futureSupportExpected: [String],
     },
     section6_DevadasiChildren: {
-      childAgeAtMarriage: Number,
+      childAgeAtMarriage: mongoose.Schema.Types.Mixed, // Allow both string and number
       schemeImprovedDignity: String,
       treatmentDifference: String,
       spouseCaste: String,
       ownsPropertyNow: String,
-      inLawAcceptabilityScale: Number,
+      inLawAcceptabilityScale: mongoose.Schema.Types.Mixed, // Allow both string and number
       facedStigma: String,
     },
   },

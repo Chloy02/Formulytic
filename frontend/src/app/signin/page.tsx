@@ -1,7 +1,11 @@
+"use client";
+
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Navbar from './components/Navbar';
-import { Link } from 'react-router-dom';
+import Navbar2 from '../../components/Navbar2';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../contexts/AuthContext';
 
 const PageWrapper = styled.div`
   font-family: 'Inter', sans-serif;
@@ -99,14 +103,13 @@ const Input = styled.input`
   }
 `;
 
-// CORRECTED: ForgotPasswordLink styled component
 const ForgotPasswordLink = styled(Link)`
   display: block;
   font-size: 14px;
   color: #007bff;
   text-decoration: none;
   text-align: right;
-  margin-top: 5px; /* CHANGED: Added a small positive margin-top */
+  margin-top: 5px;
   margin-bottom: 20px;
   font-weight: 500;
 
@@ -137,37 +140,64 @@ const SubmitButton = styled.button`
   }
 `;
 
-const SignInPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const ErrorMessage = styled.p`
+  color: #e53e3e;
+  background-color: #fff5f5;
+  border: 1px solid #e53e3e;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+`;
 
-  const handleSubmit = (e) => {
+export default function SignInPage() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ email, password });
-    alert('Sign In button clicked! Check console for data.');
+    setError(null);
+    try {
+      const result = await login(username, password);
+      
+      // Redirect based on user role
+      if (result.role === 'admin') {
+        router.push('/admin-dashboard');
+      } else {
+        router.push('/questionnaire');
+      }
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 'An unexpected error occurred. Please try again.';
+      setError(errorMessage);
+      console.error('Login failed:', errorMessage);
+    }
   };
 
   return (
     <PageWrapper>
-      <Navbar />
+      <Navbar2 />
       <ContentArea>
         <SignInCard>
           <CardHeader>
             <CardTitle>Sign in</CardTitle>
             <SignUpLinkText>
-              Don't have an account? <Link to="/signup">Sign up</Link>
+              Don't have an account? <Link href="/signup">Sign up</Link>
             </SignUpLinkText>
           </CardHeader>
 
           <form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">Username or Email</Label>
               <Input
-                type="email"
-                id="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                id="username"
+                placeholder="Enter your username or email"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </FormGroup>
@@ -182,15 +212,14 @@ const SignInPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <ForgotPasswordLink to="/forgot-password">Forgot Password?</ForgotPasswordLink>
+              <ForgotPasswordLink href="/forgot-password">Forgot Password?</ForgotPasswordLink>
             </FormGroup>
 
             <SubmitButton type="submit">Sign in</SubmitButton>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
           </form>
         </SignInCard>
       </ContentArea>
     </PageWrapper>
   );
-};
-
-export default SignInPage;
+}
