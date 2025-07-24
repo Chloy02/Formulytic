@@ -69,7 +69,9 @@ const StatsGrid = styled.div`
   margin-bottom: 2rem;
 `;
 
-const StatCard = styled.div<{ color?: string }>`
+const StatCard = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'color'
+})<{ color?: string }>`
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 20px;
@@ -103,20 +105,20 @@ const StatHeader = styled.div`
   margin-bottom: 1rem;
 `;
 
-const StatIcon = styled.div<{ color?: string }>`
-  width: 3.5rem;
-  height: 3.5rem;
-  background: ${props => props.color || 'linear-gradient(135deg, #667eea, #764ba2)'};
-  border-radius: 16px;
-  display: flex;
+const StatIcon = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'color'
+})<{ color?: string }>`
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-  
-  svg {
-    color: white;
-    font-size: 1.5rem;
-  }
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  background: ${props => props.color || 'linear-gradient(135deg, #667eea, #764ba2)'};
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 `;
 
 const StatNumber = styled.div`
@@ -135,7 +137,9 @@ const StatLabel = styled.div`
   letter-spacing: 0.5px;
 `;
 
-const StatChange = styled.div<{ positive?: boolean }>`
+const StatChange = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'positive'
+})<{ positive?: boolean }>`
   font-size: 0.75rem;
   color: ${props => props.positive ? '#10b981' : '#ef4444'};
   font-weight: 600;
