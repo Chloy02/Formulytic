@@ -1,0 +1,245 @@
+# FORMULYTIC PROJECT CONTEXT - For New Chat Migration
+
+## PROJECT OVERVIEW
+**Project Name:** Formulytic - Inter-caste Marriage Scheme Questionnaire Platform
+**Type:** Next.js 15.4.2 Full-Stack Web Application
+**Branch:** nextjs-migration
+**Purpose:** Government scheme data collection and analysis for inter-caste marriage beneficiaries
+
+## TECHNOLOGY STACK
+### Frontend (Next.js 15.4.2)
+- **Framework:** Next.js 15.4.2 with React 19.1.0
+- **Styling:** styled-components 6.1.19
+- **HTTP Client:** axios 1.10.0
+- **Icons:** react-icons 5.5.0
+- **Charts:** recharts 3.1.0
+- **Animations:** react-awesome-reveal 4.3.1
+- **Language:** TypeScript 5
+- **Build Tool:** Turbopack (--turbopack flag)
+
+### Backend (Node.js/Express)
+- **Runtime:** Node.js with Express 5.1.0
+- **Authentication:** bcryptjs + jsonwebtoken
+- **Validation:** joi 17.13.3
+- **CORS:** cors 2.8.5
+- **Environment:** dotenv 17.1.0
+- **Database:** MongoDB (with mongoose)
+
+## PROJECT STRUCTURE
+```
+Formulytic/
+├── frontend/                   # Next.js application
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── page.tsx       # Landing page
+│   │   │   ├── signin/page.tsx
+│   │   │   ├── admin-dashboard/page.tsx
+│   │   │   ├── admin-signup/page.tsx
+│   │   │   ├── questionnaire-complete/page.tsx  # MAIN QUESTIONNAIRE
+│   │   │   └── layout.tsx
+│   │   ├── components/
+│   │   │   ├── Navbar.jsx
+│   │   │   └── Navbar2.jsx
+│   │   └── contexts/
+│   │       ├── AuthContext.tsx    # User authentication
+│   │       └── LanguageContext.tsx # EMPTY - Needs implementation
+│   └── package.json
+├── backend/                    # Express.js API
+│   ├── server.js
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   └── package.json
+└── CONTEXT_FOR_NEW_CHAT.txt   # This file
+```
+
+## CURRENT STATE & ISSUES
+
+### ✅ WORKING FEATURES
+- Landing page with hero section and features
+- User authentication (sign in/up)
+- Admin dashboard functionality
+- Basic questionnaire structure (6 sections)
+- Styled components implementation
+- Project builds successfully (with warnings)
+
+### ❌ CURRENT ISSUES & ERRORS
+1. **LanguageContext.tsx is EMPTY** - No multilingual support implemented
+2. **TypeScript Linting Errors:**
+   - Multiple "Unexpected any" type errors in admin pages, questionnaire, signin
+   - Unescaped quotes in JSX (need &apos; instead of ')
+   - Missing useEffect dependencies
+3. **Questionnaire Issues:**
+   - Basic structure exists but may be incomplete
+   - Missing section navigation
+   - No validation implementation
+   - Form submission incomplete
+4. **Missing Translation System** - LanguageContext needs full implementation
+
+### 🚧 BUILD STATUS
+- **Build:** Fails due to TypeScript/ESLint errors
+- **Dev Mode:** Likely works but with console warnings
+- **Deployment:** Blocked by compilation errors
+
+## KEY FILES TO FOCUS ON
+
+### 1. `/frontend/src/app/questionnaire-complete/page.tsx` (2212 lines)
+- **Status:** Basic implementation exists
+- **Issues:** TypeScript errors, incomplete functionality
+- **Purpose:** 6-section questionnaire for scheme beneficiaries
+- **Needs:** Validation, proper form handling, section navigation
+
+### 2. `/frontend/src/contexts/LanguageContext.tsx`
+- **Status:** COMPLETELY EMPTY FILE
+- **Critical:** Multilingual support (English/Kannada) needed
+- **Priority:** HIGH - Required for questionnaire functionality
+
+### 3. `/frontend/src/contexts/AuthContext.tsx`
+- **Status:** Working but has useEffect dependency warning
+- **Purpose:** User authentication management
+
+## IMMEDIATE PRIORITIES FOR NEW CHAT
+
+### 1. **URGENT: Implement LanguageContext** 
+- Create complete English/Kannada translation system
+- Implement useLanguage hook
+- Add translation keys for questionnaire
+
+### 2. **Fix TypeScript Errors**
+- Replace `any` types with proper TypeScript interfaces
+- Fix unescaped quotes in JSX
+- Resolve useEffect dependency warnings
+
+### 3. **Complete Questionnaire Implementation**
+- Add section navigation
+- Implement form validation
+- Add proper form submission
+- Ensure all 6 sections are complete
+
+### 4. **Test & Debug**
+- Ensure build passes without errors
+- Test all user flows
+- Verify API integration
+
+## DEVELOPMENT COMMANDS
+```bash
+# Frontend development
+cd frontend
+npm run dev          # Start dev server with turbopack
+npm run build        # Build for production
+npm run lint         # Run ESLint
+
+# Backend development  
+cd backend
+npm run dev          # Start with nodemon
+npm start           # Production start
+```
+
+## AUTHENTICATION FLOW
+- Users can sign in/up
+- Admin users have separate dashboard
+- Regular users access questionnaire
+- JWT token-based authentication
+
+## QUESTIONNAIRE STRUCTURE (6 Sections)
+1. Basic Information & Demographics
+2. Socio-Economic Impact  
+3. Social Inclusion
+4. Service Quality & Implementation
+5. Satisfaction & Recommendations
+6. Special Category - Devadasi Children
+
+## IMPORTANT NOTES FOR NEW CHAT
+- This is a **Next.js project**, not just React
+- TypeScript is enabled with strict checking
+- styled-components is the primary styling method
+- The project currently has compilation errors that prevent build
+- LanguageContext is completely empty and critical for functionality
+- Focus on getting a clean build before adding new features
+
+## LATEST CHANGES
+- User reverted most changes made in previous sessions
+- Current state is simpler but has core functionality
+- Build fails due to TypeScript/ESLint violations
+- LanguageContext completely missing
+
+---
+**Last Updated:** July 23, 2025
+**Status:** Development in progress, build failing
+**Next Steps:** Fix LanguageContext, resolve TypeScript errors, complete questionnaire
+
+### Outstanding Issues
+1. **Console Errors**: React/Next.js console warnings about unknown DOM properties
+   - Need to fix styled components with `withConfig` and `shouldForwardProp`
+   - Components affected: SectionBox, Label, Input, Select, TextArea, SectionStatus
+2. **Incomplete Content**: Some sections still have empty content blocks
+
+## Key Components & Their Purpose
+
+### Styled Components (Need fixing for console errors)
+```tsx
+// These need withConfig to prevent DOM prop warnings:
+const SectionBox = styled.div<{ isActive: boolean; isCompleted: boolean; hasErrors: boolean }>
+const Label = styled.label<{ hasError?: boolean }>
+const Input = styled.input<{ hasError?: boolean }>
+const Select = styled.select<{ hasError?: boolean }>
+const TextArea = styled.textarea<{ hasError?: boolean }>
+const SectionStatus = styled.div<{ status: 'active' | 'completed' | 'error' | 'pending' }>
+```
+
+### Form Data Structure
+6-section questionnaire with comprehensive validation:
+- Section 1: Basic Information & Demographics
+- Section 2: Socio-Economic Impact  
+- Section 3: Social Inclusion
+- Section 4: Service Quality & Implementation
+- Section 5: Satisfaction & Recommendations
+- Section 6: Special Category - Devadasi Children
+
+### Navigation Features
+- Section-by-section navigation with progress tracking
+- Back to home button (recently added)
+- Form validation before proceeding
+- Draft saving functionality
+
+## Recent Changes Made
+1. **Fixed RadioItem and CheckboxItem styling** - Changed from `styled.div` to `styled.label` with proper colors
+2. **Added backToHome function** - Users can now return to main page
+3. **Updated form data structure** - Added missing properties to prevent TypeScript errors
+4. **Improved text visibility** - Radio/checkbox options now clearly visible with hover effects
+
+## Next Steps Needed
+1. **Fix Console Errors**: Apply `withConfig` and `shouldForwardProp` to styled components
+2. **Complete Missing Content**: Fill in empty sections (particularly Section 5 and 6)
+3. **Final Testing**: Ensure all form validation works correctly
+
+## How to Continue
+When starting a new chat, provide this context and mention:
+- You're working on the Formulytic Next.js questionnaire application
+- Main file is `/frontend/src/app/questionnaire-complete/page.tsx`
+- Need to fix console errors related to DOM properties in styled components
+- Have a backup file at `/frontend/src/app/questionnaire-complete/page_backup.tsx` for reference
+
+## Common Commands
+```bash
+# Frontend development
+cd frontend && npm run dev
+
+# Backend development  
+cd backend && npm run dev
+
+# Build for production
+cd frontend && npm run build
+```
+
+## Important Notes
+- This is a Next.js project (not just React)
+- Uses styled-components for styling
+- Bilingual support via LanguageContext
+- Government scheme questionnaire for social research
+- Form has complex validation and conditional rendering
+
+---
+Last Updated: July 23, 2025
+Current Focus: Fixing console errors and completing questionnaire content
