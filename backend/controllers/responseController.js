@@ -126,7 +126,7 @@ const getDraft = async (req, res) => {
       return res.status(404).json({ message: 'No draft found' });
     }
 
-    return res.json(draft);
+    return res.status(200).json(draft);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -147,7 +147,7 @@ const getAllResponses = async (req, res) => {
 
   try {
     const responses = await getAllResponsesFromDB(req.user.id);
-    return res.json(responses);
+    return res.status(200).json(responses);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
