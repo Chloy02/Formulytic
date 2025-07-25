@@ -1,139 +1,249 @@
 const Response = require('../models/responseModel');
 const responseSchema = require('../routes/responseSchema');
 
+const {
+  createResponse,
+  getResponse,
+  getUserResponseWithID,
+  getSavedDraft,
+  updateUserDraft,
+  getAllResponsesFromDB,
+  saveDraftToDB,
+  deleteResponse: deleteResponseFromDB,
+} = require('../data/response/response.data');
+
 /**
- * =================================================================
+ * ================================================================
  * SUBMIT A NEW RESPONSE
  * @route   POST /api/responses
  * @desc    Allows a logged-in user to submit their completed form.
  * @access  Private (requires user login)
- * =================================================================
+ * ================================================================
  */
-exports.submitResponse = async (req, res) => {
+const submitResponse = async (req, res) => {
   try {
-    // Validate answers against responseSchema
-    const { error } = responseSchema.validate(req.body.answers);
+    const answers = req.body.answers;
+    const responseId = req.body.responseId;
+
+    const { error } = responseSchema.validate(answers);
+
     if (error) {
-      return res.status(400).json({ message: 'Validation failed', details: error.details });
-    }
-    const response = await Response.create({
-      submittedBy: req.user.id, // Changed from _id to id
-      answers: req.body.answers,
-      status: 'submitted'
-    });
-    res.status(201).json({ message: 'Response submitted', response });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-exports.saveDraft = async (req, res) => {
-  try {
-    console.log('Save draft request body:', JSON.stringify(req.body, null, 2));
-    console.log('User object from token:', req.user);
-    console.log('User ID:', req.user.id); // Changed from _id to id
-    
-    // Check if user already has a draft
-    let draft = await Response.findOne({ 
-      submittedBy: req.user.id, // Changed from _id to id
-      status: 'draft' 
-    });
-
-    if (draft) {
-      // Update existing draft
-      draft.answers = req.body.answers;
-      draft.lastSaved = new Date();
-      await draft.save();
-      console.log('Draft updated successfully');
-    } else {
-      // Create new draft
-      draft = await Response.create({
-        submittedBy: req.user.id, // Changed from _id to id
-        answers: req.body.answers,
-        status: 'draft'
+      return res.status(400).json({
+        message: 'Validation failed',
+        details: error.details,
       });
-      console.log('New draft created successfully');
     }
-    
-    res.status(201).json({ message: 'Draft saved', response: draft });
-  } catch (err) {
-    console.error('Error saving draft:', err);
-    console.error('Error details:', err.message);
-    res.status(500).json({ message: err.message });
-  }
-};
 
-exports.getDraft = async (req, res) => {
-  try {
-    const draft = await Response.findOne({ 
-      submittedBy: req.user.id, // Changed from _id to id
-      status: 'draft' 
-    });
-    
-    if (!draft) {
-      return res.status(404).json({ message: 'No draft found' });
-    }
-    
-    res.json(draft);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+    const data = {
+      responseId,
+      submittedBy: req.user.id,
+      answers: answers,
+      status: 'submitted',
+    };
 
-exports.getAllResponses = async (req, res) => {
-  if (req.user.role !== 'admin') return res.status(403).json({ message: 'Access denied' });
+    const response = await createResponse(data);
 
-  try {
-    const responses = await Response.find({ status: 'submitted' }).populate('submittedBy', 'username');
-    res.json(responses);
+    return res.status(201).json({ message: 'Response submitted', response });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Error is: ", err);
+    return res.status(500).json({ message: err.message });
   }
 };
 
 /**
- * =================================================================
- * GET A SINGLE RESPONSE (FOR ADMINS)
- * @route   GET /api/responses/:id
- * @desc    Fetches the full details of one specific submission.
- * @access  Private (Admin only)
- * =================================================================
+ * ================================================================
+ * SAVE A DRAFT
+ * @route   POST /api/responses/draft
+ * @desc    Save or update user's draft answers.
+ * @access  Private
+ * ================================================================
  */
-exports.getResponseById = async (req, res) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Access denied' });
-  }
+const saveDraft = async (req, res) => {
   try {
-    // Find a single response by its unique MongoDB document ID (_id).
-    const response = await Response.findById(req.params.id).populate('submittedBy', 'username role');
 
-    // If no response is found with that ID.
-    if (!response) {
-      return res.status(404).json({ success: false, message: 'Response not found.' });
+    const userID = req.user.id;
+    const userLatestResponse = req.body.answers;
+    const responseID = req.body.responseId;
+
+    console.log("user ID: " + userID);
+
+    if (!userLatestResponse || !responseID || !userID) {
+      return res.status(400).json({ message: 'User response not provided.' });
     }
 
-    res.status(200).json({
-      success: true,
-      data: response,
-    });
+    let draft = await getSavedDraft(userID, responseID);
 
-  } catch (error) {
-    console.error('Server Error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error while fetching the response.',
+    let newResponse;
+
+    console.log("Draft is: ", draft);
+
+    if (draft) {
+      // Update existing draft
+      newResponse = {
+        answers: userLatestResponse,
+        lastSaved: new Date(),
+      };
+      await updateUserDraft(userID, newResponse);
+      console.log("Old Draft: ");
+
+    } else {
+      // Create new draft
+      newResponse = {
+        responseId: responseID,
+        submittedBy: userID,
+        answers: userLatestResponse,
+        status: 'draft',
+      };
+      draft = await saveDraftToDB(newResponse);
+      console.log("New Draft: ");
+    }
+
+    return res.status(201).json({ message: 'Draft saved', response: draft });
+  } catch (err) {
+    console.error('Error saving draft:', err.message);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/**
+ * ================================================================
+ * GET DRAFT
+ * @route   GET /api/responses/draft
+ * @desc    Retrieve a user's draft
+ * @access  Private
+ * ================================================================
+ */
+const getDraft = async (req, res) => {
+  try {
+    const userID = req.user.id;
+    if (!userID) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    const draft = await getSavedDraft(userID);
+
+    if (!draft) {
+      return res.status(404).json({ message: 'No draft found' });
+    }
+
+    return res.json(draft);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/**
+ * ================================================================
+ * GET ALL RESPONSES
+ * @route   GET /api/responses
+ * @desc    Admin-only access to all submitted responses
+ * @access  Private (admin)
+ * ================================================================
+ */
+const getAllResponses = async (req, res) => {
+  if (req.user.role !== 'user') {
+    return res.status(403).json({ message: 'Access denied' });
+  }
+
+  try {
+    const responses = await getAllResponsesFromDB(req.user.id);
+    return res.json(responses);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/**
+ * ================================================================
+ * GET RESPONSE BY ID
+ * @route   GET /api/responses/:id
+ * @desc    Admin-only: Get full details of a specific response
+ * @access  Private (admin)
+ * ================================================================
+ */
+const getResponseById = async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const responseID = req.params.id;
+
+    if (!userID || !responseID) {
+      return res.status(400).json({ message: 'Missing user or response ID' });
+    }
+
+    const response = await getUserResponseWithID(responseID, userID);
+
+    console.log("Response Is: ", response);
+
+    return res.status(response ? 200 : 404).json({
+      flag: !response,
+      data: response || 'Response Not Found',
+    });
+  } catch (err) {
+    console.error('Server Error:', err);
+    return res.status(500).json({
+      message: 'Server error while fetching the response',
     });
   }
 };
 
-exports.deleteResponse = async (req, res) => {
-  if (req.user.role !== 'admin') return res.status(403).json({ message: 'Access denied' });
+/**
+ * ================================================================
+ * DELETE RESPONSE
+ * @route   DELETE /api/responses/:id
+ * @desc    Admin-only: Delete a response
+ * @access  Private (admin)
+ * ================================================================
+ */
+const deleteResponse = async (req, res) => {
+  // if (req.user.role !== 'admin') {
+  //   return res.status(403).json({ message: 'Access denied' });
+  // }
 
   try {
-    const response = await Response.findByIdAndDelete(req.params.id);
-    if (!response) return res.status(404).json({ message: 'Response not found' });
-    res.json({ message: 'Response deleted successfully' });
+    const userID = req.user.id;
+    const responseID = req.params.id;
+
+    if (!userID || !responseID) {
+      return res.status(400).json({ message: 'Missing user or response ID' });
+    }
+
+    const result = await deleteResponseFromDB(responseID, userID);
+
+    if (!result || result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Response not found' });
+    }
+
+    return res.json({ message: 'Response deleted successfully' });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
+};
+
+
+/**
+ * ================================================================
+ * Admin View Response
+ * @route  Get /api/responses
+ * @desc   Admin-only: Read Only
+ * @access Private (admin)
+ * ================================================================
+*/
+async function getAllResponsesAdmin(req, res) {
+  try {
+    const result = await getResponse();
+    return res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json(err);
+  }
+}
+
+module.exports = {
+  submitResponse,
+  saveDraft,
+  getDraft,
+  getAllResponses,
+  getResponseById,
+  deleteResponse,
+  getAllResponsesAdmin,
 };
