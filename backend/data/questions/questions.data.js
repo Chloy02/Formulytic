@@ -1,4 +1,4 @@
-const Questionnaire = require('../schema/question.schema');
+const Questionnaire = require('../../models/questions/question.schema');
 
 // Add question
 async function addQuestion(question) {
