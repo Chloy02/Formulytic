@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 import { AuthProvider } from '../contexts/AuthContext';
+import { ThemeProvider } from '../contexts/ThemeContext';
+import { TranslationProvider } from '../contexts/TranslationContext';
+import StyledComponentsRegistry from '../lib/registry';
 
 export const metadata: Metadata = {
   title: "Formulytcs",
@@ -29,10 +32,16 @@ export default function RootLayout({
       </head>
       
       {/* These classes on the body tag are CRITICAL for the theme's layout and styling */}
-      <body className="g-sidenav-show bg-gray-200">
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+      <body>
+        <StyledComponentsRegistry>
+          <ThemeProvider>
+            <TranslationProvider>
+              <AuthProvider>
+                {children}
+              </AuthProvider>
+            </TranslationProvider>
+          </ThemeProvider>
+        </StyledComponentsRegistry>
 
         {/* Core JS Files */}
         <Script src="/assets/js/core/popper.min.js" />

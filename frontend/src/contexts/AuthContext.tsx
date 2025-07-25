@@ -5,15 +5,15 @@ import axios from 'axios';
 
 interface User {
   id: string;
-  username: string;
-  email?: string;
+  email: string;
   role: string;
+  project: string;
 }
 
 interface AuthContextType {
   isLoggedIn: boolean;
   user: User | null;
-  login: (username: string, password: string) => Promise<{ role: string }>;
+  login: (email: string, password: string, project: string) => Promise<{ role: string; project: string }>;
   logout: () => void;
 }
 
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/auth/me');
+      const response = await axios.get('/api/auth/me');
       setUser(response.data.user);
     } catch (error) {
       console.error('Failed to fetch user data:', error);
@@ -54,7 +54,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
       setIsLoggedIn(true);
       // Fetch user data when token exists
-      fetchUserData();
+      fetchUserData().catch((error) => {
+        console.error('Error fetching user data on initialization:', error);
+        logout();
+      });
     }
   }, []);
 
@@ -65,9 +68,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [token]);
 
-  const login = async (username: string, password: string) => {
+  const login = async (email: string, password: string, project: string) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
+      const response = await axios.post('/api/auth/login', { email, password, project });
       const { token, user: userData } = response.data;
       localStorage.setItem('token', token);
       setToken(token);
@@ -77,7 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(userData);
       console.log('User logged in!', userData);
       
-      return { role: userData.role };
+      return { role: userData.role, project: userData.project };
     } catch (error) {
       console.error('Login failed', error);
       throw error;

@@ -3,14 +3,28 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from '../../contexts/TranslationContext';
 import { useRouter } from 'next/navigation';
+import { useDynamicTranslation } from '../../hooks/useDynamicTranslation';
+import { TranslatedText, TranslatedLabel, TranslatedOption } from '../../components/TranslatedText';
+import EnhancedNavbar from '../../components/EnhancedNavbar';
 import axios from 'axios';
 
-const PageContainer = styled.div`
+const PageWrapper = styled.div`
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background-color: #f8f9fa;
-  padding: 20px;
   font-family: 'Inter', sans-serif;
+  
+  .dark & {
+    background-color: #0f172a;
+  }
+`;
+
+const PageContainer = styled.div`
+  flex: 1;
+  padding: 20px;
 `;
 
 const Header = styled.div`
@@ -368,6 +382,8 @@ interface FormData {
 
 export default function QuestionnairePage() {
   const { isLoggedIn, user } = useAuth();
+  const { t } = useTranslation(); // Translation hook
+  const { dtSync } = useDynamicTranslation(); // Dynamic translation hook
   const router = useRouter();
   const [currentSection, setCurrentSection] = useState(1);
   const [error, setError] = useState('');
@@ -549,12 +565,12 @@ export default function QuestionnairePage() {
           }
         }
       );
-      setSuccess('Response submitted successfully!');
+      setSuccess(t('Response submitted successfully!'));
       setTimeout(() => {
         router.push('/');
       }, 2000);
     } catch (error: any) {
-      setError('Failed to submit response. Please try again.');
+      setError(t('Failed to submit response. Please try again.'));
       setTimeout(() => setError(''), 3000);
     } finally {
       setLoading(false);
@@ -584,24 +600,32 @@ export default function QuestionnairePage() {
   }
 
   return (
-    <PageContainer>
-      <Header>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-          <Button 
-            variant="secondary" 
-            onClick={backToHome}
-            style={{ padding: '8px 16px', fontSize: '0.9rem' }}
-          >
-            ← Back to Home
-          </Button>
-          <div></div>
+    <PageWrapper>
+      <EnhancedNavbar />
+      <PageContainer>
+        <Header>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <Button 
+              variant="secondary" 
+              onClick={backToHome}
+              style={{ padding: '8px 16px', fontSize: '0.9rem' }}
+            >
+              <TranslatedText>← Back to Home</TranslatedText>
+            </Button>
+            <div></div>
         </div>
-        <Title>SCSP/TSP Impact Evaluation Questionnaire</Title>
-        <Subtitle>Your responses will help us improve these important social programs</Subtitle>
+        <Title>
+          <TranslatedText>SCSP/TSP Impact Evaluation Questionnaire</TranslatedText>
+        </Title>
+        <Subtitle>
+          <TranslatedText>Your responses will help us improve these important social programs</TranslatedText>
+        </Subtitle>
         <ProgressBar>
           <ProgressFill progress={progress} />
         </ProgressBar>
-        <div>Section {currentSection} of 6</div>
+        <div>
+          <TranslatedText>Section</TranslatedText> {currentSection} <TranslatedText>of</TranslatedText> 6
+        </div>
       </Header>
 
       <FormContainer>
@@ -609,41 +633,43 @@ export default function QuestionnairePage() {
         {currentSection === 1 && (
           <>
             <SectionHeader>
-              <SectionTitle>Section 1: Basic Information & Demographics</SectionTitle>
+              <SectionTitle>
+                <TranslatedText>Section 1: Basic Information & Demographics</TranslatedText>
+              </SectionTitle>
             </SectionHeader>
             <SectionContent>
               <FormGroup>
-                <Label>Full Name</Label>
+                <TranslatedLabel text="Full Name" required />
                 <Input
                   type="text"
                   value={formData.section1.respondentName}
                   onChange={(e) => handleInputChange('section1', 'respondentName', e.target.value)}
-                  placeholder="Enter your full name"
+                  placeholder={dtSync('Enter your full name')}
                 />
               </FormGroup>
 
               <FormGroup>
-                <Label>District/Taluk</Label>
+                <TranslatedLabel text="District/Taluk" required />
                 <Input
                   type="text"
                   value={formData.section1.district}
                   onChange={(e) => handleInputChange('section1', 'district', e.target.value)}
-                  placeholder="Enter your district and taluk"
+                  placeholder={dtSync('Enter your district and taluk')}
                 />
               </FormGroup>
 
               <FormGroup>
-                <Label>Age</Label>
+                <TranslatedLabel text="Age" required />
                 <Input
                   type="number"
                   value={formData.section1.age}
                   onChange={(e) => handleInputChange('section1', 'age', e.target.value)}
-                  placeholder="Enter your age"
+                  placeholder={dtSync('Enter your age')}
                 />
               </FormGroup>
 
               <FormGroup>
-                <Label>Gender</Label>
+                <TranslatedLabel text="Gender" required />
                 <RadioGroup>
                   <RadioItem>
                     <Radio
@@ -652,7 +678,7 @@ export default function QuestionnairePage() {
                       checked={formData.section1.gender === 'male'}
                       onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
                     />
-                    Male
+                    <TranslatedText>Male</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -661,7 +687,7 @@ export default function QuestionnairePage() {
                       checked={formData.section1.gender === 'female'}
                       onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
                     />
-                    Female
+                    <TranslatedText>Female</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -670,28 +696,28 @@ export default function QuestionnairePage() {
                       checked={formData.section1.gender === 'other'}
                       onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
                     />
-                    Other
+                    <TranslatedText>Other</TranslatedText>
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
 
               <FormGroup>
-                <Label>Education Level</Label>
+                <TranslatedLabel text="Education Level" required />
                 <Select
                   value={formData.section1.education}
                   onChange={(e) => handleInputChange('section1', 'education', e.target.value)}
                 >
-                  <option value="">Select education level</option>
-                  <option value="below_8th">Below 8th Standard</option>
-                  <option value="up_to_12th">Up to 12th Standard</option>
-                  <option value="graduation">Graduation</option>
-                  <option value="post_graduation">Post Graduation</option>
-                  <option value="others">Others</option>
+                  <TranslatedOption value="">Select education level</TranslatedOption>
+                  <TranslatedOption value="below_8th">Below 8th Standard</TranslatedOption>
+                  <TranslatedOption value="up_to_12th">Up to 12th Standard</TranslatedOption>
+                  <TranslatedOption value="graduation">Graduation</TranslatedOption>
+                  <TranslatedOption value="post_graduation">Post Graduation</TranslatedOption>
+                  <TranslatedOption value="others">Others</TranslatedOption>
                 </Select>
               </FormGroup>
 
               <FormGroup>
-                <Label>Were you employed before receiving the scheme benefits?</Label>
+                <TranslatedLabel text="Were you employed before receiving the scheme benefits?" />
                 <RadioGroup>
                   <RadioItem>
                     <Radio
@@ -700,7 +726,7 @@ export default function QuestionnairePage() {
                       checked={formData.section1.employmentBefore === 'yes'}
                       onChange={(e) => handleInputChange('section1', 'employmentBefore', e.target.value)}
                     />
-                    Yes
+                    <TranslatedText>Yes</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -709,41 +735,41 @@ export default function QuestionnairePage() {
                       checked={formData.section1.employmentBefore === 'no'}
                       onChange={(e) => handleInputChange('section1', 'employmentBefore', e.target.value)}
                     />
-                    No
+                    <TranslatedText>No</TranslatedText>
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
 
               {formData.section1.employmentBefore === 'yes' && (
                 <FormGroup>
-                  <Label>What was your occupation before?</Label>
+                  <TranslatedLabel text="What was your occupation before?" />
                   <Input
                     type="text"
                     value={formData.section1.occupationBefore}
                     onChange={(e) => handleInputChange('section1', 'occupationBefore', e.target.value)}
-                    placeholder="Enter your previous occupation"
+                    placeholder={dtSync('Enter your previous occupation')}
                   />
                 </FormGroup>
               )}
 
               <FormGroup>
-                <Label>Income Level Before Scheme</Label>
+                <TranslatedLabel text="Income Level Before Scheme" />
                 <Select
                   value={formData.section1.incomeBefore}
                   onChange={(e) => handleInputChange('section1', 'incomeBefore', e.target.value)}
                 >
-                  <option value="">Select income level</option>
-                  <option value="below_50k">Below ₹50,000</option>
-                  <option value="50k_1l">₹50,000 - ₹1,00,000</option>
-                  <option value="1l_2l">₹1,00,000 - ₹2,00,000</option>
-                  <option value="2l_3l">₹2,00,000 - ₹3,00,000</option>
-                  <option value="3l_5l">₹3,00,000 - ₹5,00,000</option>
-                  <option value="above_5l">Above ₹5,00,000</option>
+                  <TranslatedOption value="">Select income level</TranslatedOption>
+                  <TranslatedOption value="below_50k">Below ₹50,000</TranslatedOption>
+                  <TranslatedOption value="50k_1l">₹50,000 - ₹1,00,000</TranslatedOption>
+                  <TranslatedOption value="1l_2l">₹1,00,000 - ₹2,00,000</TranslatedOption>
+                  <TranslatedOption value="2l_3l">₹2,00,000 - ₹3,00,000</TranslatedOption>
+                  <TranslatedOption value="3l_5l">₹3,00,000 - ₹5,00,000</TranslatedOption>
+                  <TranslatedOption value="above_5l">Above ₹5,00,000</TranslatedOption>
                 </Select>
               </FormGroup>
 
               <FormGroup>
-                <Label>Have you received benefits from any scheme?</Label>
+                <TranslatedLabel text="Have you received benefits from any scheme?" />
                 <RadioGroup>
                   <RadioItem>
                     <Radio
@@ -752,7 +778,7 @@ export default function QuestionnairePage() {
                       checked={formData.section1.receivedBenefit === 'yes'}
                       onChange={(e) => handleInputChange('section1', 'receivedBenefit', e.target.value)}
                     />
-                    Yes
+                    <TranslatedText>Yes</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -761,7 +787,7 @@ export default function QuestionnairePage() {
                       checked={formData.section1.receivedBenefit === 'no'}
                       onChange={(e) => handleInputChange('section1', 'receivedBenefit', e.target.value)}
                     />
-                    No
+                    <TranslatedText>No</TranslatedText>
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
@@ -769,7 +795,7 @@ export default function QuestionnairePage() {
               {formData.section1.receivedBenefit === 'yes' && (
                 <>
                   <FormGroup>
-                    <Label>Which schemes have you benefited from? (Select all that apply)</Label>
+                    <TranslatedLabel text="Which schemes have you benefited from? (Select all that apply)" />
                     <CheckboxGroup>
                       {['inter_caste_marriage', 'widow_remarriage', 'others_scheme'].map((scheme) => (
                         <CheckboxItem key={scheme}>
@@ -777,16 +803,16 @@ export default function QuestionnairePage() {
                             checked={formData.section1.schemes.includes(scheme)}
                             onChange={(e) => handleCheckboxChange('section1', 'schemes', scheme, e.target.checked)}
                           />
-                          {scheme === 'inter_caste_marriage' && 'Inter-caste Marriage Scheme'}
-                          {scheme === 'widow_remarriage' && 'Widow Remarriage Scheme'}
-                          {scheme === 'others_scheme' && 'Other Schemes'}
+                          {scheme === 'inter_caste_marriage' && <TranslatedText>Inter-caste Marriage Scheme</TranslatedText>}
+                          {scheme === 'widow_remarriage' && <TranslatedText>Widow Remarriage Scheme</TranslatedText>}
+                          {scheme === 'others_scheme' && <TranslatedText>Other Schemes</TranslatedText>}
                         </CheckboxItem>
                       ))}
                     </CheckboxGroup>
                   </FormGroup>
 
                   <FormGroup>
-                    <Label>Date of Benefit Received</Label>
+                    <TranslatedLabel text="Date of Benefit Received" />
                     <Input
                       type="date"
                       value={formData.section1.dateOfBenefit}
@@ -795,7 +821,7 @@ export default function QuestionnairePage() {
                   </FormGroup>
 
                   <FormGroup>
-                    <Label>How did you utilize the scheme benefits? (Select all that apply)</Label>
+                    <TranslatedLabel text="How did you utilize the scheme benefits? (Select all that apply)" />
                     <CheckboxGroup>
                       {['housing', 'business', 'savings', 'daily_needs', 'education'].map((utilization) => (
                         <CheckboxItem key={utilization}>
@@ -803,7 +829,7 @@ export default function QuestionnairePage() {
                             checked={formData.section1.utilization.includes(utilization)}
                             onChange={(e) => handleCheckboxChange('section1', 'utilization', utilization, e.target.checked)}
                           />
-                          {utilization.charAt(0).toUpperCase() + utilization.slice(1).replace('_', ' ')}
+                          <TranslatedText>{utilization.charAt(0).toUpperCase() + utilization.slice(1).replace('_', ' ')}</TranslatedText>
                         </CheckboxItem>
                       ))}
                     </CheckboxGroup>
@@ -812,21 +838,21 @@ export default function QuestionnairePage() {
               )}
 
               <FormGroup>
-                <Label>Caste Category</Label>
+                <TranslatedLabel text="Caste Category" />
                 <Select
                   value={formData.section1.casteCategory}
                   onChange={(e) => handleInputChange('section1', 'casteCategory', e.target.value)}
                 >
-                  <option value="">Select caste category</option>
-                  <option value="sc">Scheduled Caste (SC)</option>
-                  <option value="st">Scheduled Tribe (ST)</option>
-                  <option value="obc">Other Backward Class (OBC)</option>
-                  <option value="general">General</option>
+                  <TranslatedOption value="">Select caste category</TranslatedOption>
+                  <TranslatedOption value="sc">Scheduled Caste (SC)</TranslatedOption>
+                  <TranslatedOption value="st">Scheduled Tribe (ST)</TranslatedOption>
+                  <TranslatedOption value="obc">Other Backward Class (OBC)</TranslatedOption>
+                  <TranslatedOption value="general">General</TranslatedOption>
                 </Select>
               </FormGroup>
 
               <FormGroup>
-                <Label>Was your marriage opposed by family/community?</Label>
+                <TranslatedLabel text="Was your marriage opposed by family/community?" />
                 <RadioGroup>
                   <RadioItem>
                     <Radio
@@ -835,7 +861,7 @@ export default function QuestionnairePage() {
                       checked={formData.section1.marriageOpposed === 'yes'}
                       onChange={(e) => handleInputChange('section1', 'marriageOpposed', e.target.value)}
                     />
-                    Yes
+                    <TranslatedText>Yes</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -844,13 +870,13 @@ export default function QuestionnairePage() {
                       checked={formData.section1.marriageOpposed === 'no'}
                       onChange={(e) => handleInputChange('section1', 'marriageOpposed', e.target.value)}
                     />
-                    No
+                    <TranslatedText>No</TranslatedText>
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
 
               <FormGroup>
-                <Label>Did you have to relocate after marriage?</Label>
+                <TranslatedLabel text="Did you have to relocate after marriage?" />
                 <RadioGroup>
                   <RadioItem>
                     <Radio
@@ -859,7 +885,7 @@ export default function QuestionnairePage() {
                       checked={formData.section1.relocated === 'yes'}
                       onChange={(e) => handleInputChange('section1', 'relocated', e.target.value)}
                     />
-                    Yes
+                    <TranslatedText>Yes</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -868,13 +894,13 @@ export default function QuestionnairePage() {
                       checked={formData.section1.relocated === 'no'}
                       onChange={(e) => handleInputChange('section1', 'relocated', e.target.value)}
                     />
-                    No
+                    <TranslatedText>No</TranslatedText>
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
 
               <FormGroup>
-                <Label>Did you provide Aadhaar details for the scheme?</Label>
+                <TranslatedLabel text="Did you provide Aadhaar details for the scheme?" />
                 <RadioGroup>
                   <RadioItem>
                     <Radio
@@ -883,7 +909,7 @@ export default function QuestionnairePage() {
                       checked={formData.section1.aadhaarProvided === 'yes'}
                       onChange={(e) => handleInputChange('section1', 'aadhaarProvided', e.target.value)}
                     />
-                    Yes
+                    <TranslatedText>Yes</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -892,7 +918,7 @@ export default function QuestionnairePage() {
                       checked={formData.section1.aadhaarProvided === 'no'}
                       onChange={(e) => handleInputChange('section1', 'aadhaarProvided', e.target.value)}
                     />
-                    No
+                    <TranslatedText>No</TranslatedText>
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
@@ -904,67 +930,67 @@ export default function QuestionnairePage() {
         {currentSection === 2 && (
           <>
             <SectionHeader>
-              <SectionTitle>Section 2: Socio-Economic Impact</SectionTitle>
+              <SectionTitle><TranslatedText>Section 2: Socio-Economic Impact</TranslatedText></SectionTitle>
             </SectionHeader>
             <SectionContent>
               <FormGroup>
-                <Label>What is your current occupation?</Label>
+                <TranslatedLabel text="What is your current occupation?" />
                 <Input
                   type="text"
                   value={formData.section2.occupationAfter}
                   onChange={(e) => handleInputChange('section2', 'occupationAfter', e.target.value)}
-                  placeholder="Enter your current occupation"
+                  placeholder={dtSync('Enter your current occupation')}
                 />
               </FormGroup>
 
               <FormGroup>
-                <Label>Current Income Level</Label>
+                <TranslatedLabel text="Current Income Level" />
                 <Select
                   value={formData.section2.incomeAfter}
                   onChange={(e) => handleInputChange('section2', 'incomeAfter', e.target.value)}
                 >
-                  <option value="">Select current income level</option>
-                  <option value="below_50k">Below ₹50,000</option>
-                  <option value="50k_1l">₹50,000 - ₹1,00,000</option>
-                  <option value="1l_2l">₹1,00,000 - ₹2,00,000</option>
-                  <option value="2l_3l">₹2,00,000 - ₹3,00,000</option>
-                  <option value="3l_5l">₹3,00,000 - ₹5,00,000</option>
-                  <option value="above_5l">Above ₹5,00,000</option>
+                  <TranslatedOption value="">Select current income level</TranslatedOption>
+                  <TranslatedOption value="below_50k">Below ₹50,000</TranslatedOption>
+                  <TranslatedOption value="50k_1l">₹50,000 - ₹1,00,000</TranslatedOption>
+                  <TranslatedOption value="1l_2l">₹1,00,000 - ₹2,00,000</TranslatedOption>
+                  <TranslatedOption value="2l_3l">₹2,00,000 - ₹3,00,000</TranslatedOption>
+                  <TranslatedOption value="3l_5l">₹3,00,000 - ₹5,00,000</TranslatedOption>
+                  <TranslatedOption value="above_5l">Above ₹5,00,000</TranslatedOption>
                 </Select>
               </FormGroup>
 
               <FormGroup>
-                <Label>How would you describe your socio-economic status before the scheme?</Label>
+                <TranslatedLabel text="How would you describe your socio-economic status before the scheme?" />
                 <Select
                   value={formData.section2.socioEconomicStatusBefore}
                   onChange={(e) => handleInputChange('section2', 'socioEconomicStatusBefore', e.target.value)}
                 >
-                  <option value="">Select status</option>
-                  <option value="very_poor">Very Poor</option>
-                  <option value="poor">Poor</option>
-                  <option value="average">Average</option>
-                  <option value="good">Good</option>
-                  <option value="very_good">Very Good</option>
+                  <TranslatedOption value="">Select status</TranslatedOption>
+                  <TranslatedOption value="very_poor">Very Poor</TranslatedOption>
+                  <TranslatedOption value="poor">Poor</TranslatedOption>
+                  <TranslatedOption value="average">Average</TranslatedOption>
+                  <TranslatedOption value="good">Good</TranslatedOption>
+                  <TranslatedOption value="very_good">Very Good</TranslatedOption>
                 </Select>
               </FormGroup>
 
               <FormGroup>
-                <Label>On a scale of 1-5, how financially secure do you feel now? (1=Very Insecure, 5=Very Secure)</Label>
+                <TranslatedLabel text="On a scale of 1-5, how financially secure do you feel now? (1=Very Insecure, 5=Very Secure)" />
                 <Select
                   value={formData.section2.financialSecurityScale}
                   onChange={(e) => handleInputChange('section2', 'financialSecurityScale', e.target.value)}
                 >
-                  <option value="">Select rating</option>
-                  <option value="1">1 - Very Insecure</option>
-                  <option value="2">2 - Insecure</option>
-                  <option value="3">3 - Neutral</option>
-                  <option value="4">4 - Secure</option>
-                  <option value="5">5 - Very Secure</option>
+                  <TranslatedOption value="">Select rating</TranslatedOption>
+                  <TranslatedOption value="1">1 - Very Insecure</TranslatedOption>
+                  <TranslatedOption value="2">2 - Insecure</TranslatedOption>
+                  <TranslatedOption value="3">3 - Neutral</TranslatedOption>
+                  <TranslatedOption value="4">4 - Secure</TranslatedOption>
+                  <TranslatedOption value="5">5 - Very Secure</TranslatedOption>
                 </Select>
               </FormGroup>
 
               <FormGroup>
-                <Label>Is your spouse currently employed?</Label>
+                <TranslatedLabel text="Is your spouse currently employed?" />
                 <RadioGroup>
                   <RadioItem>
                     <Radio
@@ -973,7 +999,7 @@ export default function QuestionnairePage() {
                       checked={formData.section2.spouseEmploymentAfter === 'yes'}
                       onChange={(e) => handleInputChange('section2', 'spouseEmploymentAfter', e.target.value)}
                     />
-                    Yes
+                    <TranslatedText>Yes</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -982,7 +1008,7 @@ export default function QuestionnairePage() {
                       checked={formData.section2.spouseEmploymentAfter === 'no'}
                       onChange={(e) => handleInputChange('section2', 'spouseEmploymentAfter', e.target.value)}
                     />
-                    No
+                    <TranslatedText>No</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -991,43 +1017,43 @@ export default function QuestionnairePage() {
                       checked={formData.section2.spouseEmploymentAfter === 'not_applicable'}
                       onChange={(e) => handleInputChange('section2', 'spouseEmploymentAfter', e.target.value)}
                     />
-                    Not Applicable
+                    <TranslatedText>Not Applicable</TranslatedText>
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
 
               <FormGroup>
-                <Label>How would you describe your current socio-economic status?</Label>
+                <TranslatedLabel text="How would you describe your current socio-economic status?" />
                 <Select
                   value={formData.section2.socioEconomicStatusAfter}
                   onChange={(e) => handleInputChange('section2', 'socioEconomicStatusAfter', e.target.value)}
                 >
-                  <option value="">Select status</option>
-                  <option value="very_poor">Very Poor</option>
-                  <option value="poor">Poor</option>
-                  <option value="average">Average</option>
-                  <option value="good">Good</option>
-                  <option value="very_good">Very Good</option>
+                  <TranslatedOption value="">Select status</TranslatedOption>
+                  <TranslatedOption value="very_poor">Very Poor</TranslatedOption>
+                  <TranslatedOption value="poor">Poor</TranslatedOption>
+                  <TranslatedOption value="average">Average</TranslatedOption>
+                  <TranslatedOption value="good">Good</TranslatedOption>
+                  <TranslatedOption value="very_good">Very Good</TranslatedOption>
                 </Select>
               </FormGroup>
 
               <FormGroup>
-                <Label>How has the scheme impacted your social life?</Label>
+                <TranslatedLabel text="How has the scheme impacted your social life?" />
                 <Select
                   value={formData.section2.socialLifeImpact}
                   onChange={(e) => handleInputChange('section2', 'socialLifeImpact', e.target.value)}
                 >
-                  <option value="">Select impact</option>
-                  <option value="significantly_improved">Significantly Improved</option>
-                  <option value="moderately_improved">Moderately Improved</option>
-                  <option value="slightly_improved">Slightly Improved</option>
-                  <option value="no_change">No Change</option>
-                  <option value="worsened">Worsened</option>
+                  <TranslatedOption value="">Select impact</TranslatedOption>
+                  <TranslatedOption value="significantly_improved">Significantly Improved</TranslatedOption>
+                  <TranslatedOption value="moderately_improved">Moderately Improved</TranslatedOption>
+                  <TranslatedOption value="slightly_improved">Slightly Improved</TranslatedOption>
+                  <TranslatedOption value="no_change">No Change</TranslatedOption>
+                  <TranslatedOption value="worsened">Worsened</TranslatedOption>
                 </Select>
               </FormGroup>
 
               <FormGroup>
-                <Label>Who makes decisions about how to use the scheme funds in your household?</Label>
+                <TranslatedLabel text="Who makes decisions about how to use the scheme funds in your household?" />
                 <RadioGroup>
                   <RadioItem>
                     <Radio
@@ -1036,7 +1062,7 @@ export default function QuestionnairePage() {
                       checked={formData.section2.fundDecisionMaker === 'self'}
                       onChange={(e) => handleInputChange('section2', 'fundDecisionMaker', e.target.value)}
                     />
-                    Myself
+                    <TranslatedText>Myself</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -1045,7 +1071,7 @@ export default function QuestionnairePage() {
                       checked={formData.section2.fundDecisionMaker === 'spouse'}
                       onChange={(e) => handleInputChange('section2', 'fundDecisionMaker', e.target.value)}
                     />
-                    Spouse
+                    <TranslatedText>Spouse</TranslatedText>
                   </RadioItem>
                   <RadioItem>
                     <Radio
@@ -1132,7 +1158,7 @@ export default function QuestionnairePage() {
         {currentSection === 3 && (
           <>
             <SectionHeader>
-              <SectionTitle>Section 3: Social Inclusion</SectionTitle>
+              <SectionTitle>{t('Section 3: Social Inclusion')}</SectionTitle>
             </SectionHeader>
             <SectionContent>
               <FormGroup>
@@ -1408,7 +1434,7 @@ export default function QuestionnairePage() {
         {currentSection === 4 && (
           <>
             <SectionHeader>
-              <SectionTitle>Section 4: Service Quality & Implementation</SectionTitle>
+              <SectionTitle>{t('Section 4: Service Quality & Implementation')}</SectionTitle>
             </SectionHeader>
             <SectionContent>
               <FormGroup>
@@ -1634,7 +1660,7 @@ export default function QuestionnairePage() {
         {currentSection === 5 && (
           <>
             <SectionHeader>
-              <SectionTitle>Section 5: Satisfaction & Recommendations</SectionTitle>
+              <SectionTitle>{t('Section 5: Satisfaction & Recommendations')}</SectionTitle>
             </SectionHeader>
             <SectionContent>
               <FormGroup>
@@ -1968,7 +1994,7 @@ export default function QuestionnairePage() {
         {currentSection === 6 && (
           <>
             <SectionHeader>
-              <SectionTitle>Section 6: Special Category - Children of Devadasi Women</SectionTitle>
+              <SectionTitle>{t('Section 6: Special Category - Children of Devadasi Women')}</SectionTitle>
             </SectionHeader>
             <SectionContent>
               <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f0f4f8', borderRadius: '8px', borderLeft: '4px solid #4299e1' }}>
@@ -2182,21 +2208,21 @@ export default function QuestionnairePage() {
         <ButtonGroup>
           <NavigationButtons>
             <Button onClick={prevSection} disabled={currentSection === 1}>
-              Previous
+              {t('Previous')}
             </Button>
             
             <div style={{ display: 'flex', gap: '10px' }}>
               <Button variant="secondary" onClick={saveDraft} disabled={loading}>
-                {loading ? 'Saving...' : 'Save Draft'}
+                {loading ? t('Saving...') : t('Save Draft')}
               </Button>
               
               {currentSection === 6 ? (
                 <Button variant="success" onClick={submitForm} disabled={loading}>
-                  {loading ? 'Submitting...' : 'Submit Response'}
+                  {loading ? t('Submitting...') : t('Submit Response')}
                 </Button>
               ) : (
                 <Button variant="primary" onClick={nextSection}>
-                  Next
+                  {t('Next')}
                 </Button>
               )}
             </div>
@@ -2206,6 +2232,7 @@ export default function QuestionnairePage() {
         {error && <ErrorMessage>{error}</ErrorMessage>}
         {success && <SuccessMessage>{success}</SuccessMessage>}
       </FormContainer>
-    </PageContainer>
+      </PageContainer>
+    </PageWrapper>
   );
 }

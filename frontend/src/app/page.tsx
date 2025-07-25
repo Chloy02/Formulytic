@@ -1,281 +1,193 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Fade, Slide } from 'react-awesome-reveal';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Navbar2 from '../components/Navbar2';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts/TranslationContext';
+import { theme } from '@/styles/theme';
+import { 
+  Button, 
+  Heading, 
+  Text, 
+  Container, 
+  Stack
+} from '@/components/ui';
+import EnhancedNavbar from '@/components/EnhancedNavbar';
+import { 
+  ArrowRight, 
+  Sparkles
+} from 'lucide-react';
 
-// --- Styled Components ---
-
-const LandingPageContainer = styled.div`
-  font-family: 'Inter', sans-serif;
+const PageWrapper = styled.div`
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eff6ff 0%, #f1f5f9 100%);
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: #f8faff;
-  color: #333;
-  width: 100%;
-  overflow-x: hidden;
+
+  .dark & {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
 `;
 
 const HeroSection = styled.section`
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 6rem 0;
   text-align: center;
-  padding: 60px 30px;
-  width: 100%;
-  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 
   @media (max-width: 768px) {
-    padding: 40px 15px;
+    padding: 4rem 0;
   }
 `;
 
-const Tagline = styled.div`
+const HeroBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232563eb' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+`;
+
+const HeroContent = styled(Container)`
+  position: relative;
+  z-index: 1;
+`;
+
+const BadgeWrapper = styled(motion.div)`
   display: inline-flex;
   align-items: center;
-  background-color: #e0f2ff;
-  color: #007bff;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 14px;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1d4ed8;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
   font-weight: 500;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #bfdbfe;
 
-  @media (max-width: 768px) {
-    font-size: 12px;
-    padding: 6px 12px;
-    margin-bottom: 15px;
-  }
-
-  svg {
-    margin-right: 8px;
+  .dark & {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.3);
   }
 `;
 
-const MainHeading = styled.h1`
-  font-size: 56px;
-  font-weight: 800;
-  color: #1a202c;
-  line-height: 1.2;
-  margin-bottom: 20px;
-  max-width: 100%;
-  word-wrap: break-word;
+const HeroTitle = styled(Heading)`
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
 
-  @media (max-width: 1024px) {
-    font-size: 48px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 36px;
-    margin-bottom: 15px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 28px;
+  .dark & {
+    background: linear-gradient(135deg, #f1f5f9 0%, #60a5fa 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 `;
 
-const HighlightText = styled.span`
-  color: #007bff;
+const HeroSubtitle = styled(Text)`
+  max-width: 600px;
+  margin: 0 auto 2rem;
 `;
 
-const SubText = styled.p`
-  font-size: 18px;
-  color: #555;
-  max-width: 700px;
-  margin-bottom: 40px;
-  line-height: 1.6;
-  padding: 0 15px;
-  box-sizing: border-box;
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-    margin-bottom: 30px;
-    padding: 0;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 14px;
-  }
-`;
-
-const HeroButtons = styled.div`
+const CTASection = styled.div`
   display: flex;
-  gap: 20px;
-  margin-bottom: 40px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
-    max-width: 300px;
-  }
-`;
-
-const PrimaryButton = styled(Link)`
-  background-color: #007bff;
-  color: #fff;
-  padding: 15px 30px;
-  font-size: 18px;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
+  gap: 1rem;
   justify-content: center;
-  align-items: center;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-
-  &:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-  }
-
-  svg {
-    margin-left: 10px;
-  }
-
-  @media (max-width: 768px) {
-    width: 100%;
-    padding: 12px 25px;
-    font-size: 16px;
-  }
-`;
-
-const SecondaryButton = styled(Link)`
-  background-color: #e9ecef;
-  color: #333;
-  padding: 15px 30px;
-  font-size: 18px;
-  text-decoration: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-
-  &:hover {
-    background-color: #dee2e6;
-  }
-
-  @media (max-width: 768px) {
-    width: 100%;
-    padding: 12px 25px;
-    font-size: 16px;
-  }
-`;
-
-const FeatureList = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 30px;
   flex-wrap: wrap;
-  padding: 0 30px;
-  box-sizing: border-box;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 15px;
-    padding: 0 15px;
-  }
+  margin-bottom: 3rem;
 `;
 
-const FeatureItem = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  color: #555;
-  font-weight: 500;
-  white-space: nowrap;
-
-  @media (max-width: 768px) {
-    justify-content: center;
-  }
-
-  svg {
-    color: #28a745;
-    margin-right: 8px;
-    font-size: 20px;
-  }
-`;
-
-export default function Home() {
+const HomePage: React.FC = () => {
   const { isLoggedIn, user } = useAuth();
+  const { t } = useTranslation(); // Translation hook
   const router = useRouter();
 
-  // Redirect admin users to admin dashboard
-  useEffect(() => {
-    if (isLoggedIn && user && user.role === 'admin') {
-      router.push('/admin-dashboard');
+  const handleGetStarted = () => {
+    if (isLoggedIn) {
+      if (user?.role === 'admin') {
+        router.push('/admin-dashboard');
+      } else {
+        router.push('/questionnaire');
+      }
+    } else {
+      router.push('/signup');
     }
-  }, [isLoggedIn, user, router]);
+  };
 
-  // Don't render content for admin users (they'll be redirected)
-  if (isLoggedIn && user && user.role === 'admin') {
-    return null;
-  }
+  const handleSignIn = () => {
+    router.push('/signin');
+  };
 
   return (
-    <LandingPageContainer>
-      <Navbar2 />
-
-      <Fade triggerOnce={true} direction="down">
-        <HeroSection>
-          <Tagline>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5.5 4a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0V4.5a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0V4.5a.5.5 0 0 1 .5-.5zM12 9H4a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1z"/>
-            </svg>
-            Smart Questionnaire Platform
-          </Tagline>
-          <MainHeading>
-            SCSP/TSP <HighlightText>Impact</HighlightText> Evaluation Questionnaire
-          </MainHeading>
-          <SubText>
-            Impact Evaluation of SCSP/TSP Incentive Schemes for Inter-Caste Marriages and Other Schemes in Karnataka.
-            Assessing their effectiveness in promoting social equity and integration across beneficiary communities.
-          </SubText>
-          <HeroButtons>
-            <PrimaryButton href='/questionnaire'>
-              Start Questionnaire
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-              </svg>
-            </PrimaryButton>
-            {!isLoggedIn && (
-              <SecondaryButton href="/signin">Sign In</SecondaryButton>
-            )}
-          </HeroButtons>
-          <FeatureList>
-            <FeatureItem>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.75 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z"/>
-              </svg>
-              Quick & easy to complete
-            </FeatureItem>
-            <FeatureItem>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.75 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z"/>
-              </svg>
-              Your data is secure
-            </FeatureItem>
-            <FeatureItem>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.5 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z"/>
-              </svg>
-              Progress is saved
-            </FeatureItem>
-          </FeatureList>
-        </HeroSection>
-      </Fade>
-    </LandingPageContainer>
+    <PageWrapper>
+      <EnhancedNavbar />
+      
+      <HeroSection>
+        <HeroBackground />
+        <HeroContent maxWidth="lg">
+          <BadgeWrapper
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Sparkles size={16} />
+            <span>{t('Revolutionizing Data Collection')}</span>
+          </BadgeWrapper>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <HeroTitle>
+              {t('Transform Your Data Collection with Formulytic')}
+            </HeroTitle>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <HeroSubtitle size="lg" color="secondary">
+              {t('Create intelligent questionnaires, gather valuable insights, and make data-driven decisions with our powerful, easy-to-use platform designed for modern teams.')}
+            </HeroSubtitle>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <CTASection>
+              <Button
+                size="lg"
+                onClick={handleGetStarted}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Stack direction="row" spacing="sm" align="center">
+                  <span>{isLoggedIn ? t('Go to Dashboard') : t('Get Started Free')}</span>
+                  <ArrowRight size={20} />
+                </Stack>
+              </Button>
+            </CTASection>
+          </motion.div>
+        </HeroContent>
+      </HeroSection>
+    </PageWrapper>
   );
-}
+};
+
+export default HomePage;
