@@ -8,14 +8,25 @@ async function addQuestion(question) {
     return await Questionnaire.create(question);
 }
 
-async function getQuestions(state) {
-    return await Questionnaire.find({status: state || 'published'})
+async function getQuestion(state) {
+    return await Questionnaire.find({ status: state || 'published' })
         .lean()
-        .select({_id: 0, __v: 0, createdAt: 0, updatedAt: 0});
+        .select({ _id: 0, __v: 0, createdAt: 0, updatedAt: 0 });
 }
 
+async function getQuestions() {
+    return await Questionnaire.find({})
+        .lean()
+        .select({ _id: 0, __v: 0, createdAt: 0, updatedAt: 0, sections: 0, createdBy: 0 });
+}
+
+async function getQuestionById(id) {
+    return await Questionnaire.find({ questionnaireID: id })
+}
 
 module.exports = {
     addQuestion,
+    getQuestion,
     getQuestions,
+    getQuestionById,
 }
