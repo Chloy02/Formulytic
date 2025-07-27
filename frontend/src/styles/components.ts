@@ -3,9 +3,9 @@ import { theme } from './theme';
 
 // Base components
 export const PageContainer = styled.div`
-  font-family: 'Inter', sans-serif;
+  font-family: ${theme.typography.fontFamily.primary};
   min-height: 100vh;
-  background: ${theme.colors.primary.gradient};
+  background: #f8fafc;
   display: flex;
   flex-direction: column;
 `;
@@ -23,53 +23,57 @@ export const ContentWrapper = styled.div`
 `;
 
 // Glass morphism card
-export const GlassCard = styled.div<{ padding?: string }>`
-  background: ${theme.colors.background.glass};
-  backdrop-filter: blur(20px);
+export const GlassCard = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'padding'
+})<{ padding?: string }>`
+  background: ${theme.colors.background.white};
   border-radius: ${theme.borderRadius.xl};
-  box-shadow: ${theme.shadows.lg};
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   padding: ${props => props.padding || theme.spacing.xl};
   margin-bottom: ${theme.spacing.xl};
-  border: 1px solid ${theme.colors.background.border};
+  border: 1px solid ${theme.colors.border.light};
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: ${theme.shadows.lg};
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
   }
 `;
 
 // Typography
 export const Title = styled.h1<{ size?: 'sm' | 'md' | 'lg' }>`
-  font-weight: 800;
-  background: ${theme.colors.primary.gradient};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-family: ${theme.typography.fontFamily.primary};
+  font-weight: ${theme.typography.fontWeights.semibold};
+  color: ${theme.colors.text.primary};
   margin-bottom: ${theme.spacing.sm};
+  line-height: ${theme.typography.lineHeights.tight};
   
   ${props => {
     switch (props.size) {
-      case 'sm': return 'font-size: 1.5rem;';
-      case 'lg': return 'font-size: 2.5rem;';
-      default: return 'font-size: 2rem;';
+      case 'sm': return `font-size: ${theme.typography.fontSizes.xl};`;
+      case 'lg': return `font-size: ${theme.typography.fontSizes['3xl']};`;
+      default: return `font-size: ${theme.typography.fontSizes['2xl']};`;
     }
   }}
 
   @media (max-width: ${theme.breakpoints.tablet}) {
-    font-size: ${props => props.size === 'lg' ? '2rem' : '1.5rem'};
+    font-size: ${props => props.size === 'lg' ? theme.typography.fontSizes['2xl'] : theme.typography.fontSizes.xl};
   }
 `;
 
 export const Subtitle = styled.p`
+  font-family: ${theme.typography.fontFamily.primary};
   color: ${theme.colors.text.secondary};
-  font-size: 1.1rem;
-  font-weight: 400;
+  font-size: ${theme.typography.fontSizes.base};
+  font-weight: ${theme.typography.fontWeights.normal};
+  line-height: ${theme.typography.lineHeights.normal};
   margin: 0;
 `;
 
 // Grid system
-export const Grid = styled.div<{ 
+export const Grid = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['columns', 'gap', 'minWidth'].includes(prop)
+})<{ 
   columns?: string; 
   gap?: string;
   minWidth?: string; 

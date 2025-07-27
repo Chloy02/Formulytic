@@ -1,9 +1,9 @@
 export const theme = {
   colors: {
     primary: {
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      blue: '#667eea',
-      purple: '#764ba2'
+      gradient: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)',
+      blue: '#4299e1',
+      darkBlue: '#3182ce'
     },
     secondary: {
       gradient: 'linear-gradient(135deg, #f093fb, #f5576c)',
@@ -44,7 +44,7 @@ export const theme = {
     border: {
       light: '#e5e7eb',
       medium: '#d1d5db',
-      focus: '#667eea'
+      focus: '#4299e1'
     }
   },
   spacing: {
@@ -71,6 +71,31 @@ export const theme = {
     mobile: '480px',
     tablet: '768px',
     desktop: '1024px'
+  },
+  typography: {
+    fontFamily: {
+      primary: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+    },
+    fontWeights: {
+      normal: '400',
+      medium: '500',
+      semibold: '600'
+    },
+    fontSizes: {
+      xs: '0.75rem',
+      sm: '0.875rem',
+      base: '1rem',
+      lg: '1.125rem',
+      xl: '1.25rem',
+      '2xl': '1.5rem',
+      '3xl': '1.875rem',
+      '4xl': '2.25rem'
+    },
+    lineHeights: {
+      tight: '1.25',
+      normal: '1.5',
+      relaxed: '1.75'
+    }
   }
 };
 

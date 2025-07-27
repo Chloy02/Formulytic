@@ -89,7 +89,7 @@ export const useAdminData = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/responses', {
+      const response = await fetch('http://localhost:5001/api/responses', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -153,7 +153,7 @@ export const useAdminData = () => {
   const deleteResponse = async (id: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/responses/${id}`, {
+      const response = await fetch(`http://localhost:5001/api/responses/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

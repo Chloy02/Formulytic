@@ -107,17 +107,19 @@ const Username = styled.span`
 `;
 
 const LogoutButton = styled.button`
-  background: #dc3545;
-  color: white;
-  border: none;
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: #c82333;
+    background: #f1f5f9;
+    color: #475569;
+    border-color: #94a3b8;
   }
 
   @media (max-width: 768px) {
