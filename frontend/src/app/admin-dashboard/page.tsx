@@ -600,7 +600,6 @@ export default function AdminDashboardPage() {
             gender: section1?.gender || 'N/A',
             location: section1?.district || 'N/A',
             district: section1?.district || 'N/A',
-            rating: 'N/A', // We don't have rating in the current data structure
             submittedAt: new Date(item.submissionDate || Date.now()).toLocaleDateString(),
             status: item.status || 'submitted',
             answers: item.answers
