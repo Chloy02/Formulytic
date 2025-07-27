@@ -1,0 +1,119 @@
+<svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg">
+  <!-- Karnataka State Districts -->
+  <g>
+    <!-- Northern Districts -->
+    <path d="M50,80 L120,85 L150,120 L130,150 L80,140 L60,110 Z" fill="#e8f4fd" stroke="#ffffff" stroke-width="1.5" class="district" data-district="belgaum"/>
+    <text x="100" y="115" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Belgaum</text>
+    
+    <path d="M120,85 L180,90 L200,130 L150,120 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="dharwad"/>
+    <text x="160" y="110" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Dharwad</text>
+    
+    <path d="M50,40 L120,45 L120,85 L50,80 Z" fill="#e8f4fd" stroke="#ffffff" stroke-width="1.5" class="district" data-district="uttara-kannada"/>
+    <text x="85" y="65" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">U. Kannada</text>
+    
+    <!-- Central Districts -->
+    <path d="M120,120 L200,125 L220,170 L170,165 L150,140 Z" fill="#e8f4fd" stroke="#ffffff" stroke-width="1.5" class="district" data-district="shimoga"/>
+    <text x="170" y="145" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Shimoga</text>
+    
+    <path d="M200,130 L270,135 L290,180 L220,170 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="chitradurga"/>
+    <text x="245" y="155" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Chitradurga</text>
+    
+    <path d="M200,90 L270,95 L270,135 L200,130 Z" fill="#e8f4fd" stroke="#ffffff" stroke-width="1.5" class="district" data-district="davangere"/>
+    <text x="235" y="115" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Davangere</text>
+    
+    <!-- Eastern Districts -->
+    <path d="M270,95 L340,100 L360,140 L270,135 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="bellary"/>
+    <text x="315" y="120" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Bellary</text>
+    
+    <path d="M290,180 L350,185 L370,220 L320,215 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="kolar"/>
+    <text x="330" y="200" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Kolar</text>
+    
+    <path d="M270,135 L340,140 L350,185 L290,180 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="chikkaballapur"/>
+    <text x="310" y="160" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">C.Ballapur</text>
+    
+    <!-- Southern Districts -->
+    <path d="M220,170 L290,175 L320,215 L270,210 L250,185 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="bengaluru"/>
+    <text x="270" y="190" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Bengaluru</text>
+    
+    <path d="M170,165 L220,170 L250,185 L200,180 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="tumakuru"/>
+    <text x="210" y="175" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Tumakuru</text>
+    
+    <path d="M150,200 L200,205 L220,240 L170,235 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="hassan"/>
+    <text x="185" y="220" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Hassan</text>
+    
+    <path d="M170,235 L220,240 L240,280 L190,275 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="mysuru"/>
+    <text x="205" y="255" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Mysuru</text>
+    
+    <path d="M200,205 L250,210 L270,245 L220,240 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="mandya"/>
+    <text x="235" y="225" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Mandya</text>
+    
+    <path d="M250,185 L320,190 L340,225 L270,220 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="ramanagara"/>
+    <text x="295" y="205" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Ramanagara</text>
+    
+    <path d="M240,280 L290,285 L310,320 L260,315 Z" fill="#007bff" stroke="#ffffff" stroke-width="1.5" class="district highlighted" data-district="chamarajanagar"/>
+    <text x="275" y="300" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">C.Nagar</text>
+    
+    <path d="M150,280 L190,285 L210,320 L170,315 Z" fill="#e8f4fd" stroke="#ffffff" stroke-width="1.5" class="district" data-district="kodagu"/>
+    <text x="180" y="300" font-size="10" font-weight="500" fill="#333" text-anchor="middle" font-family="Inter">Kodagu</text>
+  </g>
+  
+  <!-- Title -->
+  <text x="200" y="25" font-size="16" font-weight="600" fill="#1a202c" text-anchor="middle" font-family="Inter">Karnataka - SCSP/TSP Survey Coverage</text>
+  
+  <!-- Legend -->
+  <g transform="translate(30, 350)">
+    <rect x="0" y="0" width="15" height="15" fill="#007bff" opacity="0.8"/>
+    <text x="20" y="12" font-size="12" fill="#333" font-family="Inter">Survey Active Districts</text>
+    
+    <rect x="0" y="25" width="15" height="15" fill="#e8f4fd" stroke="#ffffff" stroke-width="1"/>
+    <text x="20" y="37" font-size="12" fill="#333" font-family="Inter">Other Districts</text>
+  </g>
+  
+  <!-- Statistics -->
+  <g transform="translate(250, 350)">
+    <text x="0" y="12" font-size="14" font-weight="600" fill="#007bff" font-family="Inter">12/30</text>
+    <text x="0" y="30" font-size="10" fill="#666" font-family="Inter">Districts Covered</text>
+  </g>
+  
+  <!-- Additional Impact Stats -->
+  <g transform="translate(30, 390)">
+    <text x="0" y="12" font-size="12" font-weight="600" fill="#28a745" font-family="Inter">2,500+ Families</text>
+    <text x="0" y="28" font-size="10" fill="#666" font-family="Inter">Beneficiaries Surveyed</text>
+  </g>
+  
+  <g transform="translate(250, 390)">
+    <text x="0" y="12" font-size="12" font-weight="600" fill="#fd7e14" font-family="Inter">85% Response</text>
+    <text x="0" y="28" font-size="10" fill="#666" font-family="Inter">Completion Rate</text>
+  </g>
+  
+  <!-- CSS Styles -->
+  <style>
+    .district {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .district:hover {
+      stroke-width: 2;
+    }
+    
+    .district:not(.highlighted):hover {
+      fill: #d1ecf1;
+    }
+    
+    .district.highlighted:hover {
+      fill: #0056b3;
+    }
+    
+    .highlighted {
+      animation: pulse 2s infinite;
+      filter: drop-shadow(0 2px 8px rgba(0, 123, 255, 0.3));
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.8; }
+      50% { opacity: 1; }
+      100% { opacity: 0.8; }
+    }
+  </style>
+</svg>
