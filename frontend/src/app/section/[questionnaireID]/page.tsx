@@ -1,36 +1,22 @@
-// app/section/[id]/page.tsx
+// app/section/[questionnaireID]/page.tsx
 
 import { notFound } from "next/navigation"
-import SectionComponent from "./SectionComponent"
+import SectionView from "./SectionView"
 import { getQuestionById } from "@/lib/api/questions/questions"
 
 interface Props {
-  params: { id: string }
+  params: { questionnaireID: string }
 }
 
 export default async function SectionPage({ params }: Props) {
-  console.log("Prams: ", params);
-  const card = await getQuestionById(params)
+  const idAsNumber = Number(params.questionnaireID)
+  if (isNaN(idAsNumber)) return notFound()
 
+  const card = await getQuestionById(idAsNumber)
   if (!card) return notFound()
 
-  return (
-    <SectionComponent
-      card={{
-        id: card.questionnaireID,
-        title: card.questionnaireTitle,
-        description: card.questionnaireDescription.join(", "),
-        color: `from-${card.color.shade}-${card.color.intensity} to-${card.color.shade}-${Math.min(
-          card.color.intensity,
-          600
-        )}`,
-      }}
-      onSectionSelect={(section) => {
-        console.log("Selected section:", section)
-      }}
-      onBack={() => {
-        // This won't work in server-side component, you can use <Link> or have a client wrapper
-      }}
-    />
-  )
+  // TODO: Replace with real sections
+  const sections = card;
+
+  return <SectionView card={card} sections={sections} />
 }

@@ -32,6 +32,7 @@ export default function QuestionComponent() {
   useEffect(() => {
     const fetchQuestions = async () => {
       const data = await getQuestionHome()
+      console.log(data);
       setCards(data)
     }
     fetchQuestions()

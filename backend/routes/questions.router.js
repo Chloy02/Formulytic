@@ -3,7 +3,7 @@ const { getAllQuestions, getQuestionByIndex, addNewQuestion } = require('../cont
 
 router.get('/', getAllQuestions);
 router.get('/:id', getAllQuestions);
-router.get('id/:index', getQuestionByIndex);
+router.get('/id/:index', getQuestionByIndex);
 router.post('', addNewQuestion);
 router.post('/published', addNewQuestion);
 

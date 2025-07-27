@@ -57,14 +57,15 @@ async function getAllQuestions(req, res) {
 //     }
 // }
 
-async function getQuestionByIndex() {
+async function getQuestionByIndex(req, res) {
     try {
         const url = req.url.split('/').pop();
-        const question = await getQuestionById();
+        const question = await getQuestionById(url);
+        console.log('URL is', url, ' ', question);
 
         return res.status(200).json(question);
     } catch (err) {
-        console.error('Error fetching questions:', error);
+        console.error('Error fetching questions:', err);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 }
