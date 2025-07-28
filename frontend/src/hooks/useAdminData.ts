@@ -91,18 +91,26 @@ export const useAdminData = () => {
       setLoading(true);
       setError(null);
       
+      // Get the auth token from localStorage
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        console.error('No auth token found. Please login as admin.');
+        throw new Error('Authentication required. Please login as admin.');
+      }
+      
       console.log('Attempting to fetch from:', `${ServerLink}/responses/admin`);
       
-      // Try the admin endpoint (no auth required)
+      // Call the admin endpoint with proper authentication
       const response = await fetch(`${ServerLink}/responses/admin`, {
         method: 'GET',
         headers: { 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // 💥 Add authentication header
         }
       });
 
       console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (response.ok) {
         const data = await response.json();
@@ -153,7 +161,7 @@ export const useAdminData = () => {
       setError(errorMessage);
       
       // Fallback to sample data for development
-      console.log('Using fallback sample data');
+      console.log('Using fallback sample data due to error');
       const sampleData: Response[] = [
         {
           id: '1', name: 'John Doe', age: 28, gender: 'Male',
