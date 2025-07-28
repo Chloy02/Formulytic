@@ -20,6 +20,13 @@ const NavbarContainer = styled.nav`
   @media (max-width: 768px) {
     padding: 15px 15px;
   }
+
+  @media (max-width: 600px) {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
 `;
 
 const NavBrand = styled(Link)`
@@ -44,7 +51,9 @@ const NavLinks = styled.ul`
   padding: 0;
 
   @media (max-width: 600px) {
-    display: none;
+    flex-direction: row;
+    gap: 15px;
+    margin-left: auto;
   }
 `;
 
@@ -53,6 +62,11 @@ const NavLinkItem = styled.li`
 
   @media (max-width: 768px) {
     margin-left: 15px;
+  }
+
+  @media (max-width: 600px) {
+    margin-left: 15px;
+    margin-bottom: 0;
   }
 `;
 
@@ -64,6 +78,10 @@ const NavLinkA = styled(Link)`
 
   &:hover {
     color: #007bff;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 14px;
   }
 `;
 
@@ -128,7 +146,6 @@ const Navbar2 = () => {
           </NavLinkItem>
         ) : (
           <>
-            <NavLinkItem><NavLinkA href="/signin">Sign In</NavLinkA></NavLinkItem>
             <NavLinkItem><NavLinkA href="/signup">Sign Up</NavLinkA></NavLinkItem>
             <NavLinkItem><NavLinkA href="/admin-signup">Admin</NavLinkA></NavLinkItem>
           </>

@@ -170,8 +170,10 @@ export default function SignInPage() {
       } else {
         router.push('/questionnaire');
       }
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'An unexpected error occurred. Please try again.';
+    } catch (err) {
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : 'An unexpected error occurred. Please try again.';
       setError(errorMessage);
       console.error('Login failed:', errorMessage);
     }
@@ -185,7 +187,7 @@ export default function SignInPage() {
           <CardHeader>
             <CardTitle>Sign in</CardTitle>
             <SignUpLinkText>
-              Don't have an account? <Link href="/signup">Sign up</Link>
+              Don&apos;t have an account? <Link href="/signup">Sign up</Link>
             </SignUpLinkText>
           </CardHeader>
 

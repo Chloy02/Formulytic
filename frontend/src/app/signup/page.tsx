@@ -6,6 +6,7 @@ import Navbar2 from '../../components/Navbar2';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { API_CONFIG } from '../../config/api';
 
 // Styled Components for the Sign-Up Page
 
@@ -169,7 +170,7 @@ export default function SignUpPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/auth/register', {
+      await axios.post(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REGISTER}`, {
         username,
         email,
         password,

@@ -25,31 +25,168 @@ const Header = styled.div`
 
 const Title = styled.h1`
   color: #1a202c;
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 2.8rem;
+  font-weight: 800;
   margin-bottom: 10px;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+
+  @media (max-width: 768px) {
+    font-size: 2.2rem;
+  }
 `;
 
 const Subtitle = styled.p`
   color: #666;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin-bottom: 20px;
+  line-height: 1.6;
+  font-weight: 400;
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
+`;
+
+const TimeEstimate = styled.div`
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #e6f3ff 0%, #cce7ff 100%);
+  color: #1e40af;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 25px;
+  border: 1px solid #bfdbfe;
+
+  &::before {
+    content: '⏱️';
+    margin-right: 8px;
+    font-size: 1rem;
+  }
 `;
 
 const ProgressBar = styled.div`
   width: 100%;
-  height: 8px;
+  height: 16px;
   background-color: #e2e8f0;
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
   margin: 20px 0;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 `;
 
 const ProgressFill = styled.div<{ progress: number }>`
   height: 100%;
-  background: linear-gradient(90deg, #4299e1, #3182ce);
+  background: linear-gradient(90deg, #4299e1, #3182ce, #2b6cb0);
   width: ${props => props.progress}%;
-  transition: width 0.3s ease;
+  transition: width 0.5s ease;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+`;
+
+const ProgressSteps = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+  position: relative;
+`;
+
+const ProgressStep = styled.div<{ isActive: boolean; isCompleted: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 8px 4px;
+  border-radius: 8px;
+  
+  &:hover {
+    background-color: rgba(66, 153, 225, 0.05);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 60%;
+    right: -40%;
+    height: 2px;
+    background-color: ${props => props.isCompleted ? '#48bb78' : '#e2e8f0'};
+    z-index: 1;
+  }
+`;
+
+const StepNumber = styled.div<{ isActive: boolean; isCompleted: boolean }>`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: ${props => 
+    props.isCompleted ? '#48bb78' : 
+    props.isActive ? '#3182ce' : '#e2e8f0'
+  };
+  color: ${props => 
+    props.isCompleted || props.isActive ? 'white' : '#a0aec0'
+  };
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+  box-shadow: ${props => 
+    props.isActive ? '0 0 0 4px rgba(66, 153, 225, 0.2)' : 
+    props.isCompleted ? '0 0 0 4px rgba(72, 187, 120, 0.2)' : 'none'
+  };
+  
+  ${ProgressStep}:hover & {
+    transform: scale(1.1);
+    box-shadow: ${props => 
+      props.isCompleted ? '0 0 0 4px rgba(72, 187, 120, 0.3)' :
+      '0 0 0 4px rgba(66, 153, 225, 0.15)'
+    };
+  }
+`;
+
+const StepLabel = styled.span<{ isActive: boolean }>`
+  font-size: 0.75rem;
+  color: ${props => props.isActive ? '#3182ce' : '#666'};
+  font-weight: ${props => props.isActive ? '600' : '400'};
+  margin-top: 8px;
+  text-align: center;
+  max-width: 80px;
+  transition: all 0.2s ease;
+  
+  ${ProgressStep}:hover & {
+    color: #3182ce;
+    font-weight: 500;
+  }
 `;
 
 const FormContainer = styled.div`
@@ -62,91 +199,303 @@ const FormContainer = styled.div`
 `;
 
 const SectionHeader = styled.div`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-left: 4px solid #667eea;
+  color: #2d3748;
   padding: 20px 30px;
   margin-bottom: 0;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    opacity: 0.3;
+  }
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.75rem;
+  font-weight: 700;
   margin: 0;
+  color: #2d3748;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const SectionContent = styled.div`
-  padding: 30px;
+  padding: 40px;
+  background: #ffffff;
+`;
+
+const QuestionCard = styled.div`
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+  position: relative;
+  animation: slideInUp 0.5s ease-out;
+  
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    transform: translateY(-1px);
+    border-color: #e2e8f0;
+  }
+
+  &:focus-within {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    border-color: #4299e1;
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  h4 {
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(90deg, #4299e1, #3182ce);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+  }
+
+  &:hover h4::after {
+    width: 60px;
+  }
+`;
+
+const QuestionGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 32px;
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 25px;
+  margin-bottom: 28px;
+  position: relative;
+`;
+
+const FieldSuccess = styled.div`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #48bb78;
+  font-size: 18px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  
+  &.show {
+    opacity: 1;
+  }
+`;
+
+const SectionTransition = styled.div`
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.4s ease-in-out;
+  
+  &.fade-enter {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  
+  &.fade-exit {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+`;
+
+const LoadingDots = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  
+  span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #4299e1;
+    border-radius: 50%;
+    animation: loadingDots 1.4s ease-in-out infinite both;
+    
+    &:nth-child(1) { animation-delay: -0.32s; }
+    &:nth-child(2) { animation-delay: -0.16s; }
+    &:nth-child(3) { animation-delay: 0s; }
+  }
+  
+  @keyframes loadingDots {
+    0%, 80%, 100% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+`;
+
+const BackButton = styled.button`
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: #718096;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background-color: #f7fafc;
+    border-color: #cbd5e0;
+    color: #4a5568;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.1);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 const Label = styled.label`
   display: block;
-  font-weight: 500;
+  font-weight: 600;
   color: #2d3748;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: 0.025em;
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ isValid?: boolean }>`
   width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  padding: 14px 40px 14px 16px;
+  border: 2px solid ${props => props.isValid ? '#48bb78' : '#e2e8f0'};
   border-radius: 8px;
   font-size: 1rem;
   color: #2d3748;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   box-sizing: border-box;
+  line-height: 1.5;
+  background-color: #ffffff;
+  position: relative;
+
+  &::placeholder {
+    color: #a0aec0;
+    font-weight: 400;
+    opacity: 0.8;
+  }
 
   &:focus {
     outline: none;
-    border-color: #4299e1;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    border-color: ${props => props.isValid ? '#38a169' : '#4299e1'};
+    box-shadow: 0 0 0 3px ${props => props.isValid ? 'rgba(72, 187, 120, 0.1)' : 'rgba(66, 153, 225, 0.1)'};
+    background-color: #f7fafc;
+  }
+
+  &:hover:not(:focus) {
+    border-color: ${props => props.isValid ? '#38a169' : '#cbd5e0'};
   }
 `;
 
-const Select = styled.select`
+const Select = styled.select<{ isValid?: boolean }>`
   width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  padding: 14px 40px 14px 16px;
+  border: 2px solid ${props => props.isValid ? '#48bb78' : '#e2e8f0'};
   border-radius: 8px;
   font-size: 1rem;
   background-color: white;
   color: #2d3748;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   box-sizing: border-box;
+  line-height: 1.5;
+  cursor: pointer;
 
   &:focus {
     outline: none;
-    border-color: #4299e1;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    border-color: ${props => props.isValid ? '#38a169' : '#4299e1'};
+    box-shadow: 0 0 0 3px ${props => props.isValid ? 'rgba(72, 187, 120, 0.1)' : 'rgba(66, 153, 225, 0.1)'};
+    background-color: #f7fafc;
+  }
+
+  &:hover:not(:focus) {
+    border-color: ${props => props.isValid ? '#38a169' : '#cbd5e0'};
   }
 
   option {
     color: #2d3748;
     background-color: white;
+    padding: 8px;
   }
 `;
 
-const TextArea = styled.textarea`
+const TextArea = styled.textarea<{ isValid?: boolean }>`
   width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  padding: 14px 40px 14px 16px;
+  border: 2px solid ${props => props.isValid ? '#48bb78' : '#e2e8f0'};
   border-radius: 8px;
   font-size: 1rem;
   color: #2d3748;
-  min-height: 100px;
+  min-height: 120px;
   resize: vertical;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   box-sizing: border-box;
   font-family: inherit;
+  line-height: 1.6;
+
+  &::placeholder {
+    color: #a0aec0;
+    font-weight: 400;
+    opacity: 0.8;
+  }
 
   &:focus {
     outline: none;
-    border-color: #4299e1;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    border-color: ${props => props.isValid ? '#38a169' : '#4299e1'};
+    box-shadow: 0 0 0 3px ${props => props.isValid ? 'rgba(72, 187, 120, 0.1)' : 'rgba(66, 153, 225, 0.1)'};
+    background-color: #f7fafc;
+  }
+
+  &:hover:not(:focus) {
+    border-color: ${props => props.isValid ? '#38a169' : '#cbd5e0'};
   }
 `;
 
@@ -158,52 +507,68 @@ const CheckboxGroup = styled.div`
 
 const CheckboxItem = styled.label`
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 12px;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
-  transition: background-color 0.2s;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
   color: #2d3748;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  min-height: 48px; /* Touch-friendly target */
 
   &:hover {
     background-color: #f7fafc;
   }
+
+  &:active {
+    background-color: #edf2f7;
+  }
 `;
 
 const Checkbox = styled.input.attrs({ type: 'checkbox' })`
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
+  margin-top: 2px;
+  flex-shrink: 0;
 `;
 
 const RadioGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 `;
 
 const RadioItem = styled.label`
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 12px;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
-  transition: background-color 0.2s;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
   color: #2d3748;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  min-height: 48px; /* Touch-friendly target */
 
   &:hover {
     background-color: #f7fafc;
   }
+
+  &:active {
+    background-color: #edf2f7;
+  }
 `;
 
 const Radio = styled.input.attrs({ type: 'radio' })`
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
+  margin-top: 2px;
+  flex-shrink: 0;
 `;
 
 const ButtonGroup = styled.div`
@@ -530,6 +895,114 @@ export default function QuestionnairePage() {
   const { isLoggedIn, user } = useAuth();
   const router = useRouter();
   const [currentSection, setCurrentSection] = useState(1);
+  const [validFields, setValidFields] = useState(new Set());
+
+  // Helper function to check if a field has a valid value
+  const isFieldValid = (value: string | string[] | null | undefined) => {
+    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === 'string') return value.trim().length > 0;
+    return value !== null && value !== undefined;
+  };
+
+  // Update form data and track valid fields
+  const updateFormData = (key: string, value: string | string[]) => {
+    setFormData(prev => ({ ...prev, [key]: value }));
+    
+    const newValidFields = new Set(validFields);
+    if (isFieldValid(value)) {
+      newValidFields.add(key);
+    } else {
+      newValidFields.delete(key);
+    }
+    setValidFields(newValidFields);
+  };
+
+  // Navigate to specific section
+  const navigateToSection = (sectionNumber: number) => {
+    if (sectionNumber >= 1 && sectionNumber <= 6) {
+      setCurrentSection(sectionNumber);
+    }
+  };
+
+  // Section validation functions
+  const validateSection1 = (data: FormData['section1']) => {
+    const requiredFields = [
+      'respondentName', 'district', 'age', 'gender', 'education',
+      'employmentBefore', 'occupationBefore', 'incomeBefore', 
+      'receivedBenefit', 'casteCategory', 'aadhaarProvided'
+    ];
+    
+    const requiredArrayFields = ['schemes'];
+    
+    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data])) &&
+           requiredArrayFields.every(field => isFieldValid(data[field as keyof typeof data]));
+  };
+
+  const validateSection2 = (data: FormData['section2']) => {
+    const requiredFields = [
+      'occupationAfter', 'incomeAfter', 'socioEconomicStatusBefore',
+      'financialSecurityScale', 'spouseEmploymentAfter', 'socioEconomicStatusAfter',
+      'socialLifeImpact', 'fundDecisionMaker', 'financialDependencyReduced',
+      'startedNewLivelihood'
+    ];
+    
+    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
+  };
+
+  const validateSection3 = (data: FormData['section3']) => {
+    const requiredFields = [
+      'progressiveChangeScale', 'feltSociallyAccepted', 'discriminationReduction',
+      'feltMoreSecure', 'livingWithInLaws', 'filedPoliceComplaint',
+      'supportFromNgosOrOfficials'
+    ];
+    
+    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
+  };
+
+  const validateSection4 = (data: FormData['section4']) => {
+    const requiredFields = [
+      'schemeAwarenessSource', 'officialsSupportive', 'applicationDifficulty',
+      'timeToReceiveBenefit', 'disbursementEffectiveness', 'awareOfSchemeDetails',
+      'applicationStatus', 'qualityOfInformation'
+    ];
+    
+    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
+  };
+
+  const validateSection5 = (data: FormData['section5']) => {
+    const requiredFields = [
+      'schemeSuccessCasteDiscrimination', 'schemeSuccessSecurity',
+      'shouldReviseIncentive', 'shouldContinueScheme', 'encourageIntercasteMarriage',
+      'schemeHelpedReduceDiscriminationInArea'
+    ];
+    
+    const requiredArrayFields = ['areasForImprovement', 'experiencedBenefits', 'futureSupportExpected'];
+    
+    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data])) &&
+           requiredArrayFields.every(field => isFieldValid(data[field as keyof typeof data]));
+  };
+
+  const validateSection6 = (data: FormData['section6_DevadasiChildren']) => {
+    const requiredFields = [
+      'childAgeAtMarriage', 'schemeImprovedDignity', 'treatmentDifference',
+      'spouseCaste', 'ownsPropertyNow', 'inLawAcceptabilityScale', 'facedStigma'
+    ];
+    
+    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
+  };
+
+  // Check if a section is completed
+  const isSectionCompleted = (sectionNumber: number) => {
+    switch (sectionNumber) {
+      case 1: return validateSection1(formData.section1);
+      case 2: return validateSection2(formData.section2);
+      case 3: return validateSection3(formData.section3);
+      case 4: return validateSection4(formData.section4);
+      case 5: return validateSection5(formData.section5);
+      case 6: return validateSection6(formData.section6_DevadasiChildren);
+      default: return false;
+    }
+  };
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -645,7 +1118,7 @@ export default function QuestionnairePage() {
         setSuccess('Draft loaded successfully!');
         setTimeout(() => setSuccess(''), 3000);
       }
-    } catch (error) {
+    } catch {
       // No draft found, continue with empty form
       console.log('No draft found');
     }
@@ -663,7 +1136,8 @@ export default function QuestionnairePage() {
 
   const handleCheckboxChange = (section: keyof FormData, field: string, value: string, checked: boolean) => {
     setFormData(prev => {
-      const currentArray = (prev[section] as any)[field] as string[] || [];
+      const sectionData = prev[section] as Record<string, unknown>;
+      const currentArray = (sectionData[field] as string[]) || [];
       const newArray = checked
         ? [...currentArray, value]
         : currentArray.filter((item: string) => item !== value);
@@ -692,7 +1166,7 @@ export default function QuestionnairePage() {
       );
       setSuccess('Draft saved successfully!');
       setTimeout(() => setSuccess(''), 3000);
-    } catch (error: any) {
+    } catch {
       setError('Failed to save draft. Please try again.');
       setTimeout(() => setError(''), 3000);
     } finally {
@@ -716,7 +1190,7 @@ export default function QuestionnairePage() {
       setTimeout(() => {
         router.push('/');
       }, 2000);
-    } catch (error: any) {
+    } catch {
       setError('Failed to submit response. Please try again.');
       setTimeout(() => setError(''), 3000);
     } finally {
@@ -740,7 +1214,15 @@ export default function QuestionnairePage() {
     router.push('/');
   };
 
-  const progress = (currentSection / 6) * 100;
+  // Calculate progress based on completed sections plus current section progress
+  const completedSections = [1, 2, 3, 4, 5, 6].filter(section => isSectionCompleted(section)).length;
+  const progress = (completedSections / 6) * 100;
+
+  // Recalculate validation whenever form data changes
+  React.useEffect(() => {
+    // Force re-render to update checkmarks when form data changes
+    // This ensures the validation state is always current
+  }, [formData]);
 
   if (!isLoggedIn) {
     return null;
@@ -749,18 +1231,46 @@ export default function QuestionnairePage() {
   return (
     <PageContainer>
       <Header>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-          <Button 
-            variant="secondary" 
-            onClick={backToHome}
-            style={{ padding: '8px 16px', fontSize: '0.9rem' }}
-          >
-            ← Back to Home
-          </Button>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
+          <BackButton onClick={backToHome}>
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+            </svg>
+            Back to Home
+          </BackButton>
           <div></div>
         </div>
         <Title>SCSP/TSP Impact Evaluation Questionnaire</Title>
         <Subtitle>Your responses will help us improve these important social programs</Subtitle>
+        <TimeEstimate>Takes less than 8 minutes</TimeEstimate>
+        
+        <ProgressSteps>
+          {[1, 2, 3, 4, 5, 6].map((step) => (
+            <ProgressStep 
+              key={step}
+              isActive={currentSection === step}
+              isCompleted={isSectionCompleted(step)}
+              onClick={() => navigateToSection(step)}
+              title={`Go to section ${step}`}
+            >
+              <StepNumber 
+                isActive={currentSection === step}
+                isCompleted={isSectionCompleted(step)}
+              >
+                {isSectionCompleted(step) ? '✓' : step}
+              </StepNumber>
+              <StepLabel isActive={currentSection === step}>
+                {step === 1 && 'Basic Info'}
+                {step === 2 && 'Demographics'}
+                {step === 3 && 'Scheme Details'}
+                {step === 4 && 'Benefits'}
+                {step === 5 && 'Impact'}
+                {step === 6 && 'Feedback'}
+              </StepLabel>
+            </ProgressStep>
+          ))}
+        </ProgressSteps>
+        
         <ProgressBar>
           <AnimatedProgressFill progress={progress} />
         </ProgressBar>
@@ -792,68 +1302,122 @@ export default function QuestionnairePage() {
               <ModernSectionDesc>Demographics and background</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
-              <FormGroup>
-                <Label>Full Name</Label>
-                <Input
-                  type="text"
-                  value={formData.section1.respondentName}
-                  onChange={(e) => handleInputChange('section1', 'respondentName', e.target.value)}
-                  placeholder="Enter your full name"
-                />
-              </FormGroup>
+              <div style={{
+                background: '#f0f7ff',
+                border: '1px solid #bfdbfe',
+                borderRadius: '8px',
+                padding: '20px',
+                marginBottom: '30px',
+                fontSize: '0.95rem',
+                lineHeight: '1.6'
+              }}>
+                <h3 style={{ margin: '0 0 15px 0', color: '#1e40af', fontSize: '1.1rem' }}>
+                  About This Survey
+                </h3>
+                <p style={{ margin: '0 0 10px 0', color: '#000000' }}>
+                  This survey evaluates the effectiveness of government welfare schemes in Karnataka:
+                </p>
+                <ul style={{ margin: '0', paddingLeft: '20px', color: '#000000' }}>
+                  <li><strong>SCSP (Scheduled Caste Sub Plan)</strong> - Programs for Scheduled Caste communities</li>
+                  <li><strong>TSP (Tribal Sub Plan)</strong> - Programs for Scheduled Tribe communities</li>
+                </ul>
+                <p style={{ margin: '15px 0 0 0', fontSize: '0.9rem', color: '#000000' }}>
+                  Your responses will help improve these welfare programs and their impact on community development.
+                </p>
+              </div>
 
-              <FormGroup>
-                <Label>District/Taluk</Label>
-                <Input
-                  type="text"
-                  value={formData.section1.district}
-                  onChange={(e) => handleInputChange('section1', 'district', e.target.value)}
-                  placeholder="Enter your district and taluk"
-                />
-              </FormGroup>
+              <QuestionGroup>
+                <QuestionCard>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Personal Information
+                  </h4>
+                  <FormGroup>
+                    <Label>Full Name</Label>
+                    <Input
+                      type="text"
+                      value={formData.section1.respondentName}
+                      onChange={(e) => handleInputChange('section1', 'respondentName', e.target.value)}
+                      placeholder="Enter your full name"
+                    />
+                  </FormGroup>
 
-              <FormGroup>
-                <Label>Age</Label>
-                <Input
-                  type="number"
-                  value={formData.section1.age}
-                  onChange={(e) => handleInputChange('section1', 'age', e.target.value)}
-                  placeholder="Enter your age"
-                />
-              </FormGroup>
+                  <FormGroup>
+                    <Label>Age</Label>
+                    <Input
+                      type="number"
+                      value={formData.section1.age}
+                      onChange={(e) => handleInputChange('section1', 'age', e.target.value)}
+                      placeholder="Enter your age"
+                    />
+                  </FormGroup>
+                </QuestionCard>
 
-              <FormGroup>
-                <Label>Gender</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="gender"
-                      value="male"
-                      checked={formData.section1.gender === 'male'}
-                      onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
+                <QuestionCard>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Location & Demographics
+                  </h4>
+                  <FormGroup>
+                    <Label>District/Taluk</Label>
+                    <Input
+                      type="text"
+                      value={formData.section1.district}
+                      onChange={(e) => handleInputChange('section1', 'district', e.target.value)}
+                      placeholder="Enter your district and taluk"
                     />
-                    Male
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="gender"
-                      value="female"
-                      checked={formData.section1.gender === 'female'}
-                      onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
-                    />
-                    Female
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="gender"
-                      value="other"
-                      checked={formData.section1.gender === 'other'}
-                      onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
-                    />
-                    Other
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
+                  </FormGroup>
+
+                  <FormGroup>
+                    <Label>Gender</Label>
+                    <RadioGroup>
+                      <RadioItem>
+                        <Radio
+                          name="gender"
+                          value="male"
+                          checked={formData.section1.gender === 'male'}
+                          onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
+                        />
+                        Male
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="gender"
+                          value="female"
+                          checked={formData.section1.gender === 'female'}
+                          onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
+                        />
+                        Female
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="gender"
+                          value="other"
+                          checked={formData.section1.gender === 'other'}
+                          onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
+                        />
+                        Other
+                      </RadioItem>
+                    </RadioGroup>
+                  </FormGroup>
+                </QuestionCard>
+
+                <QuestionCard>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Background Information
+                  </h4>
+                  <FormGroup>
+                    <Label>Caste</Label>
+                    <Select
+                      value={formData.section1.subCaste}
+                      onChange={(e) => handleInputChange('section1', 'subCaste', e.target.value)}
+                    >
+                      <option value="">Select caste</option>
+                      <option value="sc">Scheduled Caste (SC)</option>
+                      <option value="st">Scheduled Tribe (ST)</option>
+                      <option value="obc">Other Backward Classes (OBC)</option>
+                      <option value="general">General</option>
+                      <option value="others">Others</option>
+                    </Select>
+                  </FormGroup>
 
               <FormGroup>
                 <Label>Education Level</Label>
@@ -869,7 +1433,12 @@ export default function QuestionnairePage() {
                   <option value="others">Others</option>
                 </Select>
               </FormGroup>
+                </QuestionCard>
 
+                <QuestionCard>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Employment & Income
+                  </h4>
               <FormGroup>
                 <Label>Were you employed before receiving the scheme benefits?</Label>
                 <RadioGroup>
@@ -1076,6 +1645,8 @@ export default function QuestionnairePage() {
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
+                </QuestionCard>
+              </QuestionGroup>
             </SectionContent>
           </>
         )}
@@ -1088,32 +1659,42 @@ export default function QuestionnairePage() {
               <ModernSectionDesc>Changes after scheme</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
-              <FormGroup>
-                <Label>What is your current occupation?</Label>
-                <Input
-                  type="text"
-                  value={formData.section2.occupationAfter}
-                  onChange={(e) => handleInputChange('section2', 'occupationAfter', e.target.value)}
-                  placeholder="Enter your current occupation"
-                />
-              </FormGroup>
+              <QuestionGroup>
+                <QuestionCard>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Current Employment Status
+                  </h4>
+                  <FormGroup>
+                    <Label>What is your current occupation?</Label>
+                    <Input
+                      type="text"
+                      value={formData.section2.occupationAfter}
+                      onChange={(e) => handleInputChange('section2', 'occupationAfter', e.target.value)}
+                      placeholder="Enter your current occupation"
+                    />
+                  </FormGroup>
 
-              <FormGroup>
-                <Label>Current Income Level</Label>
-                <Select
-                  value={formData.section2.incomeAfter}
-                  onChange={(e) => handleInputChange('section2', 'incomeAfter', e.target.value)}
-                >
-                  <option value="">Select current income level</option>
-                  <option value="below_50k">Below ₹50,000</option>
-                  <option value="50k_1l">₹50,000 - ₹1,00,000</option>
-                  <option value="1l_2l">₹1,00,000 - ₹2,00,000</option>
-                  <option value="2l_3l">₹2,00,000 - ₹3,00,000</option>
-                  <option value="3l_5l">₹3,00,000 - ₹5,00,000</option>
-                  <option value="above_5l">Above ₹5,00,000</option>
-                </Select>
-              </FormGroup>
+                  <FormGroup>
+                    <Label>Current Income Level</Label>
+                    <Select
+                      value={formData.section2.incomeAfter}
+                      onChange={(e) => handleInputChange('section2', 'incomeAfter', e.target.value)}
+                    >
+                      <option value="">Select current income level</option>
+                      <option value="below_50k">Below ₹50,000</option>
+                      <option value="50k_1l">₹50,000 - ₹1,00,000</option>
+                      <option value="1l_2l">₹1,00,000 - ₹2,00,000</option>
+                      <option value="2l_3l">₹2,00,000 - ₹3,00,000</option>
+                      <option value="3l_5l">₹3,00,000 - ₹5,00,000</option>
+                      <option value="above_5l">Above ₹5,00,000</option>
+                    </Select>
+                  </FormGroup>
+                </QuestionCard>
 
+                <QuestionCard>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Quality of Life Assessment
+                  </h4>
               <FormGroup>
                 <Label>How would you describe your socio-economic status before the scheme?</Label>
                 <Select
@@ -1305,6 +1886,8 @@ export default function QuestionnairePage() {
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
+                </QuestionCard>
+              </QuestionGroup>
             </SectionContent>
           </>
         )}
@@ -1317,9 +1900,14 @@ export default function QuestionnairePage() {
               <ModernSectionDesc>Social acceptance and challenges</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
-              <FormGroup>
-                <Label>On a scale of 1-5, how much progressive change have you experienced? (1=No Change, 5=Significant Change)</Label>
-                <Select
+              <QuestionGroup>
+                <QuestionCard>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Social Progress Assessment
+                  </h4>
+                  <FormGroup>
+                    <Label>On a scale of 1-5, how much progressive change have you experienced? (1=No Change, 5=Significant Change)</Label>
+                    <Select
                   value={formData.section3.progressiveChangeScale}
                   onChange={(e) => handleInputChange('section3', 'progressiveChangeScale', e.target.value)}
                 >
@@ -1582,6 +2170,8 @@ export default function QuestionnairePage() {
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
+                </QuestionCard>
+              </QuestionGroup>
             </SectionContent>
           </>
         )}
@@ -1594,12 +2184,17 @@ export default function QuestionnairePage() {
               <ModernSectionDesc>Experience with the process</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
-              <FormGroup>
-                <Label>How did you become aware of the scheme?</Label>
-                <Select
-                  value={formData.section4.schemeAwarenessSource}
-                  onChange={(e) => handleInputChange('section4', 'schemeAwarenessSource', e.target.value)}
-                >
+              <QuestionGroup>
+                <QuestionCard>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Scheme Awareness & Access
+                  </h4>
+                  <FormGroup>
+                    <Label>How did you become aware of the scheme?</Label>
+                    <Select
+                      value={formData.section4.schemeAwarenessSource}
+                      onChange={(e) => handleInputChange('section4', 'schemeAwarenessSource', e.target.value)}
+                    >
                   <option value="">Select source</option>
                   <option value="government_officials">Government Officials</option>
                   <option value="ngo">NGO</option>
@@ -1809,6 +2404,8 @@ export default function QuestionnairePage() {
                   <option value="very_poor">Very Poor</option>
                 </Select>
               </FormGroup>
+                </QuestionCard>
+              </QuestionGroup>
             </SectionContent>
           </>
         )}
@@ -1821,19 +2418,24 @@ export default function QuestionnairePage() {
               <ModernSectionDesc>Suggestions and improvements</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
-              <FormGroup>
-                <Label>Do you think the scheme is successful in reducing caste-based discrimination?</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="schemeSuccessCasteDiscrimination"
-                      value="very_successful"
-                      checked={formData.section5.schemeSuccessCasteDiscrimination === 'very_successful'}
-                      onChange={(e) => handleInputChange('section5', 'schemeSuccessCasteDiscrimination', e.target.value)}
-                    />
-                    Very Successful
-                  </RadioItem>
-                  <RadioItem>
+              <QuestionGroup>
+                <QuestionCard>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Scheme Impact Assessment
+                  </h4>
+                  <FormGroup>
+                    <Label>Do you think the scheme is successful in reducing caste-based discrimination?</Label>
+                    <RadioGroup>
+                      <RadioItem>
+                        <Radio
+                          name="schemeSuccessCasteDiscrimination"
+                          value="very_successful"
+                          checked={formData.section5.schemeSuccessCasteDiscrimination === 'very_successful'}
+                          onChange={(e) => handleInputChange('section5', 'schemeSuccessCasteDiscrimination', e.target.value)}
+                        />
+                        Very Successful
+                      </RadioItem>
+                      <RadioItem>
                     <Radio
                       name="schemeSuccessCasteDiscrimination"
                       value="somewhat_successful"
@@ -2144,6 +2746,8 @@ export default function QuestionnairePage() {
                   ))}
                 </CheckboxGroup>
               </FormGroup>
+                </QuestionCard>
+              </QuestionGroup>
             </SectionContent>
           </>
         )}
@@ -2157,22 +2761,27 @@ export default function QuestionnairePage() {
             </ModernSectionHeader>
             <SectionContent>
               <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f0f4f8', borderRadius: '8px', borderLeft: '4px solid #4299e1' }}>
-                <strong>Note:</strong> This section is specifically for children of Devadasi women who have benefited from marriage incentive schemes. If this doesn't apply to you, you can skip this section.
+                <strong>Note:</strong> This section is specifically for children of Devadasi women who have benefited from marriage incentive schemes. If this doesn&apos;t apply to you, you can skip this section.
               </div>
 
-              <FormGroup>
-                <Label>At what age did you get married?</Label>
-                <Input
-                  type="number"
-                  value={formData.section6_DevadasiChildren.childAgeAtMarriage}
-                  onChange={(e) => handleInputChange('section6_DevadasiChildren', 'childAgeAtMarriage', e.target.value)}
-                  placeholder="Enter your age at marriage"
-                />
-              </FormGroup>
+              <QuestionGroup>
+                <QuestionCard>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+                    Marriage & Social Impact
+                  </h4>
+                  <FormGroup>
+                    <Label>At what age did you get married?</Label>
+                    <Input
+                      type="number"
+                      value={formData.section6_DevadasiChildren.childAgeAtMarriage}
+                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'childAgeAtMarriage', e.target.value)}
+                      placeholder="Enter your age at marriage"
+                    />
+                  </FormGroup>
 
-              <FormGroup>
-                <Label>Has the scheme improved your dignity and social standing?</Label>
-                <RadioGroup>
+                  <FormGroup>
+                    <Label>Has the scheme improved your dignity and social standing?</Label>
+                    <RadioGroup>
                   <RadioItem>
                     <Radio
                       name="schemeImprovedDignity"
@@ -2213,7 +2822,7 @@ export default function QuestionnairePage() {
               </FormGroup>
 
               <FormGroup>
-                <Label>Do you feel you are treated differently because of your mother's background?</Label>
+                <Label>Do you feel you are treated differently because of your mother&apos;s background?</Label>
                 <RadioGroup>
                   <RadioItem>
                     <Radio
@@ -2255,7 +2864,7 @@ export default function QuestionnairePage() {
               </FormGroup>
 
               <FormGroup>
-                <Label>What is your spouse's caste background?</Label>
+                <Label>What is your spouse&apos;s caste background?</Label>
                 <Select
                   value={formData.section6_DevadasiChildren.spouseCaste}
                   onChange={(e) => handleInputChange('section6_DevadasiChildren', 'spouseCaste', e.target.value)}
@@ -2359,6 +2968,8 @@ export default function QuestionnairePage() {
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
+                </QuestionCard>
+              </QuestionGroup>
             </SectionContent>
           </>
         )}

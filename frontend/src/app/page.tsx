@@ -7,6 +7,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Navbar2 from '../components/Navbar2';
 import { useAuth } from '../contexts/AuthContext';
+import KarnatakaMap from '../components/KarnatakaMap';
+// import QuestionComponent from './QuestionComponent/QuestionComponent';
+// import QuestionnairePage from './QuestionComponent/QuestionnairePage';
 
 // --- Styled Components ---
 
@@ -29,11 +32,47 @@ const HeroSection = styled.section`
   align-items: center;
   padding: 60px 30px;
   width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   box-sizing: border-box;
+  gap: 60px;
+
+  @media (max-width: 1024px) {
+    gap: 40px;
+    padding: 50px 25px;
+  }
 
   @media (max-width: 768px) {
     flex-direction: column;
+<<<<<<< HEAD
     padding: 40px 15px;
+=======
+    padding: 30px 20px;
+    gap: 40px;
+    position: relative;
+    min-height: auto;
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px 15px;
+    gap: 30px;
+  }
+`;
+
+const HeroContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  max-width: 600px;
+
+  @media (max-width: 768px) {
+    text-align: center;
+    z-index: 2;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+>>>>>>> da2e693b6b273f2de8e33cf65cbf0cd9016eb0e6
   }
 `;
 
@@ -137,12 +176,18 @@ const MainHeading = styled.h1`
   }
 
   @media (max-width: 768px) {
-    font-size: 36px;
-    margin-bottom: 15px;
+    font-size: 32px;
+    margin-bottom: 20px;
+    line-height: 1.3;
   }
 
   @media (max-width: 480px) {
-    font-size: 28px;
+    font-size: 26px;
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 24px;
   }
 `;
 
@@ -161,11 +206,18 @@ const SubText = styled.p`
 
   @media (max-width: 768px) {
     font-size: 16px;
-    margin-bottom: 30px;
-    padding: 0;
+    margin-bottom: 35px;
+    padding: 0 10px;
+    line-height: 1.7;
   }
 
   @media (max-width: 480px) {
+    font-size: 15px;
+    margin-bottom: 30px;
+    padding: 0 5px;
+  }
+
+  @media (max-width: 360px) {
     font-size: 14px;
   }
 `;
@@ -179,62 +231,96 @@ const HeroButtons = styled.div`
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 300px;
+    max-width: 100%;
+    margin-bottom: 35px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 12px;
+    margin-bottom: 30px;
   }
 `;
 
 const PrimaryButton = styled(Link)`
-  background-color: #007bff;
-  color: #fff;
-  padding: 15px 30px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+  color: white;
+  padding: 18px 35px;
   font-size: 18px;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-
-  &:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-  }
-
-  svg {
-    margin-left: 10px;
-  }
-
-  @media (max-width: 768px) {
-    width: 100%;
-    padding: 12px 25px;
-    font-size: 16px;
-  }
-`;
-
-const SecondaryButton = styled(Link)`
-  background-color: #e9ecef;
-  color: #333;
-  padding: 15px 30px;
-  font-size: 18px;
+  font-weight: 700;
   text-decoration: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
-  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 
   &:hover {
-    background-color: #dee2e6;
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    margin-left: 12px;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover svg {
+    transform: translateX(3px);
   }
 
   @media (max-width: 768px) {
     width: 100%;
-    padding: 12px 25px;
+    padding: 16px 30px;
     font-size: 16px;
+    text-transform: none;
+    letter-spacing: 0.2px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px 25px;
+    font-size: 15px;
+  }
+`;
+
+const SecondaryButton = styled(Link)`
+  background-color: transparent;
+  color: #6b7280;
+  padding: 16px 30px;
+  font-size: 16px;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  border: 2px solid #d1d5db;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+    color: #374151;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 14px 25px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 20px;
+    font-size: 14px;
   }
 `;
 
@@ -248,6 +334,12 @@ const FeatureList = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
+    gap: 20px;
+    padding: 0 20px;
+    align-items: center;
+  }
+
+  @media (max-width: 480px) {
     gap: 15px;
     padding: 0 15px;
   }
@@ -263,6 +355,13 @@ const FeatureItem = styled.div`
 
   @media (max-width: 768px) {
     justify-content: center;
+    font-size: 15px;
+    padding: 8px 0;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    padding: 6px 0;
   }
 
   svg {
