@@ -19,6 +19,10 @@ import {
   FiGlobe,
   FiHeart
 } from 'react-icons/fi';
+import {
+  PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend as RechartsLegend,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
+} from 'recharts';
 
 const PageContainer = styled.div`
   font-family: 'Inter', sans-serif;
@@ -688,6 +692,41 @@ export default function AdminDashboardPage() {
     return null;
   }
 
+  // Colors for charts
+  const GENDER_COLORS = ['#4299e1', '#f5576c', '#38f9d7'];
+  const DISTRICT_COLORS = ['#764ba2', '#43e97b', '#fa709a', '#fee140', '#f093fb', '#4facfe', '#a8edea', '#fed6e3'];
+
+  // Helper: Prepare gender data for PieChart
+  const genderData = [
+    { name: 'Male', value: stats.genderDistribution.male },
+    { name: 'Female', value: stats.genderDistribution.female },
+    { name: 'Other', value: stats.genderDistribution.other },
+  ];
+
+  // Helper: Prepare district data for BarChart
+  const districtCounts: Record<string, number> = {};
+  responses.forEach(r => {
+    if (r.district && r.district !== 'N/A') {
+      districtCounts[r.district] = (districtCounts[r.district] || 0) + 1;
+    }
+  });
+  const districtData = Object.entries(districtCounts).map(([district, count]) => ({ district, count }));
+
+  // Helper: Prepare age data for Histogram
+  const ageBins = [0, 18, 25, 35, 45, 60, 100];
+  const ageLabels = ['<18', '18-24', '25-34', '35-44', '45-59', '60+'];
+  const ageCounts = Array(ageLabels.length).fill(0);
+  responses.forEach(r => {
+    const age = Number(r.age);
+    for (let i = 0; i < ageBins.length - 1; i++) {
+      if (age >= ageBins[i] && age < ageBins[i + 1]) {
+        ageCounts[i]++;
+        break;
+      }
+    }
+  });
+  const ageData = ageLabels.map((label, i) => ({ ageRange: label, count: ageCounts[i] }));
+
   return (
     <PageContainer>
       <Navbar2 />
@@ -790,6 +829,58 @@ export default function AdminDashboardPage() {
             </StatHeader>
           </StatCard>
         </StatsGrid>
+
+        {/* --- Visualizations Section --- */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '2rem' }}>
+          {/* Gender Distribution Pie Chart */}
+          <div style={{ flex: '1 1 300px', minWidth: 300, background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
+            <h3 style={{ textAlign: 'center', marginBottom: 16 }}>Gender Distribution</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie data={genderData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                  {genderData.map((entry, idx) => (
+                    <Cell key={`cell-gender-${idx}`} fill={GENDER_COLORS[idx % GENDER_COLORS.length]} />
+                  ))}
+                </Pie>
+                <RechartsTooltip />
+                <RechartsLegend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Responses by District Bar Chart */}
+          <div style={{ flex: '2 1 400px', minWidth: 400, background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
+            <h3 style={{ textAlign: 'center', marginBottom: 16 }}>Responses by District</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={districtData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="district" angle={-30} textAnchor="end" interval={0} height={60} />
+                <YAxis allowDecimals={false} />
+                <RechartsTooltip />
+                <Bar dataKey="count" fill="#764ba2">
+                  {districtData.map((entry, idx) => (
+                    <Cell key={`cell-district-${idx}`} fill={DISTRICT_COLORS[idx % DISTRICT_COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Age Distribution Histogram */}
+          <div style={{ flex: '1 1 300px', minWidth: 300, background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
+            <h3 style={{ textAlign: 'center', marginBottom: 16 }}>Age Distribution</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={ageData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="ageRange" />
+                <YAxis allowDecimals={false} />
+                <RechartsTooltip />
+                <Bar dataKey="count" fill="#43e97b" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        {/* --- End Visualizations Section --- */}
 
         <SearchContainer>
           <SearchInputContainer>

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { FaUser, FaChartLine, FaUsers, FaClipboardCheck, FaCommentDots, FaChild } from 'react-icons/fa';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -286,6 +287,73 @@ const NavigationButtons = styled.div`
   align-items: center;
 `;
 
+const StepperContainer = styled.div`
+  margin: 32px 0 0 0;
+  overflow-x: auto;
+  width: 100%;
+`;
+const Stepper = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+`;
+const StepButton = styled.button<{ active: boolean }>`
+  background: ${({ active }) => (active ? 'linear-gradient(90deg, #667eea, #764ba2)' : '#f3f4f6')};
+  color: ${({ active }) => (active ? '#fff' : '#333')};
+  border: none;
+  border-radius: 24px;
+  padding: 12px 28px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  min-width: 140px;
+  box-shadow: ${({ active }) => (active ? '0 4px 16px rgba(102,126,234,0.15)' : 'none')};
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  outline: ${({ active }) => (active ? '2px solid #667eea' : 'none')};
+  &:hover, &:focus {
+    background: ${({ active }) => (active ? 'linear-gradient(90deg, #667eea, #764ba2)' : '#e2e8f0')};
+    color: #222;
+  }
+`;
+
+const AnimatedProgressFill = styled(ProgressFill)`
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+`;
+
+const ModernFormContainer = styled(FormContainer)`
+  margin-top: 32px;
+  padding: 0 0 32px 0;
+  @media (max-width: 600px) {
+    padding: 0 0 16px 0;
+  }
+`;
+
+const ModernSectionHeader = styled(SectionHeader)`
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 2px 8px rgba(102,126,234,0.08);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+`;
+
+const ModernSectionTitle = styled(SectionTitle)`
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.25em;
+`;
+
+const ModernSectionDesc = styled.div`
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-top: 4px;
+  color: rgba(255,255,255,0.92);
+`;
+
 interface FormData {
   section1: {
     respondentName: string;
@@ -365,6 +433,98 @@ interface FormData {
     facedStigma: string;
   };
 }
+
+const defaultFormData: FormData = {
+  section1: {
+    respondentName: '',
+    district: '',
+    age: '',
+    gender: '',
+    education: '',
+    employmentBefore: '',
+    occupationBefore: '',
+    incomeBefore: '',
+    receivedBenefit: '',
+    schemes: [],
+    otherBenefits: '',
+    dateOfBenefit: '',
+    utilization: [],
+    casteCategory: '',
+    subCaste: '',
+    tribeIdentity: '',
+    marriageOpposed: '',
+    relocated: '',
+    aadhaarProvided: '',
+  },
+  section2: {
+    occupationAfter: '',
+    incomeAfter: '',
+    socioEconomicStatusBefore: '',
+    financialSecurityScale: '',
+    spouseEmploymentAfter: '',
+    socioEconomicStatusAfter: '',
+    socialLifeImpact: '',
+    fundDecisionMaker: '',
+    financialDependencyReduced: '',
+    startedNewLivelihood: '',
+  },
+  section3: {
+    progressiveChangeScale: '',
+    feltSociallyAccepted: '',
+    discriminationReduction: '',
+    feltMoreSecure: '',
+    livingWithInLaws: '',
+    inLawDiscrimination: '',
+    inLawDiscriminationDetails: '',
+    filedPoliceComplaint: '',
+    supportFromNgosOrOfficials: '',
+  },
+  section4: {
+    schemeAwarenessSource: '',
+    officialsSupportive: '',
+    applicationDifficulty: '',
+    timeToReceiveBenefit: '',
+    disbursementEffectiveness: '',
+    awareOfSchemeDetails: '',
+    applicationStatus: '',
+    pendingDuration: '',
+    rejectionReasonCommunicated: '',
+    rejectionReason: '',
+    qualityOfInformation: '',
+  },
+  section5: {
+    schemeSuccessCasteDiscrimination: '',
+    schemeSuccessSecurity: '',
+    areasForImprovement: [],
+    shouldReviseIncentive: '',
+    experiencedBenefits: [],
+    shouldContinueScheme: '',
+    encourageIntercasteMarriage: '',
+    schemeHelpedReduceDiscriminationInArea: '',
+    futureSupportExpected: [],
+  },
+  section6_DevadasiChildren: {
+    childAgeAtMarriage: '',
+    schemeImprovedDignity: '',
+    treatmentDifference: '',
+    spouseCaste: '',
+    ownsPropertyNow: '',
+    inLawAcceptabilityScale: '',
+    facedStigma: '',
+  },
+};
+
+const SECTION_ICONS = [
+  <FaUser />, <FaChartLine />, <FaUsers />, <FaClipboardCheck />, <FaCommentDots />, <FaChild />
+];
+const SECTIONS = [
+  { title: 'Basic Information', description: 'Demographics and background' },
+  { title: 'Socio-Economic Impact', description: 'Changes after scheme' },
+  { title: 'Social Impact', description: 'Social acceptance and challenges' },
+  { title: 'Scheme Experience', description: 'Experience with the process' },
+  { title: 'Feedback', description: 'Suggestions and improvements' },
+  { title: 'Devadasi Children', description: 'Special section for Devadasi children' },
+];
 
 export default function QuestionnairePage() {
   const { isLoggedIn, user } = useAuth();
@@ -478,7 +638,10 @@ export default function QuestionnairePage() {
         }
       });
       if (response.data) {
-        setFormData(response.data.answers);
+        setFormData({
+          ...defaultFormData,
+          ...response.data.answers,
+        });
         setSuccess('Draft loaded successfully!');
         setTimeout(() => setSuccess(''), 3000);
       }
@@ -599,18 +762,35 @@ export default function QuestionnairePage() {
         <Title>SCSP/TSP Impact Evaluation Questionnaire</Title>
         <Subtitle>Your responses will help us improve these important social programs</Subtitle>
         <ProgressBar>
-          <ProgressFill progress={progress} />
+          <AnimatedProgressFill progress={progress} />
         </ProgressBar>
-        <div>Section {currentSection} of 6</div>
+        <div style={{ fontWeight: 600, color: '#667eea', marginBottom: 8 }}>Section {currentSection} of 6</div>
+        <StepperContainer>
+          <Stepper>
+            {SECTIONS.map((section, idx) => (
+              <StepButton
+                key={section.title}
+                active={currentSection === idx + 1}
+                onClick={() => setCurrentSection(idx + 1)}
+                aria-current={currentSection === idx + 1 ? 'step' : undefined}
+                tabIndex={0}
+              >
+                <span style={{ fontSize: 20, display: 'flex', alignItems: 'center' }}>{SECTION_ICONS[idx]}</span>
+                <span style={{ marginLeft: 8 }}>{section.title}</span>
+              </StepButton>
+            ))}
+          </Stepper>
+        </StepperContainer>
       </Header>
 
-      <FormContainer>
+      <ModernFormContainer>
         {/* Section 1: Basic Information */}
         {currentSection === 1 && (
           <>
-            <SectionHeader>
-              <SectionTitle>Section 1: Basic Information & Demographics</SectionTitle>
-            </SectionHeader>
+            <ModernSectionHeader>
+              <ModernSectionTitle>Section 1: Basic Information & Demographics</ModernSectionTitle>
+              <ModernSectionDesc>Demographics and background</ModernSectionDesc>
+            </ModernSectionHeader>
             <SectionContent>
               <FormGroup>
                 <Label>Full Name</Label>
@@ -903,9 +1083,10 @@ export default function QuestionnairePage() {
         {/* Section 2: Socio-Economic Impact */}
         {currentSection === 2 && (
           <>
-            <SectionHeader>
-              <SectionTitle>Section 2: Socio-Economic Impact</SectionTitle>
-            </SectionHeader>
+            <ModernSectionHeader>
+              <ModernSectionTitle>Section 2: Socio-Economic Impact</ModernSectionTitle>
+              <ModernSectionDesc>Changes after scheme</ModernSectionDesc>
+            </ModernSectionHeader>
             <SectionContent>
               <FormGroup>
                 <Label>What is your current occupation?</Label>
@@ -1128,12 +1309,13 @@ export default function QuestionnairePage() {
           </>
         )}
 
-        {/* Section 3: Social Inclusion */}
+        {/* Section 3: Social Impact */}
         {currentSection === 3 && (
           <>
-            <SectionHeader>
-              <SectionTitle>Section 3: Social Inclusion</SectionTitle>
-            </SectionHeader>
+            <ModernSectionHeader>
+              <ModernSectionTitle>Section 3: Social Impact</ModernSectionTitle>
+              <ModernSectionDesc>Social acceptance and challenges</ModernSectionDesc>
+            </ModernSectionHeader>
             <SectionContent>
               <FormGroup>
                 <Label>On a scale of 1-5, how much progressive change have you experienced? (1=No Change, 5=Significant Change)</Label>
@@ -1404,12 +1586,13 @@ export default function QuestionnairePage() {
           </>
         )}
 
-        {/* Section 4: Service Quality */}
+        {/* Section 4: Scheme Experience */}
         {currentSection === 4 && (
           <>
-            <SectionHeader>
-              <SectionTitle>Section 4: Service Quality & Implementation</SectionTitle>
-            </SectionHeader>
+            <ModernSectionHeader>
+              <ModernSectionTitle>Section 4: Scheme Experience</ModernSectionTitle>
+              <ModernSectionDesc>Experience with the process</ModernSectionDesc>
+            </ModernSectionHeader>
             <SectionContent>
               <FormGroup>
                 <Label>How did you become aware of the scheme?</Label>
@@ -1630,12 +1813,13 @@ export default function QuestionnairePage() {
           </>
         )}
 
-        {/* Section 5: Satisfaction & Recommendations */}
+        {/* Section 5: Feedback */}
         {currentSection === 5 && (
           <>
-            <SectionHeader>
-              <SectionTitle>Section 5: Satisfaction & Recommendations</SectionTitle>
-            </SectionHeader>
+            <ModernSectionHeader>
+              <ModernSectionTitle>Section 5: Feedback</ModernSectionTitle>
+              <ModernSectionDesc>Suggestions and improvements</ModernSectionDesc>
+            </ModernSectionHeader>
             <SectionContent>
               <FormGroup>
                 <Label>Do you think the scheme is successful in reducing caste-based discrimination?</Label>
@@ -1964,12 +2148,13 @@ export default function QuestionnairePage() {
           </>
         )}
 
-        {/* Section 6: Special Category - Devadasi Children */}
+        {/* Section 6: Devadasi Children */}
         {currentSection === 6 && (
           <>
-            <SectionHeader>
-              <SectionTitle>Section 6: Special Category - Children of Devadasi Women</SectionTitle>
-            </SectionHeader>
+            <ModernSectionHeader>
+              <ModernSectionTitle>Section 6: Devadasi Children</ModernSectionTitle>
+              <ModernSectionDesc>Special section for Devadasi children</ModernSectionDesc>
+            </ModernSectionHeader>
             <SectionContent>
               <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f0f4f8', borderRadius: '8px', borderLeft: '4px solid #4299e1' }}>
                 <strong>Note:</strong> This section is specifically for children of Devadasi women who have benefited from marriage incentive schemes. If this doesn't apply to you, you can skip this section.
@@ -2205,7 +2390,7 @@ export default function QuestionnairePage() {
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
         {success && <SuccessMessage>{success}</SuccessMessage>}
-      </FormContainer>
+      </ModernFormContainer>
     </PageContainer>
   );
 }
