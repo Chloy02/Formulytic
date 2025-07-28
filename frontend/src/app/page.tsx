@@ -44,9 +44,9 @@ const HeroSection = styled.section`
 
   @media (max-width: 768px) {
     flex-direction: column;
-<<<<<<< HEAD
+
     padding: 40px 15px;
-=======
+
     padding: 30px 20px;
     gap: 40px;
     position: relative;
@@ -58,24 +58,6 @@ const HeroSection = styled.section`
     gap: 30px;
   }
 `;
-
-const HeroContent = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  max-width: 600px;
-
-  @media (max-width: 768px) {
-    text-align: center;
-    z-index: 2;
-    position: relative;
-    width: 100%;
-    max-width: 100%;
->>>>>>> da2e693b6b273f2de8e33cf65cbf0cd9016eb0e6
-  }
-`;
-
 
 const HeroContent = styled.div`
   flex: 1;
