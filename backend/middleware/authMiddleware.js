@@ -22,7 +22,17 @@ const verifyToken = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') return res.status(403).json({ message: 'Admins only!' });
+  console.log('isAdmin middleware called');
+  console.log('req.user:', JSON.stringify(req.user, null, 2));
+  console.log('req.user.role:', req.user?.role);
+  console.log('typeof req.user.role:', typeof req.user?.role);
+  console.log('req.user.role === "admin":', req.user?.role === 'admin');
+  
+  if (req.user.role !== 'admin') {
+    console.log('Access denied: user is not admin');
+    return res.status(403).json({ message: 'Admins only!' });
+  }
+  console.log('Admin access granted');
   next();
 };
 

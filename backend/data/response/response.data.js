@@ -12,9 +12,13 @@ async function createResponse(data) {
 
 async function getResponse() {
     try {
+        console.log('Attempting to fetch all responses...');
         const data = await Response.find({});
+        console.log('Found responses count:', data.length);
+        console.log('Sample response:', data.length > 0 ? data[0] : 'No data found');
         return data;
     } catch (err) {
+        console.error('Error in getResponse:', err);
         throw new Error("Error to get the data.");
     }
 }

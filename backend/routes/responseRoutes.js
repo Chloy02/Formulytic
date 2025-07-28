@@ -12,17 +12,21 @@ const {
   getAllResponsesAdmin,
 } = require('../controllers/responseController');
 // Import authentication middleware
-const { verifyToken } = require('../middleware/authMiddleware');
+const { verifyToken, isAdmin } = require('../middleware/authMiddleware');
 
 // Define routes with verifyToken middleware
 router.get('/', verifyToken, getAllResponses);
 router.post('/', verifyToken, submitResponse);
 router.post('/draft', verifyToken, saveDraft);
 router.get('/draft', verifyToken, getDraft);
+
+// Admin routes (place before dynamic routes)
+router.get('/admin', (req, res, next) => {
+  console.log('Admin route /admin called');
+  next();
+}, verifyToken, isAdmin, getAllResponsesAdmin);
+
 router.get('/:id', verifyToken, getResponseById);
 router.delete('/:id', verifyToken, deleteResponse);
-
-// Admin routes (separate endpoint)
-router.get('/admin', getAllResponsesAdmin);
 
 module.exports = router;

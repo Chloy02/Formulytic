@@ -230,10 +230,13 @@ const deleteResponse = async (req, res) => {
 */
 async function getAllResponsesAdmin(req, res) {
   try {
+    console.log('Admin endpoint called - fetching all responses...');
     const result = await getResponse();
+    console.log('Response from getResponse:', result);
+    console.log('Sending response with length:', result.length);
     return res.status(200).json(result);
   } catch (err) {
-    console.error(err);
+    console.error('Error in getAllResponsesAdmin:', err);
     return res.status(500).json(err);
   }
 }
