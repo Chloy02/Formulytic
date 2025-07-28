@@ -20,7 +20,7 @@ async function getQuestionHome() {
 //   icon: string
 //   questionCount: number
 // }
-export async function getQuestionById(id) {
+async function getQuestionById(id) {
     try {
         const response = await axios.get(`${ServerLink}/questions/id/${id}`)
 

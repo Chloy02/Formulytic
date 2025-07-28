@@ -5,11 +5,12 @@ import SectionView from "./SectionView"
 import { getQuestionById } from "@/lib/api/questions/questions"
 
 interface Props {
-  params: { questionnaireID: string }
+  params: Promise<{ questionnaireID: string }>
 }
 
 export default async function SectionPage({ params }: Props) {
-  const idAsNumber = Number(params.questionnaireID)
+  const { questionnaireID } = await params
+  const idAsNumber = Number(questionnaireID)
   if (isNaN(idAsNumber)) return notFound()
 
   const card = await getQuestionById(idAsNumber)

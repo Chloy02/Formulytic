@@ -31,11 +31,11 @@ const ContentArea = styled.div`
 const AdminBadge = styled.div`
   background: ${theme.colors.secondary.gradient};
   color: white;
-  padding: ${theme.spacing.xs} ${theme.spacing.md};
+  padding: ${theme.spacing.xs} ${theme.spacing.base};
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 600;
-  margin-bottom: ${theme.spacing.md};
+  margin-bottom: ${theme.spacing.base};
   display: inline-block;
 `;
 

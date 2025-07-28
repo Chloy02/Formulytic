@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import ServerLink from '../lib/api/serverURL';
 
 export interface Response {
   id: string;
@@ -89,7 +90,7 @@ export const useAdminData = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/responses', {
+      const response = await fetch(`${ServerLink}/responses`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -153,7 +154,7 @@ export const useAdminData = () => {
   const deleteResponse = async (id: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/responses/${id}`, {
+      const response = await fetch(`${ServerLink}/responses/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

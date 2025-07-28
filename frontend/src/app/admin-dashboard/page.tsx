@@ -5,6 +5,9 @@ import styled from 'styled-components';
 import Navbar2 from '../../components/Navbar2';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import { theme } from '../../styles/theme';
+import { useAdminData } from '../../hooks/useAdminData';
+import { useResponseFilters } from '../../hooks/useResponseFilters';
 import { 
   FiSearch, 
   FiDownload, 
@@ -144,11 +147,54 @@ const StatChange = styled.div<{ positive?: boolean }>`
   margin-top: 0.5rem;
 `;
 
+// Missing styled components
+const GlassCard = styled.div`
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid ${theme.colors.border.light};
+  border-radius: ${theme.borderRadius.md};
+  font-size: 1rem;
+  transition: all ${theme.transitions.fast};
+  background: white;
+
+  &:focus {
+    outline: none;
+    border-color: ${theme.colors.primary[500]};
+    box-shadow: 0 0 0 3px ${theme.colors.primary[100]};
+  }
+
+  &::placeholder {
+    color: ${theme.colors.text.muted};
+  }
+`;
+
 const SearchContainer = styled(GlassCard)`
   display: flex;
   gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
+  padding: 1.5rem;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
 `;
 
 const SearchIconWrapper = styled.div`
@@ -203,7 +249,7 @@ const TableRow = styled.tr`
   transition: all 0.3s ease;
   
   &:hover {
-    background-color: ${theme.colors.background.light};
+    background-color: ${theme.colors.background.secondary};
     transform: scale(1.01);
     box-shadow: ${theme.shadows.sm};
   }
@@ -228,6 +274,197 @@ const EmptyState = styled.div`
     font-weight: 600;
     margin-bottom: 0.5rem;
     color: ${theme.colors.text.primary};
+  }
+`;
+
+// Type definitions
+interface ResponseData {
+  id: string;
+  name: string;
+  age: number;
+  gender: string;
+  district: string;
+  location: string;
+  submittedAt: string;
+  status: string;
+}
+
+const Title = styled.h1<{ size?: string }>`
+  font-size: ${props => props.size === 'lg' ? '2.5rem' : props.size === 'md' ? '1.75rem' : '1.5rem'};
+  font-weight: 800;
+  background: ${theme.colors.primary.gradient};
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    font-size: ${props => props.size === 'lg' ? '2rem' : props.size === 'md' ? '1.5rem' : '1.25rem'};
+  }
+`;
+
+const Subtitle = styled.p`
+  color: ${theme.colors.text.secondary};
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-bottom: 0;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    font-size: 1rem;
+  }
+`;
+
+const Grid = styled.div<{ minWidth?: string }>`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(${props => props.minWidth || '280px'}, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+`;
+
+const Select = styled.select`
+  padding: 0.75rem 1rem;
+  border: 2px solid ${theme.colors.border.light};
+  border-radius: ${theme.borderRadius.md};
+  font-size: 1rem;
+  transition: all ${theme.transitions.fast};
+  background: white;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: ${theme.colors.primary[500]};
+    box-shadow: 0 0 0 3px ${theme.colors.primary[100]};
+  }
+
+  &:disabled {
+    background: ${theme.colors.background.secondary};
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+`;
+
+const Button = styled.button<{ variant?: string; size?: string }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: ${props => props.size === 'sm' ? '0.5rem 1rem' : '0.75rem 1.5rem'};
+  font-size: ${props => props.size === 'sm' ? '0.875rem' : '1rem'};
+  font-weight: 600;
+  border: none;
+  border-radius: ${theme.borderRadius.md};
+  cursor: pointer;
+  transition: all ${theme.transitions.fast};
+  text-decoration: none;
+
+  ${props => {
+    switch (props.variant) {
+      case 'success':
+        return `
+          background: ${theme.colors.success.gradient};
+          color: white;
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: ${theme.shadows.lg};
+          }
+        `;
+      case 'danger':
+        return `
+          background: ${theme.colors.error.gradient};
+          color: white;
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: ${theme.shadows.lg};
+          }
+        `;
+      case 'secondary':
+        return `
+          background: ${theme.colors.secondary.gradient};
+          color: white;
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: ${theme.shadows.lg};
+          }
+        `;
+      default:
+        return `
+          background: ${theme.colors.primary.gradient};
+          color: white;
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: ${theme.shadows.lg};
+          }
+        `;
+    }
+  }}
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: ${props => props.size === 'sm' ? '0.5rem 0.75rem' : '0.75rem 1rem'};
+    font-size: ${props => props.size === 'sm' ? '0.75rem' : '0.875rem'};
+  }
+`;
+
+const StatusMessage = styled.div<{ type?: string }>`
+  padding: 1rem;
+  border-radius: ${theme.borderRadius.md};
+  margin-bottom: 1rem;
+  font-weight: 500;
+
+  ${props => {
+    switch (props.type) {
+      case 'error':
+        return `
+          background: ${theme.colors.error[50]};
+          color: ${theme.colors.error[700]};
+          border: 1px solid ${theme.colors.error[200]};
+        `;
+      case 'success':
+        return `
+          background: ${theme.colors.success[50]};
+          color: ${theme.colors.success[700]};
+          border: 1px solid ${theme.colors.success[200]};
+        `;
+      default:
+        return `
+          background: ${theme.colors.info[50]};
+          color: ${theme.colors.info[700]};
+          border: 1px solid ${theme.colors.info[200]};
+        `;
+    }
+  }}
+`;
+
+const LoadingSpinner = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+
+  &::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 4px solid ${theme.colors.border.light};
+    border-top: 4px solid ${theme.colors.primary[500]};
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 `;
 
@@ -279,7 +516,7 @@ export default function AdminDashboardPage() {
 
   // Helper: Prepare district data for BarChart
   const districtCounts: Record<string, number> = {};
-  responses.forEach(r => {
+  responses.forEach((r: any) => {
     if (r.district && r.district !== 'N/A') {
       districtCounts[r.district] = (districtCounts[r.district] || 0) + 1;
     }
@@ -290,7 +527,7 @@ export default function AdminDashboardPage() {
   const ageBins = [0, 18, 25, 35, 45, 60, 100];
   const ageLabels = ['<18', '18-24', '25-34', '35-44', '45-59', '60+'];
   const ageCounts = Array(ageLabels.length).fill(0);
-  responses.forEach(r => {
+  responses.forEach((r: any) => {
     const age = Number(r.age);
     for (let i = 0; i < ageBins.length - 1; i++) {
       if (age >= ageBins[i] && age < ageBins[i + 1]) {
@@ -300,6 +537,14 @@ export default function AdminDashboardPage() {
     }
   });
   const ageData = ageLabels.map((label, i) => ({ ageRange: label, count: ageCounts[i] }));
+
+  // Helper: Get unique locations
+  const uniqueLocations = Array.from(new Set(responses.map((r: any) => r.location).filter(Boolean)));
+
+  // Event handlers
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <PageContainer>
@@ -406,7 +651,7 @@ export default function AdminDashboardPage() {
               </StatIcon>
             </StatHeader>
           </StatCard>
-        </StatsGrid>
+        </Grid>
 
         {/* --- Visualizations Section --- */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '2rem' }}>
@@ -467,7 +712,7 @@ export default function AdminDashboardPage() {
               type="text"
               placeholder="Search by name, location, or district..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
             />
           </SearchIconWrapper>
           
@@ -480,7 +725,7 @@ export default function AdminDashboardPage() {
           
           <Select disabled>
             <option value="">All Locations</option>
-            {uniqueLocations.map(location => (
+            {uniqueLocations.map((location: string) => (
               <option key={location} value={location}>{location}</option>
             ))}
           </Select>
@@ -519,7 +764,7 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedResponses.map((response: Response) => (
+                  {paginatedResponses.map((response: ResponseData) => (
                     <TableRow key={response.id}>
                       <TableCell>{response.name}</TableCell>
                       <TableCell>{response.age}</TableCell>
