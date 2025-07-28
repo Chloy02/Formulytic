@@ -89,63 +89,90 @@ export const useAdminData = () => {
   const loadResponses = useCallback(async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${ServerLink}/responses`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      setError(null);
+      
+      console.log('Attempting to fetch from:', `${ServerLink}/responses/admin`);
+      
+      // Try the admin endpoint (no auth required)
+      const response = await fetch(`${ServerLink}/responses/admin`, {
+        method: 'GET',
+        headers: { 
+          'Content-Type': 'application/json'
+        }
       });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (response.ok) {
         const data = await response.json();
-        const transformedResponses = data.map((item: {
-          _id?: string;
-          answers?: {
-            section1?: {
-              respondentName?: string;
-              age?: number;
-              gender?: string;
-              district?: string;
-            };
-          };
-          submissionDate?: string;
-          status?: string;
-        }) => {
-          const section1 = item.answers?.section1 || {};
-          
-          return {
-            id: item._id || Math.random().toString(),
-            name: section1.respondentName || 'N/A',
-            age: section1.age || 0,
-            gender: section1.gender || 'N/A',
-            location: section1.district || 'N/A',
-            district: section1.district || 'N/A',
-            rating: 'N/A',
-            submittedAt: new Date(item.submissionDate || Date.now()).toLocaleDateString(),
-            status: item.status || 'submitted',
-            answers: item.answers || {}
-          };
-        });
+        console.log('Raw API Response:', data);
         
+        // Handle the response data structure
+        let transformedResponses: Response[] = [];
+        
+        if (Array.isArray(data)) {
+          transformedResponses = data.map((item: any, index: number) => {
+            console.log(`Processing item ${index}:`, item);
+            
+            // Handle different possible data structures
+            const answers = item.answers || {};
+            const section1 = answers.section1 || {};
+            
+            return {
+              id: item._id || item.id || `temp-${index}`,
+              name: section1.respondentName || section1.uname || item.name || 'N/A',
+              age: Number(section1.age || item.age || 0),
+              gender: section1.gender || item.gender || 'N/A',
+              location: section1.district || section1.location || item.location || 'N/A',
+              district: section1.district || item.district || item.location || 'N/A',
+              rating: item.rating || 'N/A',
+              submittedAt: item.submissionDate ? new Date(item.submissionDate).toLocaleDateString() : 
+                          item.submittedAt ? new Date(item.submittedAt).toLocaleDateString() : 
+                          item.createdAt ? new Date(item.createdAt).toLocaleDateString() :
+                          new Date().toLocaleDateString(),
+              status: item.status || 'submitted',
+              answers: answers
+            };
+          });
+        } else {
+          console.warn('API returned non-array data:', data);
+        }
+        
+        console.log('Transformed responses:', transformedResponses);
         setResponses(transformedResponses);
         calculateStats(transformedResponses);
       } else {
-        // Fallback to sample data
-        const sampleData = [
-          {
-            id: '1', name: 'John Doe', age: 28, gender: 'Male',
-            location: 'Bangalore Urban', district: 'Bangalore Urban',
-            rating: 'N/A', submittedAt: '2025-01-20', status: 'submitted', answers: {}
-          },
-          {
-            id: '2', name: 'Jane Smith', age: 34, gender: 'Female',
-            location: 'Mysore', district: 'Mysore',
-            rating: 'N/A', submittedAt: '2025-01-19', status: 'submitted', answers: {}
-          }
-        ];
-        setResponses(sampleData);
-        calculateStats(sampleData);
+        const errorText = await response.text();
+        console.error('API Error Response:', errorText);
+        throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Fetch error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load responses';
+      setError(errorMessage);
+      
+      // Fallback to sample data for development
+      console.log('Using fallback sample data');
+      const sampleData: Response[] = [
+        {
+          id: '1', name: 'John Doe', age: 28, gender: 'Male',
+          location: 'Bangalore Urban', district: 'Bangalore Urban',
+          rating: 'N/A', submittedAt: '2025-01-20', status: 'submitted', answers: {}
+        },
+        {
+          id: '2', name: 'Jane Smith', age: 34, gender: 'Female',
+          location: 'Mysore', district: 'Mysore',
+          rating: 'N/A', submittedAt: '2025-01-19', status: 'submitted', answers: {}
+        },
+        {
+          id: '3', name: 'Raj Kumar', age: 42, gender: 'Male',
+          location: 'Hassan', district: 'Hassan',
+          rating: 'N/A', submittedAt: '2025-01-18', status: 'submitted', answers: {}
+        }
+      ];
+      setResponses(sampleData);
+      calculateStats(sampleData);
     } finally {
       setLoading(false);
     }

@@ -88,7 +88,7 @@ export default function AdminSignupPage() {
 
     setLoading(true);
     try {
-      await axios.post('/api/auth/register', {
+      await axios.post('/api/auth/register', {  
         username,
         email,
         password,

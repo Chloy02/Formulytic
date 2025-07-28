@@ -22,6 +22,7 @@ router.get('/draft', verifyToken, getDraft);
 router.get('/:id', verifyToken, getResponseById);
 router.delete('/:id', verifyToken, deleteResponse);
 
-router.get('/', getAllResponsesAdmin);
+// Admin routes (separate endpoint)
+router.get('/admin', getAllResponsesAdmin);
 
 module.exports = router;

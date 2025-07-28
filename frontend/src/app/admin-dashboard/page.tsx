@@ -137,7 +137,9 @@ const StatLabel = styled.div`
   letter-spacing: 0.5px;
 `;
 
-const StatChange = styled.div<{ positive?: boolean }>`
+const StatChange = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'positive'
+})<{ positive?: boolean }>`
   font-size: 0.75rem;
   color: ${props => props.positive ? '#10b981' : '#ef4444'};
   font-weight: 600;
