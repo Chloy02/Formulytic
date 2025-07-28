@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     await connectMongo();
     
     const body = await request.json();
-    console.log('Login request body:', body); // Debug logging
+    console.log('Login request body:', JSON.stringify(body, null, 2)); // Enhanced debug logging
     
     const { email, password, project } = body;
 
@@ -20,12 +20,25 @@ export async function POST(request: NextRequest) {
       if (!password) missingFields.push('password');
       if (!project) missingFields.push('project');
       
-      console.log('Missing fields:', missingFields); // Debug logging
+      console.log('Missing fields:', missingFields);
+      console.log('Received values:', { 
+        email: email || '[empty]', 
+        password: password ? '[provided]' : '[empty]', 
+        project: project || '[empty]' 
+      });
+      
       return NextResponse.json({ 
         message: `Missing required fields: ${missingFields.join(', ')}`,
-        missingFields 
+        missingFields,
+        receivedData: {
+          hasEmail: !!email,
+          hasPassword: !!password,
+          hasProject: !!project
+        }
       }, { status: 400 });
     }
+
+    console.log('All required fields present, proceeding with authentication...');
 
     // Find user by email and project, or by username for admin
     let user;
@@ -42,22 +55,28 @@ export async function POST(request: NextRequest) {
           { role: 'admin' }
         ]
       });
+      console.log('Admin user search result:', user ? 'Found' : 'Not found');
     } else {
       // Regular user login
       user = await User.findOne({ 
         email: email,
         project: project
       });
+      console.log('Regular user search result:', user ? 'Found' : 'Not found');
     }
 
     if (!user) {
+      console.log('User not found with provided credentials');
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
+      console.log('Password validation failed');
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
     }
+
+    console.log('Authentication successful, generating token...');
 
     const token = jwt.sign(
       { id: user._id, role: user.role, project: user.project },
@@ -65,14 +84,18 @@ export async function POST(request: NextRequest) {
       { expiresIn: '1d' }
     );
 
+    const userData = {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+      project: user.project
+    };
+
+    console.log('Login successful for user:', userData);
+
     return NextResponse.json({ 
       token, 
-      user: {
-        id: user._id,
-        email: user.email,
-        role: user.role,
-        project: user.project
-      }
+      user: userData
     });
   } catch (error) {
     console.error('Login error:', error);

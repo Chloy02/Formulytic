@@ -23,7 +23,11 @@ app.get('/', (req, res) => {
   res.send('Backend server is running!');
 });
 
-// --- Routes will be added here by your teammates ---
+// Routes
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
+// --- Additional routes will be added here by your teammates ---
 // Example:
 // const responseRoutes = require('./routes/responseRoutes');
 // app.use('/api/responses', responseRoutes);

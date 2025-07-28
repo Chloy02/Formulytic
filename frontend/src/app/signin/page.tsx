@@ -214,17 +214,6 @@ const SignInPage: React.FC = () => {
   const { login } = useAuth(); // Assuming useAuth provides a login function
   const { t } = useTranslation(); // Translation hook
   const router = useRouter();
-  
-  // Debug function - can be called from browser console
-  (window as any).debugLogin = () => {
-    console.log('Current form state:', { 
-      email, 
-      password: password ? `[${password.length} chars]` : '[empty]', 
-      project 
-    });
-    console.log('Available projects:', projects);
-    console.log('Projects loading:', projectsLoading);
-  };
 
   // Fetch available projects on component mount
   useEffect(() => {
@@ -233,12 +222,36 @@ const SignInPage: React.FC = () => {
         setProjectsLoading(true);
         // Clear any previous general error before fetching projects
         setError(null); 
+        
+        console.log('Fetching projects...'); // Debug logging
         const response = await axios.get('/api/projects');
-        setProjects(response.data.projects);
-      } catch (error) {
+        console.log('Projects response:', response.data); // Debug logging
+        
+        if (response.data.success && response.data.projects) {
+          setProjects(response.data.projects);
+          console.log('Projects loaded successfully:', response.data.projects);
+        } else {
+          // Fallback: provide default projects if API doesn't return expected format
+          const fallbackProjects = [
+            { id: 'project1', name: 'Project 1', description: 'First project' },
+            { id: 'project2', name: 'Project 2', description: 'Second project' }
+          ];
+          setProjects(fallbackProjects);
+          console.log('Using fallback projects:', fallbackProjects);
+        }
+      } catch (error: any) {
         console.error('Failed to fetch projects:', error);
+        console.error('Error details:', error.response?.data || error.message);
+        
+        // Provide fallback projects even if API fails
+        const fallbackProjects = [
+          { id: 'project1', name: 'Project 1', description: 'First project' },
+          { id: 'project2', name: 'Project 2', description: 'Second project' }
+        ];
+        setProjects(fallbackProjects);
+        
         // Set a specific error message for project loading failure
-        setError('Failed to load projects. Please refresh the page.'); 
+        setError('Failed to load projects from server. Using default projects.'); 
       } finally {
         setProjectsLoading(false);
       }
@@ -252,23 +265,9 @@ const SignInPage: React.FC = () => {
     setError(null); // Clear previous errors
     setIsLoading(true);
     
-    // Debug logging for form data
-    console.log('Form submission data:', { 
-      email: email, 
-      password: password ? `[${password.length} chars]` : '[empty]', 
-      project: project 
-    });
-    
     // Basic client-side validation for required fields
     if (!email || !password || !project) {
-        const missingFields = [];
-        if (!email) missingFields.push('Email');
-        if (!password) missingFields.push('Password');
-        if (!project) missingFields.push('Project');
-        
-        const errorMsg = `Please fill in all required fields: ${missingFields.join(', ')}.`;
-        console.log('Client validation failed:', errorMsg);
-        setError(errorMsg);
+        setError('Please fill in all required fields (Email, Password, Project).');
         setIsLoading(false);
         return;
     }

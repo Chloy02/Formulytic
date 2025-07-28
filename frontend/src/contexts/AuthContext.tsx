@@ -14,7 +14,7 @@ interface AuthContextType {
   isLoggedIn: boolean;
   user: User | null;
   login: (email: string, password: string, project: string) => Promise<{ role: string; project: string }>;
-  adminLogin: (email: string, password: string) => Promise<{ success: boolean; user?: User; error?: string }>;
+  adminLogin: (username: string, password: string) => Promise<{ success: boolean; user?: User; error?: string }>;
   logout: () => void;
 }
 
@@ -71,8 +71,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string, project: string) => {
     try {
-      console.log('Login attempt with:', { email, project, passwordLength: password?.length }); // Debug logging
-      
       const response = await axios.post('/api/auth/login', { email, password, project });
       const { token, user: userData } = response.data;
       localStorage.setItem('token', token);
@@ -84,31 +82,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log('User logged in!', userData);
       
       return { role: userData.role, project: userData.project };
-    } catch (error: any) {
-      console.error('Login failed:', error);
-      console.error('Error response:', error.response?.data); // Additional debug info
+    } catch (error) {
+      console.error('Login failed', error);
       throw error;
     }
   };
 
-  // Admin login function that doesn't require project selection
-  const adminLogin = async (email: string, password: string) => {
+  const adminLogin = async (username: string, password: string) => {
     try {
-      console.log('Admin login attempt with:', { email, passwordLength: password?.length }); // Debug logging
-      
-      // For admin login, we'll use a default project or make project optional in the API
-      // First, let's try with a default admin project
       const response = await axios.post('/api/auth/login', { 
-        email, 
+        email: username, 
         password, 
-        project: 'admin' // Default admin project
+        project: 'admin' 
       });
       
       const { token, user: userData } = response.data;
       
-      // Verify the user is actually an admin
       if (userData.role !== 'admin') {
-        throw new Error('Access denied. Admin privileges required.');
+        return { 
+          success: false, 
+          error: 'Access denied. Admin privileges required.' 
+        };
       }
       
       localStorage.setItem('token', token);
@@ -121,17 +115,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       return { 
         success: true, 
-        user: userData,
-        role: userData.role, 
-        project: userData.project 
+        user: userData 
       };
-    } catch (error: any) {
-      console.error('Admin login failed:', error);
-      console.error('Error response:', error.response?.data); // Additional debug info
-      
-      return {
-        success: false,
-        error: error.response?.data?.message || error.message || 'Login failed'
+    } catch (error) {
+      console.error('Admin login failed', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Login failed' 
       };
     }
   };
