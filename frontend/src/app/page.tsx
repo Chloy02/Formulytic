@@ -24,18 +24,19 @@ const LandingPageContainer = styled.div`
 const HeroSection = styled.section`
   flex-grow: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  text-align: center;
   padding: 60px 30px;
   width: 100%;
   box-sizing: border-box;
 
   @media (max-width: 768px) {
+    flex-direction: column;
     padding: 40px 15px;
   }
 `;
+
 
 const HeroContent = styled.div`
   flex: 1;
@@ -53,29 +54,52 @@ const HeroContent = styled.div`
   }
 `;
 
-const LogoContainer = styled.div`
+const TopLogosWrapper = styled.div`
+  position: relative;
+  width: 100%;
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: flex-start;
-  gap: 30px;
-  margin-bottom: 30px;
-  margin-left: 20px;
+  padding: 20px 30px;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
-    justify-content: center;
-    gap: 25px;
-    margin-bottom: 25px;
-    margin-left: 0;
-  }
-
-  @media (max-width: 480px) {
-    gap: 20px;
-    margin-bottom: 20px;
+    flex-direction: column;
+    gap: 10px;
   }
 `;
 
+const ChristLogo = styled.img`
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  height: 60px;
+  object-fit: contain;
+
+  @media (max-width: 768px) {
+    position: relative;
+    top: 0;
+    right: 0;
+    align-self: flex-end;
+  }
+`;
+
+const KarnatakaLogo = styled.img`
+  height: 90px;
+  object-fit: contain;
+
+  @media (max-width: 768px) {
+    height: 70px;
+  }
+
+  @media (max-width: 480px) {
+    height: 50px;
+  }
+`;
+
+
 const LogoImage = styled.img`
-  height: 80px;
+  height: 20px;
   width: auto;
   object-fit: contain;
   transition: all 0.3s ease;
@@ -317,13 +341,46 @@ export default function Home() {
         <Navbar2 />
 
         <Fade triggerOnce={true} direction="up">
-          <HeroSection>
-            <HeroContent>
-              <LogoContainer>
-                <LogoImage src="/images/christ.svg" alt="Christ University Logo" />
-                <LogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
-              </LogoContainer>
-              <MainHeading style={{ textShadow: '0 2px 8px rgba(30,64,175,0.08)' }}>
+        <TopLogosWrapper>
+  <KarnatakaLogo src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
+  <ChristLogo src="/images/christ.svg" alt="Christ University Logo" />
+</TopLogosWrapper>
+
+<HeroSection>
+  <HeroVisual>
+    <KarnatakaMapContainer>
+      <img src="/images/Karnataka_districts_map.svg" alt="Karnataka Map" style={{ width: '100%', height: 'auto', display: 'block' }} />
+    </KarnatakaMapContainer>
+  </HeroVisual>
+
+  <HeroContent>
+    <MainHeading style={{ textShadow: '0 2px 8px rgba(30,64,175,0.08)' }}>
+      Karnataka Social <HighlightText>Impact</HighlightText> Evaluation Survey
+    </MainHeading>
+    <SubText style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 12, boxShadow: '0 2px 8px rgba(30,64,175,0.04)', padding: '18px 18px', marginBottom: 32 }}>
+      Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka.
+      Your responses will contribute to improving social equity and integration across beneficiary communities.
+    </SubText>
+    <HeroButtons>
+      <PrimaryButton href='/questionnaire'>
+        Start Questionnaire
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+        </svg>
+      </PrimaryButton>
+      {!isLoggedIn && (
+        <SecondaryButton href="/signin">Already Registered? Sign In</SecondaryButton>
+      )}
+    </HeroButtons>
+    <FeatureList style={{ background: 'rgba(255,255,255,0.8)', borderRadius: 10, boxShadow: '0 2px 8px rgba(30,64,175,0.04)', padding: '18px 0', marginTop: 8 }}>
+      {/* FeatureItem list remains same */}
+    </FeatureList>
+  </HeroContent>
+</HeroSection>
+
+          
+
+              {/* <MainHeading style={{ textShadow: '0 2px 8px rgba(30,64,175,0.08)' }}>
                 Karnataka Social <HighlightText>Impact</HighlightText> Evaluation Survey
               </MainHeading>
               <SubText style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 12, boxShadow: '0 2px 8px rgba(30,64,175,0.04)', padding: '18px 18px', marginBottom: 32 }}>
@@ -367,7 +424,7 @@ export default function Home() {
                 <img src="/images/Karnataka_districts_map.svg" alt="Karnataka Map" style={{ width: '100%', height: 'auto', display: 'block' }} />
               </KarnatakaMapContainer>
             </HeroVisual>
-          </HeroSection>
+          </HeroSection> */}
         </Fade>
 
         {/* Optionally, you can add more sections or info here */}
