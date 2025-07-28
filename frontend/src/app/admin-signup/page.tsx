@@ -88,10 +88,10 @@ export default function AdminSignupPage() {
 
     setLoading(true);
     try {
-      await axios.post(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REGISTER}`, {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
+      await axios.post('/api/auth/register', {
+        username,
+        email,
+        password,
         role: 'admin'
       });
       

@@ -6,15 +6,16 @@ import { API_CONFIG } from '../config/api';
 
 interface User {
   id: string;
-  username: string;
-  email?: string;
+  email: string;
   role: string;
+  project: string;
 }
 
 interface AuthContextType {
   isLoggedIn: boolean;
   user: User | null;
-  login: (username: string, password: string) => Promise<{ role: string }>;
+  login: (email: string, password: string, project: string) => Promise<{ role: string; project: string }>;
+  adminLogin: (username: string, password: string) => Promise<{ success: boolean; user?: User; error?: string }>;
   logout: () => void;
 }
 
@@ -38,7 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.ME}`);
+      const response = await axios.get('/api/auth/me');
       setUser(response.data.user);
     } catch (error) {
       console.error('Failed to fetch user data:', error);
@@ -55,7 +56,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
       setIsLoggedIn(true);
       // Fetch user data when token exists
-      fetchUserData();
+      fetchUserData().catch((error) => {
+        console.error('Error fetching user data on initialization:', error);
+        logout();
+      });
     }
   }, []);
 
@@ -66,9 +70,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [token]);
 
-  const login = async (username: string, password: string) => {
+  const login = async (email: string, password: string, project: string) => {
     try {
-      const response = await axios.post(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`, { username, password });
+      const response = await axios.post('/api/auth/login', { email, password, project });
       const { token, user: userData } = response.data;
       localStorage.setItem('token', token);
       setToken(token);
@@ -78,15 +82,53 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(userData);
       console.log('User logged in!', userData);
       
-      return { role: userData.role };
+      return { role: userData.role, project: userData.project };
     } catch (error) {
       console.error('Login failed', error);
       throw error;
     }
   };
 
+  const adminLogin = async (username: string, password: string) => {
+    try {
+      const response = await axios.post('/api/auth/login', { 
+        email: username, 
+        password, 
+        project: 'admin' 
+      });
+      
+      const { token, user: userData } = response.data;
+      
+      if (userData.role !== 'admin') {
+        return { 
+          success: false, 
+          error: 'Access denied. Admin privileges required.' 
+        };
+      }
+      
+      localStorage.setItem('token', token);
+      setToken(token);
+      setIsLoggedIn(true);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      setUser(userData);
+      console.log('Admin logged in!', userData);
+      
+      return { 
+        success: true, 
+        user: userData 
+      };
+    } catch (error) {
+      console.error('Admin login failed', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Login failed' 
+      };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, login, adminLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );
