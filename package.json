@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run server\" \"npm run frontend\"",
+    "server": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "start": "concurrently \"npm run server:prod\" \"npm run frontend:prod\"",
+    "server:prod": "cd backend && npm start",
+    "frontend:prod": "cd frontend && npm start",
     "install": "npm install --prefix frontend && npm install --prefix backend",
-    "start": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
