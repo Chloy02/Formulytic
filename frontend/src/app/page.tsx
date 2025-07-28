@@ -72,40 +72,19 @@ const HeroContent = styled.div`
   }
 `;
 
-const HeroVisual = styled.div`
+const HeroContent = styled.div`
   flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 500px;
+  flex-direction: column;
+  text-align: left;
+  max-width: 600px;
 
   @media (max-width: 768px) {
+    text-align: center;
+    z-index: 2;
     position: relative;
     width: 100%;
     max-width: 100%;
-    z-index: 1;
-    opacity: 1;
-    margin-top: 20px;
-  }
-`;
-
-const KarnatakaMapContainer = styled.div`
-  width: 100%;
-  max-width: 400px;
-  height: auto;
-  
-  svg {
-    width: 100%;
-    height: auto;
-    filter: drop-shadow(0 10px 25px rgba(0, 123, 255, 0.15));
-  }
-
-  @media (max-width: 768px) {
-    max-width: 300px;
-    
-    svg {
-      filter: none;
-    }
   }
 `;
 
@@ -361,13 +340,53 @@ const FeatureItem = styled.div`
     color: #28a745;
     margin-right: 8px;
     font-size: 20px;
-    flex-shrink: 0;
+  }
+`;
 
-    @media (max-width: 480px) {
-      font-size: 18px;
-      margin-right: 6px;
+const HeroVisual = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 500px;
+
+  @media (max-width: 768px) {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    z-index: 1;
+    opacity: 1;
+    margin-top: 20px;
+  }
+`;
+
+const KarnatakaMapContainer = styled.div`
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  
+  svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 10px 25px rgba(0, 123, 255, 0.15));
+  }
+
+  @media (max-width: 768px) {
+    max-width: 300px;
+    
+    svg {
+      filter: none;
     }
   }
+`;
+
+const GradientBackground = styled.div`
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(120deg, #e0e7ff 0%, #f8fafc 100%);
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
 `;
 
 export default function Home() {
@@ -387,69 +406,67 @@ export default function Home() {
   }
 
   return (
-    <LandingPageContainer>
-      <Navbar2 />
+    <>
+      <GradientBackground />
+      <LandingPageContainer style={{ position: 'relative', zIndex: 1 }}>
+        <Navbar2 />
 
-      <Fade triggerOnce={true} direction="up">
-        <HeroSection>
-          <HeroContent>
-            <LogoContainer>
-              <LogoImage src="/images/christ.svg" alt="Christ University Logo" />
-              <LogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
-            </LogoContainer>
-            <MainHeading>
-              Karnataka Social <HighlightText>Impact</HighlightText> Evaluation Survey
-            </MainHeading>
-            <SubText>
-              Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. 
-              Your responses will contribute to improving social equity and integration across beneficiary communities.
-            </SubText>
-            <HeroButtons>
-              <PrimaryButton href='/questionnaire'>
-                Start Questionnaire
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
-                </svg>
-              </PrimaryButton>
-              {!isLoggedIn && (
-                <SecondaryButton href="/signin">Already Registered? Sign In</SecondaryButton>
-              )}
-            </HeroButtons>
-            <FeatureList>
-              <FeatureItem>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.75 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z" />
-                </svg>
-                Quick & easy to complete
-              </FeatureItem>
-              <FeatureItem>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.75 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z" />
-                </svg>
-                Your data is secure
-              </FeatureItem>
-              <FeatureItem>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.5 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z" />
-                </svg>
-                Progress is saved
-              </FeatureItem>
-            </FeatureList>
-          </HeroContent>
-          
-          <HeroVisual>
-            <KarnatakaMapContainer>
-              <KarnatakaMap />
-            </KarnatakaMapContainer>
-          </HeroVisual>
-        </HeroSection>
-      </Fade>
+        <Fade triggerOnce={true} direction="up">
+          <HeroSection>
+            <HeroContent>
+              <LogoContainer>
+                <LogoImage src="/images/christ.svg" alt="Christ University Logo" />
+                <LogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
+              </LogoContainer>
+              <MainHeading style={{ textShadow: '0 2px 8px rgba(30,64,175,0.08)' }}>
+                Karnataka Social <HighlightText>Impact</HighlightText> Evaluation Survey
+              </MainHeading>
+              <SubText style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 12, boxShadow: '0 2px 8px rgba(30,64,175,0.04)', padding: '18px 18px', marginBottom: 32 }}>
+                Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. 
+                Your responses will contribute to improving social equity and integration across beneficiary communities.
+              </SubText>
+              <HeroButtons>
+                <PrimaryButton href='/questionnaire'>
+                  Start Questionnaire
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                  </svg>
+                </PrimaryButton>
+                {!isLoggedIn && (
+                  <SecondaryButton href="/signin">Already Registered? Sign In</SecondaryButton>
+                )}
+              </HeroButtons>
+              <FeatureList style={{ background: 'rgba(255,255,255,0.8)', borderRadius: 10, boxShadow: '0 2px 8px rgba(30,64,175,0.04)', padding: '18px 0', marginTop: 8 }}>
+                <FeatureItem>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.75 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z" />
+                  </svg>
+                  Quick & easy to complete
+                </FeatureItem>
+                <FeatureItem>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.75 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z" />
+                  </svg>
+                  Your data is secure
+                </FeatureItem>
+                <FeatureItem>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.5 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z" />
+                  </svg>
+                  Progress is saved
+                </FeatureItem>
+              </FeatureList>
+            </HeroContent>
+            <HeroVisual>
+              <KarnatakaMapContainer>
+                <img src="/images/Karnataka_districts_map.svg" alt="Karnataka Map" style={{ width: '100%', height: 'auto', display: 'block' }} />
+              </KarnatakaMapContainer>
+            </HeroVisual>
+          </HeroSection>
+        </Fade>
 
-      <HeroSection>
-        {/* <QuestionComponent /> */}
-        {/* <QuestionnairePage /> */}
-      </HeroSection>
-
-    </LandingPageContainer>
+        {/* Optionally, you can add more sections or info here */}
+      </LandingPageContainer>
+    </>
   );
 }

@@ -19,55 +19,70 @@ import {
   FiGlobe,
   FiHeart
 } from 'react-icons/fi';
-import { 
-  PageContainer, 
-  ContentWrapper, 
-  GlassCard, 
-  Title, 
-  Subtitle, 
-  Grid, 
-  Button, 
-  Input, 
-  Select,
-  LoadingSpinner,
-  StatusMessage
-} from '../../styles/components';
-import { theme } from '../../styles/theme';
-import { useAdminData, Response } from '../../hooks/useAdminData';
+import {
+  PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend as RechartsLegend,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
+} from 'recharts';
 
-// Simple filtering hook for responses
-const useResponseFilters = (responses: Response[], itemsPerPage = 10) => {
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [currentPage, setCurrentPage] = React.useState(1);
+const PageContainer = styled.div`
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+`;
 
-  // Filter responses based on search term
-  const filteredResponses = responses.filter(response => {
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      response.name.toLowerCase().includes(searchLower) ||
-      response.location.toLowerCase().includes(searchLower) ||
-      response.district.toLowerCase().includes(searchLower)
-    );
-  });
+const ContentWrapper = styled.div`
+  max-width: 1400px;
+  width: 100%;
+  padding: 2rem 1rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+`;
 
-  // Pagination
-  const totalPages = Math.ceil(filteredResponses.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedResponses = filteredResponses.slice(startIndex, startIndex + itemsPerPage);
+const HeaderCard = styled.div`
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+`;
 
-  return {
-    filteredResponses,
-    paginatedResponses,
-    searchTerm,
-    setSearchTerm,
-    currentPage,
-    setCurrentPage,
-    totalPages
-  };
-};
+const HeaderTitle = styled.h1`
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+`;
 
-// Custom components for admin dashboard
-const StatCard = styled(GlassCard)<{ color?: string }>`
+const HeaderDescription = styled.p`
+  color: #6b7280;
+  font-size: 1.1rem;
+  font-weight: 400;
+`;
+
+const StatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+`;
+
+const StatCard = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'color'
+})<{ color?: string }>`
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   padding: 2rem;
@@ -247,9 +262,44 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const uniqueLocations = [...new Set(responses.map(r => r.district || r.location))].filter(Boolean);
+  if (!isLoggedIn) {
+    return null;
+  }
 
-  if (!isLoggedIn) return null;
+  // Colors for charts
+  const GENDER_COLORS = ['#4299e1', '#f5576c', '#38f9d7'];
+  const DISTRICT_COLORS = ['#764ba2', '#43e97b', '#fa709a', '#fee140', '#f093fb', '#4facfe', '#a8edea', '#fed6e3'];
+
+  // Helper: Prepare gender data for PieChart
+  const genderData = [
+    { name: 'Male', value: stats.genderDistribution.male },
+    { name: 'Female', value: stats.genderDistribution.female },
+    { name: 'Other', value: stats.genderDistribution.other },
+  ];
+
+  // Helper: Prepare district data for BarChart
+  const districtCounts: Record<string, number> = {};
+  responses.forEach(r => {
+    if (r.district && r.district !== 'N/A') {
+      districtCounts[r.district] = (districtCounts[r.district] || 0) + 1;
+    }
+  });
+  const districtData = Object.entries(districtCounts).map(([district, count]) => ({ district, count }));
+
+  // Helper: Prepare age data for Histogram
+  const ageBins = [0, 18, 25, 35, 45, 60, 100];
+  const ageLabels = ['<18', '18-24', '25-34', '35-44', '45-59', '60+'];
+  const ageCounts = Array(ageLabels.length).fill(0);
+  responses.forEach(r => {
+    const age = Number(r.age);
+    for (let i = 0; i < ageBins.length - 1; i++) {
+      if (age >= ageBins[i] && age < ageBins[i + 1]) {
+        ageCounts[i]++;
+        break;
+      }
+    }
+  });
+  const ageData = ageLabels.map((label, i) => ({ ageRange: label, count: ageCounts[i] }));
 
   return (
     <PageContainer>
@@ -356,7 +406,59 @@ export default function AdminDashboardPage() {
               </StatIcon>
             </StatHeader>
           </StatCard>
-        </Grid>
+        </StatsGrid>
+
+        {/* --- Visualizations Section --- */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '2rem' }}>
+          {/* Gender Distribution Pie Chart */}
+          <div style={{ flex: '1 1 300px', minWidth: 300, background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
+            <h3 style={{ textAlign: 'center', marginBottom: 16 }}>Gender Distribution</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie data={genderData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                  {genderData.map((entry, idx) => (
+                    <Cell key={`cell-gender-${idx}`} fill={GENDER_COLORS[idx % GENDER_COLORS.length]} />
+                  ))}
+                </Pie>
+                <RechartsTooltip />
+                <RechartsLegend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Responses by District Bar Chart */}
+          <div style={{ flex: '2 1 400px', minWidth: 400, background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
+            <h3 style={{ textAlign: 'center', marginBottom: 16 }}>Responses by District</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={districtData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="district" angle={-30} textAnchor="end" interval={0} height={60} />
+                <YAxis allowDecimals={false} />
+                <RechartsTooltip />
+                <Bar dataKey="count" fill="#764ba2">
+                  {districtData.map((entry, idx) => (
+                    <Cell key={`cell-district-${idx}`} fill={DISTRICT_COLORS[idx % DISTRICT_COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Age Distribution Histogram */}
+          <div style={{ flex: '1 1 300px', minWidth: 300, background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 4px 16px rgba(0,0,0,0.07)' }}>
+            <h3 style={{ textAlign: 'center', marginBottom: 16 }}>Age Distribution</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={ageData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="ageRange" />
+                <YAxis allowDecimals={false} />
+                <RechartsTooltip />
+                <Bar dataKey="count" fill="#43e97b" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        {/* --- End Visualizations Section --- */}
 
         <SearchContainer>
           <SearchIconWrapper>
