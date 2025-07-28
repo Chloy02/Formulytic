@@ -8,17 +8,47 @@ export async function POST(request: NextRequest) {
   try {
     await connectMongo();
     
-    const { email, password, project } = await request.json();
+    const body = await request.json();
+    console.log('Login request body:', body); // Debug logging
+    
+    const { email, password, project } = body;
 
+    // More specific validation with detailed error messages
     if (!email || !password || !project) {
-      return NextResponse.json({ message: 'Email, password, and project are required' }, { status: 400 });
+      const missingFields = [];
+      if (!email) missingFields.push('email');
+      if (!password) missingFields.push('password');
+      if (!project) missingFields.push('project');
+      
+      console.log('Missing fields:', missingFields); // Debug logging
+      return NextResponse.json({ 
+        message: `Missing required fields: ${missingFields.join(', ')}`,
+        missingFields 
+      }, { status: 400 });
     }
 
-    // Find user by email and project
-    const user = await User.findOne({ 
-      email: email,
-      project: project
-    });
+    // Find user by email and project, or by username for admin
+    let user;
+    if (project === 'admin') {
+      // For admin login, try to find by email or username
+      user = await User.findOne({ 
+        $and: [
+          {
+            $or: [
+              { email: email },
+              { username: email } // Allow login with username for admin
+            ]
+          },
+          { role: 'admin' }
+        ]
+      });
+    } else {
+      // Regular user login
+      user = await User.findOne({ 
+        email: email,
+        project: project
+      });
+    }
 
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });

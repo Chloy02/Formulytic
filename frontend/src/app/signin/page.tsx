@@ -214,6 +214,17 @@ const SignInPage: React.FC = () => {
   const { login } = useAuth(); // Assuming useAuth provides a login function
   const { t } = useTranslation(); // Translation hook
   const router = useRouter();
+  
+  // Debug function - can be called from browser console
+  (window as any).debugLogin = () => {
+    console.log('Current form state:', { 
+      email, 
+      password: password ? `[${password.length} chars]` : '[empty]', 
+      project 
+    });
+    console.log('Available projects:', projects);
+    console.log('Projects loading:', projectsLoading);
+  };
 
   // Fetch available projects on component mount
   useEffect(() => {
@@ -241,9 +252,23 @@ const SignInPage: React.FC = () => {
     setError(null); // Clear previous errors
     setIsLoading(true);
     
+    // Debug logging for form data
+    console.log('Form submission data:', { 
+      email: email, 
+      password: password ? `[${password.length} chars]` : '[empty]', 
+      project: project 
+    });
+    
     // Basic client-side validation for required fields
     if (!email || !password || !project) {
-        setError('Please fill in all required fields (Email, Password, Project).');
+        const missingFields = [];
+        if (!email) missingFields.push('Email');
+        if (!password) missingFields.push('Password');
+        if (!project) missingFields.push('Project');
+        
+        const errorMsg = `Please fill in all required fields: ${missingFields.join(', ')}.`;
+        console.log('Client validation failed:', errorMsg);
+        setError(errorMsg);
         setIsLoading(false);
         return;
     }

@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
+  username: { type: String, unique: true, sparse: true }, // Optional username field for admin
   password: { type: String, required: true },
   role: {
     type: String,
@@ -10,7 +11,7 @@ const userSchema = new mongoose.Schema({
   },
   project: {
     type: String,
-    enum: ['project1', 'project2'],
+    enum: ['project1', 'project2', 'admin'], // Allow admin project
     required: true
   }
 }, {

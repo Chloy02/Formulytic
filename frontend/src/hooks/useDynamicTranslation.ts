@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '../contexts/TranslationContext';
-import { offlineTranslations } from '../utils/offlineTranslations';
+// import { offlineTranslations } from '../utils/offlineTranslations';
 
 interface TranslationCache {
   [key: string]: string;
@@ -35,18 +35,18 @@ export const useDynamicTranslation = () => {
       return text;
     }
 
-    // Check offline translations first (instant)
-    if (offlineTranslations[text]) {
-      const offlineTranslation = offlineTranslations[text];
+    // // Check offline translations first (instant)
+    // if (offlineTranslations[text]) {
+    //   const offlineTranslation = offlineTranslations[text];
       
-      // Cache the offline translation
-      setTranslationCache(prev => ({
-        ...prev,
-        [cacheKey]: offlineTranslation
-      }));
+    //   // Cache the offline translation
+    //   setTranslationCache(prev => ({
+    //     ...prev,
+    //     [cacheKey]: offlineTranslation
+    //   }));
       
-      return offlineTranslation;
-    }
+    //   return offlineTranslation;
+    // }
 
     try {
       setIsTranslating(true);

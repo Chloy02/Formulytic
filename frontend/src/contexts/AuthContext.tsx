@@ -14,6 +14,7 @@ interface AuthContextType {
   isLoggedIn: boolean;
   user: User | null;
   login: (email: string, password: string, project: string) => Promise<{ role: string; project: string }>;
+  adminLogin: (email: string, password: string) => Promise<{ success: boolean; user?: User; error?: string }>;
   logout: () => void;
 }
 
@@ -70,6 +71,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string, project: string) => {
     try {
+      console.log('Login attempt with:', { email, project, passwordLength: password?.length }); // Debug logging
+      
       const response = await axios.post('/api/auth/login', { email, password, project });
       const { token, user: userData } = response.data;
       localStorage.setItem('token', token);
@@ -81,14 +84,60 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log('User logged in!', userData);
       
       return { role: userData.role, project: userData.project };
-    } catch (error) {
-      console.error('Login failed', error);
+    } catch (error: any) {
+      console.error('Login failed:', error);
+      console.error('Error response:', error.response?.data); // Additional debug info
       throw error;
     }
   };
 
+  // Admin login function that doesn't require project selection
+  const adminLogin = async (email: string, password: string) => {
+    try {
+      console.log('Admin login attempt with:', { email, passwordLength: password?.length }); // Debug logging
+      
+      // For admin login, we'll use a default project or make project optional in the API
+      // First, let's try with a default admin project
+      const response = await axios.post('/api/auth/login', { 
+        email, 
+        password, 
+        project: 'admin' // Default admin project
+      });
+      
+      const { token, user: userData } = response.data;
+      
+      // Verify the user is actually an admin
+      if (userData.role !== 'admin') {
+        throw new Error('Access denied. Admin privileges required.');
+      }
+      
+      localStorage.setItem('token', token);
+      setToken(token);
+      setIsLoggedIn(true);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      setUser(userData);
+      console.log('Admin logged in!', userData);
+      
+      return { 
+        success: true, 
+        user: userData,
+        role: userData.role, 
+        project: userData.project 
+      };
+    } catch (error: any) {
+      console.error('Admin login failed:', error);
+      console.error('Error response:', error.response?.data); // Additional debug info
+      
+      return {
+        success: false,
+        error: error.response?.data?.message || error.message || 'Login failed'
+      };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, login, adminLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );

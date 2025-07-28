@@ -94,7 +94,7 @@ const AdminLogin: React.FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { adminLogin } = useAuth();
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,7 +112,7 @@ const AdminLogin: React.FC = () => {
     setError('');
 
     try {
-      const result = await login(formData.username, formData.password);
+      const result = await adminLogin(formData.username, formData.password);
       
       if (result.success && result.user?.role === 'admin') {
         router.push('/admin-dashboard');
