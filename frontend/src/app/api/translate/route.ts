@@ -8,37 +8,58 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 });
     }
 
-    // Call LibreTranslate API from server side
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+    // Only try Microsoft Translator API if credentials are available
+    const microsoftKey = process.env.MICROSOFT_TRANSLATOR_KEY;
+    const microsoftRegion = process.env.MICROSOFT_TRANSLATOR_REGION;
+    
+    if (microsoftKey && microsoftKey.trim() !== '') {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-    const response = await fetch('https://translate.argosopentech.com/translate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        q: text,
-        source: 'en',
-        target: target,
-        format: 'text'
-      }),
-      signal: controller.signal
-    });
+        const route = `/translate?api-version=3.0&from=en&to=${target}`;
+        const endpoint = 'https://api.cognitive.microsofttranslator.com';
+        const requestBody = [{ Text: text }];
 
-    clearTimeout(timeoutId);
+        const response = await fetch(endpoint + route, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key': microsoftKey,
+            'Ocp-Apim-Subscription-Region': microsoftRegion || ''
+          },
+          body: JSON.stringify(requestBody),
+          signal: controller.signal
+        });
 
-    if (!response.ok) {
-      throw new Error(`LibreTranslate API error: ${response.status} ${response.statusText}`);
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const data = await response.json();
+          const translatedText = data[0]?.translations[0]?.text || text;
+          
+          return NextResponse.json({ 
+            originalText: text,
+            translatedText: translatedText,
+            target: target,
+            service: 'microsoft'
+          });
+        } else {
+          console.warn(`Microsoft Translator failed: ${response.status} ${response.statusText}`);
+        }
+      } catch (microsoftError) {
+        console.warn('Microsoft Translator error:', microsoftError);
+      }
     }
 
-    const data = await response.json();
-    const translatedText = data.translatedText || text;
-
+    // No translation service available - return original text
+    console.log('No translation service available, returning original text for:', text);
+    
     return NextResponse.json({ 
       originalText: text,
-      translatedText: translatedText,
-      target: target 
+      translatedText: text, // Return original text as fallback
+      target: target,
+      service: 'none'
     });
 
   } catch (error: any) {

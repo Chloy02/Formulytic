@@ -28,6 +28,93 @@ const PageContainer = styled.div`
   padding: 20px;
 `;
 
+// Floating Christ University Logo (top-right)
+const FloatingChristLogo = styled.div`
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .dark & {
+    background: rgba(30, 41, 59, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    top: 75px;
+    right: 15px;
+    padding: 6px;
+  }
+
+  @media (max-width: 480px) {
+    top: 70px;
+    right: 10px;
+    padding: 4px;
+  }
+`;
+
+// Karnataka Government Logo (top-left)
+const FloatingKarnatakaLogo = styled.div`
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .dark & {
+    background: rgba(30, 41, 59, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    top: 75px;
+    left: 15px;
+    padding: 6px;
+  }
+
+  @media (max-width: 480px) {
+    top: 70px;
+    left: 10px;
+    padding: 4px;
+  }
+`;
+
+const FloatingLogoImage = styled.img`
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    height: 50px;
+  }
+
+  @media (max-width: 480px) {
+    height: 45px;
+  }
+`;
+
 const Header = styled.div`
   text-align: center;
   margin-bottom: 30px;
@@ -1207,7 +1294,7 @@ export default function QuestionnairePage() {
         router.push('/');
       }, 2000);
     } catch {
-      setError('Failed to submit response. Please try again.');
+      setError(t('Failed to submit response. Please try again.'));
       setTimeout(() => setError(''), 3000);
     } finally {
       setLoading(false);
@@ -1245,20 +1332,37 @@ export default function QuestionnairePage() {
   }
 
   return (
-    <PageContainer>
+    <PageWrapper>
+      <EnhancedNavbar />
+      
+      {/* Floating Logos */}
+      <FloatingChristLogo>
+        <FloatingLogoImage 
+          src="/images/christ.svg" 
+          alt="Christ University"
+        />
+      </FloatingChristLogo>
+      
+      <FloatingKarnatakaLogo>
+        <FloatingLogoImage 
+          src="/images/Seal_of_Karnataka.svg" 
+          alt="Karnataka Government"
+        />
+      </FloatingKarnatakaLogo>
+
+      <PageContainer>
       <Header>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '15px' }}>
           <BackButton onClick={backToHome}>
             <svg viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
             </svg>
-            Back to Home
+            {t("Back to Home")}
           </BackButton>
-          <div></div>
         </div>
-        <Title>SCSP/TSP Impact Evaluation Questionnaire</Title>
-        <Subtitle>Your responses will help us improve these important social programs</Subtitle>
-        <TimeEstimate>Takes less than 8 minutes</TimeEstimate>
+        <Title>{t("SCSP/TSP Impact Evaluation Questionnaire")}</Title>
+        <Subtitle>{t("Your responses will help us improve these important social programs")}</Subtitle>
+        <TimeEstimate>{t("Takes less than 8 minutes")}</TimeEstimate>
         
         <ProgressSteps>
           {[1, 2, 3, 4, 5, 6].map((step) => (
@@ -1276,12 +1380,12 @@ export default function QuestionnairePage() {
                 {isSectionCompleted(step) ? '✓' : step}
               </StepNumber>
               <StepLabel isActive={currentSection === step}>
-                {step === 1 && 'Basic Info'}
-                {step === 2 && 'Demographics'}
-                {step === 3 && 'Scheme Details'}
-                {step === 4 && 'Benefits'}
-                {step === 5 && 'Impact'}
-                {step === 6 && 'Feedback'}
+                {step === 1 && t('Basic Info')}
+                {step === 2 && t('Demographics')}
+                {step === 3 && t('Scheme Details')}
+                {step === 4 && t('Benefits')}
+                {step === 5 && t('Impact')}
+                {step === 6 && t('Feedback')}
               </StepLabel>
             </ProgressStep>
           ))}
@@ -1290,7 +1394,7 @@ export default function QuestionnairePage() {
         <ProgressBar>
           <AnimatedProgressFill progress={progress} />
         </ProgressBar>
-        <div style={{ fontWeight: 600, color: '#667eea', marginBottom: 8 }}>Section {currentSection} of 6</div>
+        <div style={{ fontWeight: 600, color: '#667eea', marginBottom: 8 }}>{t('Section')} {currentSection} {t('of')} 6</div>
         <StepperContainer>
           <Stepper>
             {SECTIONS.map((section, idx) => (
@@ -1314,8 +1418,8 @@ export default function QuestionnairePage() {
         {currentSection === 1 && (
           <>
             <ModernSectionHeader>
-              <ModernSectionTitle>Section 1: Basic Information & Demographics</ModernSectionTitle>
-              <ModernSectionDesc>Demographics and background</ModernSectionDesc>
+              <ModernSectionTitle>{t("Section 1: Basic Information & Demographics")}</ModernSectionTitle>
+              <ModernSectionDesc>{t("Demographics and background")}</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
               <div style={{
@@ -1328,10 +1432,10 @@ export default function QuestionnairePage() {
                 lineHeight: '1.6'
               }}>
                 <h3 style={{ margin: '0 0 15px 0', color: '#1e40af', fontSize: '1.1rem' }}>
-                  About This Survey
+                  {t("About This Survey")}
                 </h3>
                 <p style={{ margin: '0 0 10px 0', color: '#000000' }}>
-                  This survey evaluates the effectiveness of government welfare schemes in Karnataka:
+                  {t("This survey evaluates the effectiveness of government welfare schemes in Karnataka:")}
                 </p>
                 <ul style={{ margin: '0', paddingLeft: '20px', color: '#000000' }}>
                   <li><strong>SCSP (Scheduled Caste Sub Plan)</strong> - Programs for Scheduled Caste communities</li>
@@ -1671,14 +1775,14 @@ export default function QuestionnairePage() {
         {currentSection === 2 && (
           <>
             <ModernSectionHeader>
-              <ModernSectionTitle>Section 2: Socio-Economic Impact</ModernSectionTitle>
-              <ModernSectionDesc>Changes after scheme</ModernSectionDesc>
+              <ModernSectionTitle>{t("Section 2: Socio-Economic Impact")}</ModernSectionTitle>
+              <ModernSectionDesc>{t("Changes after scheme")}</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
               <QuestionGroup>
                 <QuestionCard>
                   <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    Current Employment Status
+                    {t("Current Employment Status")}
                   </h4>
                   <FormGroup>
                     <Label>What is your current occupation?</Label>
@@ -1912,14 +2016,14 @@ export default function QuestionnairePage() {
         {currentSection === 3 && (
           <>
             <ModernSectionHeader>
-              <ModernSectionTitle>Section 3: Social Impact</ModernSectionTitle>
-              <ModernSectionDesc>Social acceptance and challenges</ModernSectionDesc>
+              <ModernSectionTitle>{t("Section 3: Social Impact")}</ModernSectionTitle>
+              <ModernSectionDesc>{t("Social acceptance and challenges")}</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
               <QuestionGroup>
                 <QuestionCard>
                   <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    Social Progress Assessment
+                    {t("Social Progress Assessment")}
                   </h4>
                   <FormGroup>
                     <Label>On a scale of 1-5, how much progressive change have you experienced? (1=No Change, 5=Significant Change)</Label>
@@ -2196,14 +2300,14 @@ export default function QuestionnairePage() {
         {currentSection === 4 && (
           <>
             <ModernSectionHeader>
-              <ModernSectionTitle>Section 4: Scheme Experience</ModernSectionTitle>
-              <ModernSectionDesc>Experience with the process</ModernSectionDesc>
+              <ModernSectionTitle>{t("Section 4: Scheme Experience")}</ModernSectionTitle>
+              <ModernSectionDesc>{t("Experience with the process")}</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
               <QuestionGroup>
                 <QuestionCard>
                   <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    Scheme Awareness & Access
+                    {t("Scheme Awareness & Access")}
                   </h4>
                   <FormGroup>
                     <Label>How did you become aware of the scheme?</Label>
@@ -2430,14 +2534,14 @@ export default function QuestionnairePage() {
         {currentSection === 5 && (
           <>
             <ModernSectionHeader>
-              <ModernSectionTitle>Section 5: Feedback</ModernSectionTitle>
-              <ModernSectionDesc>Suggestions and improvements</ModernSectionDesc>
+              <ModernSectionTitle>{t("Section 5: Feedback")}</ModernSectionTitle>
+              <ModernSectionDesc>{t("Suggestions and improvements")}</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
               <QuestionGroup>
                 <QuestionCard>
                   <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    Scheme Impact Assessment
+                    {t("Scheme Impact Assessment")}
                   </h4>
                   <FormGroup>
                     <Label>Do you think the scheme is successful in reducing caste-based discrimination?</Label>
@@ -2772,18 +2876,18 @@ export default function QuestionnairePage() {
         {currentSection === 6 && (
           <>
             <ModernSectionHeader>
-              <ModernSectionTitle>Section 6: Devadasi Children</ModernSectionTitle>
-              <ModernSectionDesc>Special section for Devadasi children</ModernSectionDesc>
+              <ModernSectionTitle>{t("Section 6: Devadasi Children")}</ModernSectionTitle>
+              <ModernSectionDesc>{t("Special section for Devadasi children")}</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
               <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f0f4f8', borderRadius: '8px', borderLeft: '4px solid #4299e1' }}>
-                <strong>Note:</strong> This section is specifically for children of Devadasi women who have benefited from marriage incentive schemes. If this doesn&apos;t apply to you, you can skip this section.
+                <strong>{t("Note")}:</strong> {t("This section is specifically for children of Devadasi women who have benefited from marriage incentive schemes. If this doesn't apply to you, you can skip this section.")}
               </div>
 
               <QuestionGroup>
                 <QuestionCard>
                   <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    Marriage & Social Impact
+                    {t("Marriage & Social Impact")}
                   </h4>
                   <FormGroup>
                     <Label>At what age did you get married?</Label>
@@ -3019,5 +3123,6 @@ export default function QuestionnairePage() {
         {success && <SuccessMessage>{success}</SuccessMessage>}
       </ModernFormContainer>
     </PageContainer>
+    </PageWrapper>
   );
 }

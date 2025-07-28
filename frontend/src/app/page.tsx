@@ -106,27 +106,44 @@ const HeroVisual = styled.div`
   }
 `;
 
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 30px;
-  margin-bottom: 30px;
+// Floating Christ University Logo (top-right)
+const FloatingChristLogo = styled.div`
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .dark & {
+    background: rgba(30, 41, 59, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
 
   @media (max-width: 768px) {
-    justify-content: center;
-    gap: 25px;
-    margin-bottom: 25px;
+    top: 75px;
+    right: 15px;
+    padding: 6px;
   }
 
   @media (max-width: 480px) {
-    gap: 20px;
-    margin-bottom: 20px;
+    top: 70px;
+    right: 10px;
+    padding: 4px;
   }
 `;
 
-const LogoImage = styled.img`
-  height: 80px;
+const FloatingLogoImage = styled.img`
+  height: 60px;
   width: auto;
   object-fit: contain;
   transition: all 0.3s ease;
@@ -138,15 +155,53 @@ const LogoImage = styled.img`
   }
 
   @media (max-width: 768px) {
-    height: 70px;
+    height: 50px;
   }
 
   @media (max-width: 480px) {
-    height: 60px;
+    height: 40px;
+  }
+`;
+
+// Centered Karnataka Logo Container
+const CenteredLogoContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  position: relative;
+
+  @media (max-width: 768px) {
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 20px;
+  }
+`;
+
+const CenteredLogoImage = styled.img`
+  height: 112px; /* 40% bigger than original 80px */
+  width: auto;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    filter: drop-shadow(0 0 15px rgba(0, 123, 255, 0.6)) drop-shadow(0 0 25px rgba(0, 123, 255, 0.4));
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    height: 98px; /* 40% bigger than 70px */
+  }
+
+  @media (max-width: 480px) {
+    height: 84px; /* 40% bigger than 60px */
   }
 
   @media (max-width: 360px) {
-    height: 50px;
+    height: 70px; /* 40% bigger than 50px */
   }
 `;
 
@@ -261,13 +316,25 @@ const PrimaryButton = styled(Button)`
 
 const SecondaryButton = styled(Button)`
   background-color: transparent;
-  color: #6b7280;
+  color: #1f2937;
   border: 2px solid #d1d5db;
+  font-weight: 600;
 
   &:hover {
     background-color: #f9fafb;
     border-color: #9ca3af;
-    color: #374151;
+    color: #111827;
+  }
+
+  .dark & {
+    color: #f9fafb;
+    border-color: #4b5563;
+    
+    &:hover {
+      background-color: rgba(55, 65, 81, 0.1);
+      border-color: #6b7280;
+      color: #ffffff;
+    }
   }
 
   @media (max-width: 768px) {
@@ -374,6 +441,13 @@ const HomePage: React.FC = () => {
 
   return (
     <PageWrapper>
+      {/* Floating Christ University Logo */}
+      <FloatingChristLogo>
+        <a href="https://christuniversity.in" target="_blank" rel="noopener noreferrer">
+          <FloatingLogoImage src="/images/christ.svg" alt="Christ University Logo" />
+        </a>
+      </FloatingChristLogo>
+
       <EnhancedNavbar />
       
       <HeroSection>
@@ -385,18 +459,18 @@ const HomePage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <LogoContainer>
-                <LogoImage src="/images/christ.svg" alt="Christ University Logo" />
-                <LogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
-              </LogoContainer>
+              <CenteredLogoContainer>
+                <a href="https://karnataka.gov.in/english" target="_blank" rel="noopener noreferrer">
+                  <CenteredLogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
+                </a>
+              </CenteredLogoContainer>
               
               <MainHeading>
-                Karnataka Social <HighlightText>Impact</HighlightText> Evaluation Survey
+                {t("Karnataka Social")} <HighlightText>{t("Impact")}</HighlightText> {t("Evaluation Survey")}
               </MainHeading>
               
               <SubText size="lg" color="secondary">
-                Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. 
-                Your responses will contribute to improving social equity and integration across beneficiary communities.
+                {t("Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. Your responses will contribute to improving social equity and integration across beneficiary communities.")}
               </SubText>
               
               <HeroButtons>
@@ -408,7 +482,7 @@ const HomePage: React.FC = () => {
                   whileTap={{ scale: 0.95 }}
                 >
                   <Stack direction="row" spacing="sm" align="center">
-                    <span>Start Questionnaire</span>
+                    <span>{t("Start Questionnaire")}</span>
                     <ArrowRight size={16} />
                   </Stack>
                 </PrimaryButton>
@@ -420,31 +494,10 @@ const HomePage: React.FC = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    Already Registered? Sign In
+                    {t("Already Registered? Sign In")}
                   </SecondaryButton>
                 )}
               </HeroButtons>
-              
-              <FeatureList>
-                <FeatureItem>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.75 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z" />
-                  </svg>
-                  Quick & easy to complete
-                </FeatureItem>
-                <FeatureItem>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.75 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z" />
-                  </svg>
-                  Your data is secure
-                </FeatureItem>
-                <FeatureItem>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M12.736 3.97a.75.75 0 0 1 .054 1.06L7.208 11.45a.75.75 0 0 1-1.06 0L3.25 8.56a.75.5 0 0 1 1.06-1.06l2.12 2.12L11.626 4.024a.75.75 0 0 1 1.11-.054z" />
-                  </svg>
-                  Progress is saved
-                </FeatureItem>
-              </FeatureList>
             </motion.div>
           </HeroContent>
           
