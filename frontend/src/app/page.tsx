@@ -466,12 +466,11 @@ const HomePage: React.FC = () => {
               </CenteredLogoContainer>
               
               <MainHeading>
-                Karnataka Social <HighlightText>Impact</HighlightText> Evaluation Survey
+                {t("Karnataka Social")} <HighlightText>{t("Impact")}</HighlightText> {t("Evaluation Survey")}
               </MainHeading>
               
               <SubText size="lg" color="secondary">
-                Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. 
-                Your responses will contribute to improving social equity and integration across beneficiary communities.
+                {t("Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. Your responses will contribute to improving social equity and integration across beneficiary communities.")}
               </SubText>
               
               <HeroButtons>
@@ -483,7 +482,7 @@ const HomePage: React.FC = () => {
                   whileTap={{ scale: 0.95 }}
                 >
                   <Stack direction="row" spacing="sm" align="center">
-                    <span>Start Questionnaire</span>
+                    <span>{t("Start Questionnaire")}</span>
                     <ArrowRight size={16} />
                   </Stack>
                 </PrimaryButton>
@@ -495,7 +494,7 @@ const HomePage: React.FC = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    Already Registered? Sign In
+                    {t("Already Registered? Sign In")}
                   </SecondaryButton>
                 )}
               </HeroButtons>

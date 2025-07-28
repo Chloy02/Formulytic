@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts/TranslationContext';
 import { theme } from '@/styles/theme';
 import { User, Menu, X, LogOut, Settings } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
@@ -330,6 +331,7 @@ const MobileNavLink = styled(Link)`
 
 const Navbar: React.FC = () => {
   const { isLoggedIn, user, logout } = useAuth();
+  const { t } = useTranslation(); // Translation hook
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {

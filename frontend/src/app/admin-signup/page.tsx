@@ -6,6 +6,7 @@ import Navbar2 from '../../components/Navbar2';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useTranslation } from '@/contexts/TranslationContext';
 import { API_CONFIG } from '../../config/api';
 import { 
   PageContainer, 
@@ -70,6 +71,7 @@ export default function AdminSignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation(); // Translation hook
   const router = useRouter();
 
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
