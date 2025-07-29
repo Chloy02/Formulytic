@@ -561,7 +561,7 @@ export default function AdminDashboardPage() {
           </Subtitle>
         </GlassCard>
 
-        <Grid minWidth="280px">
+        <Grid style={{ minWidth: "280px" }}>
           <StatCard color={theme.colors.primary.gradient}>
             <StatHeader>
               <div>
