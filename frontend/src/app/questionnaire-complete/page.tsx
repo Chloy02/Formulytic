@@ -1124,7 +1124,7 @@ export default function QuestionnairePage() {
   const loadDraft = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${ServerLink}/responses/draft`, {
+      const response = await axios.get('/api/responses/draft', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -1177,7 +1177,7 @@ export default function QuestionnairePage() {
       const token = localStorage.getItem('token');
       const responseId = user?.id ? `draft_${user.id}_${Date.now()}` : `draft_${Date.now()}`;
       
-      await axios.post(`${ServerLink}/responses/draft`, 
+      await axios.post('/api/responses/draft', 
         { 
           answers: formData,
           responseId: responseId
@@ -1205,7 +1205,7 @@ export default function QuestionnairePage() {
       const token = localStorage.getItem('token');
       const responseId = user?.id ? `response_${user.id}_${Date.now()}` : `response_${Date.now()}`;
       
-      await axios.post(`${ServerLink}/responses`, 
+      await axios.post('/api/responses', 
         { 
           answers: formData,
           responseId: responseId

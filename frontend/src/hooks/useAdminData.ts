@@ -99,10 +99,10 @@ export const useAdminData = () => {
         throw new Error('Authentication required. Please login as admin.');
       }
       
-      console.log('Attempting to fetch from:', `${ServerLink}/responses/admin`);
+      console.log('Attempting to fetch from:', '/api/responses/admin');
       
       // Call the admin endpoint with proper authentication
-      const response = await fetch(`${ServerLink}/responses/admin`, {
+      const response = await fetch('/api/responses/admin', {
         method: 'GET',
         headers: { 
           'Content-Type': 'application/json',
@@ -189,7 +189,7 @@ export const useAdminData = () => {
   const deleteResponse = async (id: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${ServerLink}/responses/${id}`, {
+      const response = await fetch(`/api/responses/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
