@@ -114,8 +114,10 @@ console.log('Mongo URI:', process.env.MONGO_URI ? 'Loaded' : 'Not Loaded'); // C
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(process.env.PORT || 5000, () => {
+    app.listen(process.env.PORT || 5000, '0.0.0.0', () => {
       console.log('Server running on port', process.env.PORT || 5000);
+      console.log('Environment:', process.env.NODE_ENV);
+      console.log('Frontend URL:', process.env.FRONTEND_URL);
     });
   })
   .catch(err => console.error('Failed to connect to MongoDB', err));
