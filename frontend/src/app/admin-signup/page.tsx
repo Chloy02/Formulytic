@@ -46,7 +46,7 @@ const SignInLinkText = styled.p`
   margin: 0;
 
   a {
-    color: ${theme.colors.primary.blue};
+    color: ${theme.colors.primary[500]};
     text-decoration: none;
     font-weight: 500;
 
@@ -91,14 +91,15 @@ export default function AdminSignupPage() {
     setLoading(true);
     try {
       await axios.post('/api/auth/register', {  
-        username,
-        email,
-        password,
-        role: 'admin'
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        role: 'admin',
+        project: 'admin'
       });
       
       setSuccess('Admin account created successfully! You can now sign in.');
-      setTimeout(() => router.push('/signin'), 2000);
+      setTimeout(() => router.push('/admin-login'), 2000);
     } catch (err) {
       const errorMessage = axios.isAxiosError(err) 
         ? err.response?.data?.message || 'Registration failed'

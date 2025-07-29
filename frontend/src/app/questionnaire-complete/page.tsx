@@ -1124,7 +1124,7 @@ export default function QuestionnairePage() {
   const loadDraft = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/responses/draft', {
+      const response = await axios.get(`${ServerLink}/responses/draft`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -1175,8 +1175,13 @@ export default function QuestionnairePage() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/responses/draft', 
-        { answers: formData },
+      const responseId = user?.id ? `draft_${user.id}_${Date.now()}` : `draft_${Date.now()}`;
+      
+      await axios.post(`${ServerLink}/responses/draft`, 
+        { 
+          answers: formData,
+          responseId: responseId
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -1185,7 +1190,8 @@ export default function QuestionnairePage() {
       );
       setSuccess('Draft saved successfully!');
       setTimeout(() => setSuccess(''), 3000);
-    } catch {
+    } catch (err) {
+      console.error('Draft save error:', err);
       setError('Failed to save draft. Please try again.');
       setTimeout(() => setError(''), 3000);
     } finally {
@@ -1197,8 +1203,13 @@ export default function QuestionnairePage() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/responses', 
-        { answers: formData },
+      const responseId = user?.id ? `response_${user.id}_${Date.now()}` : `response_${Date.now()}`;
+      
+      await axios.post(`${ServerLink}/responses`, 
+        { 
+          answers: formData,
+          responseId: responseId
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -1209,7 +1220,8 @@ export default function QuestionnairePage() {
       setTimeout(() => {
         router.push('/');
       }, 2000);
-    } catch {
+    } catch (err) {
+      console.error('Submit error:', err);
       setError('Failed to submit response. Please try again.');
       setTimeout(() => setError(''), 3000);
     } finally {

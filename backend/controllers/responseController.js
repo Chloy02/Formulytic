@@ -63,12 +63,17 @@ const saveDraft = async (req, res) => {
 
     const userID = req.user.id;
     const userLatestResponse = req.body.answers;
-    const responseID = req.body.responseId;
+    let responseID = req.body.responseId;
 
     console.log("user ID: " + userID);
 
-    if (!userLatestResponse || !responseID || !userID) {
+    if (!userLatestResponse || !userID) {
       return res.status(400).json({ message: 'User response not provided.' });
+    }
+
+    // Generate responseID if not provided
+    if (!responseID) {
+      responseID = `draft_${userID}_${Date.now()}`;
     }
 
     let draft = await getSavedDraft(userID, responseID);
@@ -77,14 +82,14 @@ const saveDraft = async (req, res) => {
 
     console.log("Draft is: ", draft);
 
-    if (draft) {
+    if (draft && draft.length > 0) {
       // Update existing draft
       newResponse = {
         answers: userLatestResponse,
         lastSaved: new Date(),
       };
       await updateUserDraft(userID, newResponse);
-      console.log("Old Draft: ");
+      console.log("Old Draft Updated");
 
     } else {
       // Create new draft
@@ -95,7 +100,7 @@ const saveDraft = async (req, res) => {
         status: 'draft',
       };
       draft = await saveDraftToDB(newResponse);
-      console.log("New Draft: ");
+      console.log("New Draft Created");
     }
 
     return res.status(201).json({ message: 'Draft saved', response: draft });
@@ -122,11 +127,12 @@ const getDraft = async (req, res) => {
 
     const draft = await getSavedDraft(userID);
 
-    if (!draft) {
+    if (!draft || draft.length === 0) {
       return res.status(404).json({ message: 'No draft found' });
     }
 
-    return res.status(200).json(draft);
+    // Return the first draft found
+    return res.status(200).json(draft[0]);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

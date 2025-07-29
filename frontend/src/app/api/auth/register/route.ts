@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     await connectMongo();
     
-    const { password, role, email, project } = await request.json();
+    const { password, role, email, project, username } = await request.json();
 
     if (!password || !email || !project) {
       return NextResponse.json({ message: 'Email, password, and project are required' }, { status: 400 });
@@ -24,7 +24,8 @@ export async function POST(request: NextRequest) {
       password: hashed, 
       role: role || 'user', 
       email,
-      project
+      project,
+      username: username || email.split('@')[0] // Use email prefix as username if not provided
     });
     
     await newUser.save();
