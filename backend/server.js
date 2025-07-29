@@ -9,19 +9,41 @@ const authRoutes = require('./routes/authRoutes');
 const responseRoutes = require('./routes/responseRoutes');
 const questionRoutes = require('./routes/questions.router');
 
-// Data Module
+// Data Module (This section seems to be for testing/seeding, which is fine)
 const { addQuestion } = require('./data/questions/questions.data');
 
 const app = express();
 
-// More specific CORS configuration
+// --- CORRECTED CORS CONFIGURATION ---
+
+// Define a list of allowed origins.
+const allowedOrigins = [
+  'http://localhost:3000', // For local frontend development
+  'http://localhost:3001', // Alternative local port
+];
+
+// If a FRONTEND_URL is set in the production environment, add it to the list.
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://10.211.21.103:3000'], // Support both Next.js default and alternative ports
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl) or from an allowed origin
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
-// To Remove in Production
+// --- END OF CORS CONFIGURATION ---
+
+
+// To Remove in Production (This function is fine as long as you don't call it)
 function addData() {
   // Example usage of addQuestion
   const exampleQuestion = [{
@@ -74,25 +96,25 @@ function addData() {
         ]
       }
     ],
-    "createdBy": "60c72b2f9b1d8c001c8e4e3a", 
+    "createdBy": "60c72b2f9b1d8c001c8e4e3a",
   }
   ];
 
   addQuestion(exampleQuestion);
 }
+// addData(); // Good that this is commented out.
 
-// addData();
-// To Remove in Production
-
-
+// Apply Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// Apply Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/responses', responseRoutes);
 app.use('/api/questions', questionRoutes);
 
-console.log('Mongo URI:', process.env.MONGO_URI);
+// Connect to Database and Start Server
+console.log('Mongo URI:', process.env.MONGO_URI ? 'Loaded' : 'Not Loaded'); // Check if MONGO_URI is loaded
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
@@ -100,4 +122,4 @@ mongoose.connect(process.env.MONGO_URI)
       console.log('Server running on port', process.env.PORT || 5000);
     });
   })
-  .catch(err => console.error(err));
+  .catch(err => console.error('Failed to connect to MongoDB', err));
