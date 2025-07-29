@@ -1,5 +1,4 @@
 const User = require('../models/userModel');
-// const { User, createUser } = require('../mockData'); // Temporary mock data
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -49,6 +48,18 @@ async function register(req, res) {
 async function login(req, res) {
   try {
     const { username, password } = req.body;
+
+    // Hardcoded admin check
+    if (username === 'admin' && password === 'admin123') {
+      const token = generateToken('admin_hardcoded', 'admin');
+      const userData = {
+        id: 'admin_hardcoded',
+        username: 'admin',
+        email: 'admin@formulytic.com',
+        role: 'admin'
+      };
+      return res.status(200).json({ token, user: userData });
+    }
 
     // Allow login with either username or email
     const user = await getUserInfo(username, 1);
