@@ -34,10 +34,14 @@ interface QuestionnaireData {
   sections: SectionData[];
 }
 
+interface FormData {
+  [key: string]: string | string[] | number | boolean | null | undefined;
+}
+
 interface DynamicQuestionnaireProps {
   questionnaire: QuestionnaireData;
-  onDataChange?: (data: Record<string, any>) => void;
-  initialData?: Record<string, any>;
+  onDataChange?: (data: FormData) => void;
+  initialData?: FormData;
   enableTranslation?: boolean;
 }
 
@@ -162,7 +166,7 @@ export default function DynamicQuestionnaire({
   initialData = {},
   enableTranslation = true 
 }: DynamicQuestionnaireProps) {
-  const [formData, setFormData] = useState<Record<string, any>>(initialData);
+  const [formData, setFormData] = useState<FormData>(initialData);
   const [translatedQuestionnaire, setTranslatedQuestionnaire] = useState<QuestionnaireData | null>(null);
   
   const { 
@@ -178,8 +182,8 @@ export default function DynamicQuestionnaire({
   // Translate questionnaire when language changes
   useEffect(() => {
     if (enableTranslation) {
-      translateQuestionnaire(originalQuestionnaire, language)
-        .then(setTranslatedQuestionnaire)
+      translateQuestionnaire(originalQuestionnaire as unknown as Record<string, unknown>, language)
+        .then(result => setTranslatedQuestionnaire(result as unknown as QuestionnaireData))
         .catch(error => {
           console.error('Failed to translate questionnaire:', error);
           setTranslatedQuestionnaire(originalQuestionnaire);
@@ -191,14 +195,14 @@ export default function DynamicQuestionnaire({
 
   const questionnaire = translatedQuestionnaire || originalQuestionnaire;
 
-  const handleInputChange = (questionId: string, value: any) => {
+  const handleInputChange = (questionId: string, value: string | string[] | number | boolean) => {
     const newData = { ...formData, [questionId]: value };
     setFormData(newData);
     onDataChange?.(newData);
   };
 
   const handleCheckboxChange = (questionId: string, optionValue: string, checked: boolean) => {
-    const currentValues = formData[questionId] || [];
+    const currentValues = Array.isArray(formData[questionId]) ? formData[questionId] as string[] : [];
     let newValues;
     
     if (checked) {
@@ -219,7 +223,7 @@ export default function DynamicQuestionnaire({
         return (
           <Input
             type={question.type}
-            value={value}
+            value={typeof value === 'string' || typeof value === 'number' ? value : ''}
             onChange={(e) => handleInputChange(question.id, e.target.value)}
             placeholder={question.placeholder}
             required={question.required}
@@ -229,7 +233,7 @@ export default function DynamicQuestionnaire({
       case 'textarea':
         return (
           <TextArea
-            value={value}
+            value={typeof value === 'string' || typeof value === 'number' ? value : ''}
             onChange={(e) => handleInputChange(question.id, e.target.value)}
             placeholder={question.placeholder}
             required={question.required}
@@ -240,7 +244,7 @@ export default function DynamicQuestionnaire({
         return (
           <Input
             type="date"
-            value={value}
+            value={typeof value === 'string' || typeof value === 'number' ? value : ''}
             onChange={(e) => handleInputChange(question.id, e.target.value)}
             required={question.required}
           />
@@ -249,7 +253,7 @@ export default function DynamicQuestionnaire({
       case 'select':
         return (
           <Select
-            value={value}
+            value={typeof value === 'string' || typeof value === 'number' ? value : ''}
             onChange={(e) => handleInputChange(question.id, e.target.value)}
             required={question.required}
           >

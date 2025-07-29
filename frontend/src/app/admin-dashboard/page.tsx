@@ -280,18 +280,6 @@ const EmptyState = styled.div`
   }
 `;
 
-// Type definitions
-interface ResponseData {
-  id: string;
-  name: string;
-  age: number;
-  gender: string;
-  district: string;
-  location: string;
-  submittedAt: string;
-  status: string;
-}
-
 const Title = styled.h1<{ size?: string }>`
   font-size: ${props => props.size === 'lg' ? '2.5rem' : props.size === 'md' ? '1.75rem' : '1.5rem'};
   font-weight: 800;
@@ -473,7 +461,7 @@ const LoadingSpinner = styled.div`
 
 export default function AdminDashboardPage() {
   const { isLoggedIn } = useAuth();
-  const { t } = useTranslation(); // Translation hook
+  // const { t } = useTranslation(); // Translation hook - reserved for future use
   const router = useRouter();
   const { responses, stats, loading, error, loadResponses, deleteResponse, exportData } = useAdminData();
   const {
@@ -520,7 +508,7 @@ export default function AdminDashboardPage() {
 
   // Helper: Prepare district data for BarChart
   const districtCounts: Record<string, number> = {};
-  responses.forEach((r: any) => {
+  responses.forEach((r) => {
     if (r.district && r.district !== 'N/A') {
       districtCounts[r.district] = (districtCounts[r.district] || 0) + 1;
     }
@@ -531,7 +519,7 @@ export default function AdminDashboardPage() {
   const ageBins = [0, 18, 25, 35, 45, 60, 100];
   const ageLabels = ['<18', '18-24', '25-34', '35-44', '45-59', '60+'];
   const ageCounts = Array(ageLabels.length).fill(0);
-  responses.forEach((r: any) => {
+  responses.forEach((r) => {
     const age = Number(r.age);
     for (let i = 0; i < ageBins.length - 1; i++) {
       if (age >= ageBins[i] && age < ageBins[i + 1]) {
@@ -543,7 +531,7 @@ export default function AdminDashboardPage() {
   const ageData = ageLabels.map((label, i) => ({ ageRange: label, count: ageCounts[i] }));
 
   // Helper: Get unique locations
-  const uniqueLocations = Array.from(new Set(responses.map((r: any) => r.location).filter(Boolean)));
+  const uniqueLocations = Array.from(new Set(responses.map((r) => r.location).filter(Boolean)));
 
   // Event handlers
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -768,7 +756,7 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedResponses.map((response: ResponseData) => (
+                  {paginatedResponses.map((response) => (
                     <TableRow key={response.id}>
                       <TableCell>{response.name}</TableCell>
                       <TableCell>{response.age}</TableCell>

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useTranslation } from '@/contexts/TranslationContext';
-import { API_CONFIG } from '../../config/api';
+// import { API_CONFIG } from '../../config/api'; // Reserved for future use
 import { 
   PageContainer, 
   GlassCard, 
@@ -46,7 +46,7 @@ const SignInLinkText = styled.p`
   margin: 0;
 
   a {
-    color: ${theme.colors.primary.blue};
+    color: ${theme.colors.primary[600]};
     text-decoration: none;
     font-weight: 500;
 
@@ -63,7 +63,6 @@ const CardHeader = styled.div`
 
 export default function AdminSignupPage() {
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -71,7 +70,7 @@ export default function AdminSignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { t } = useTranslation(); // Translation hook
+  // const { t } = useTranslation(); // Translation hook - reserved for future use
   const router = useRouter();
 
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,10 +90,10 @@ export default function AdminSignupPage() {
     setLoading(true);
     try {
       await axios.post('/api/auth/register', {  
-        username,
-        email,
-        password,
-        role: 'admin'
+        email: formData.email,
+        password: formData.password,
+        role: 'admin',
+        project: 'admin' // Admin users get a special admin project
       });
       
       setSuccess('Admin account created successfully! You can now sign in.');
@@ -123,18 +122,6 @@ export default function AdminSignupPage() {
           </CardHeader>
 
           <form onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label htmlFor="username">Username</Label>
-              <Input
-                type="text"
-                id="username"
-                placeholder="Choose a username"
-                value={formData.username}
-                onChange={handleChange('username')}
-                required
-              />
-            </FormGroup>
-
             <FormGroup>
               <Label htmlFor="email">Email</Label>
               <Input

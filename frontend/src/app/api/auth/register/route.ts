@@ -39,18 +39,26 @@ export async function POST(request: NextRequest) {
 
     console.log('User created successfully:', email);
     return NextResponse.json({ message: 'Registered successfully' }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorObj = error as {
+      message: string;
+      code?: number;
+      name?: string;
+      keyValue?: Record<string, string>;
+      stack?: string;
+    };
+    
     console.error('Register error details:', {
-      message: error.message,
-      code: error.code,
-      name: error.name,
-      keyValue: error.keyValue,
-      stack: error.stack
+      message: errorObj.message,
+      code: errorObj.code,
+      name: errorObj.name,
+      keyValue: errorObj.keyValue,
+      stack: errorObj.stack
     });
     
     // Handle duplicate key errors more specifically
-    if (error.code === 11000) {
-      const duplicateField = Object.keys(error.keyValue || {})[0] || 'field';
+    if (errorObj.code === 11000) {
+      const duplicateField = Object.keys(errorObj.keyValue || {})[0] || 'field';
       const message = duplicateField === 'email' 
         ? 'A user with this email already exists'
         : `A user with this ${duplicateField} already exists`;
@@ -59,7 +67,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({ 
       message: 'Registration failed. Please try again.',
-      error: error.message 
+      error: errorObj.message 
     }, { status: 500 });
   }
 }

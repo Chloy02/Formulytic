@@ -296,14 +296,23 @@ export default function SignUpPage() {
       setTimeout(() => {
         router.push('/signin');
       }, 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorObj = error as { 
+        response?: { 
+          data?: { 
+            message?: string; 
+            errors?: { email?: string; password?: string; [key: string]: string | undefined } 
+          }; 
+          status?: number 
+        } 
+      };
       console.error('Registration error:', error);
-      console.error('Error response:', error.response?.data);
-      console.error('Error status:', error.response?.status);
+      console.error('Error response:', errorObj.response?.data);
+      console.error('Error status:', errorObj.response?.status);
       
       // Prioritize API-specific error messages if available
-      const apiErrorMessage = error.response?.data?.message;
-      const apiErrors = error.response?.data?.errors; // Assuming your API might return a structured 'errors' object
+      const apiErrorMessage = errorObj.response?.data?.message;
+      const apiErrors = errorObj.response?.data?.errors; // Assuming your API might return a structured 'errors' object
 
       if (apiErrors) {
         // Handle field-specific errors from the API
@@ -320,7 +329,7 @@ export default function SignUpPage() {
 
       } else {
         // Fallback for general server errors (e.g., server down, network issue, or unhandled API error)
-        const errorMessage = apiErrorMessage || error.message || 'Signup failed. Please try again. Network or server issue.';
+        const errorMessage = apiErrorMessage || (errorObj as Error).message || 'Signup failed. Please try again. Network or server issue.';
         setGeneralError(errorMessage);
       }
     } finally {

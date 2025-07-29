@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   },
   project: {
     type: String,
-    enum: ['project1', 'project2'],
+    enum: ['project1', 'project2', 'admin'],
     required: true
   }
 }, {

@@ -96,7 +96,7 @@ const AdminLogin: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   
   const { adminLogin } = useAuth();
-  const { t } = useTranslation(); // Translation hook
+  // const { t } = useTranslation(); // Translation hook - reserved for future use
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,7 +124,7 @@ const AdminLogin: React.FC = () => {
       } else {
         setError(result.error || 'Invalid admin credentials');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Login failed. Please try again.');
     } finally {
       setIsLoading(false);

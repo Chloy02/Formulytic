@@ -239,9 +239,10 @@ const SignInPage: React.FC = () => {
           setProjects(fallbackProjects);
           console.log('Using fallback projects:', fallbackProjects);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorObj = error as { response?: { data?: string }; message?: string };
         console.error('Failed to fetch projects:', error);
-        console.error('Error details:', error.response?.data || error.message);
+        console.error('Error details:', errorObj.response?.data || errorObj.message);
         
         // Provide fallback projects even if API fails
         const fallbackProjects = [
@@ -286,9 +287,10 @@ const SignInPage: React.FC = () => {
         // Handle unexpected login result structure
         setError('Login successful, but user role not found for redirection. Please contact support.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorObj = err as { response?: { data?: { message?: string } } };
       // Axios errors usually have a `response.data.message`
-      const errorMessage = err.response?.data?.message || 'An unexpected error occurred during sign-in. Please try again.';
+      const errorMessage = errorObj.response?.data?.message || 'An unexpected error occurred during sign-in. Please try again.';
       setError(errorMessage);
       console.error('Sign-in failed:', err); // Log full error for debugging
     } finally {

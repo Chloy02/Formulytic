@@ -1,8 +1,6 @@
-import { MongooseCache } from 'mongoose';
-
 declare global {
   var mongoose: {
-    conn: any;
-    promise: any;
+    conn: typeof import('mongoose') | null;
+    promise: Promise<typeof import('mongoose')> | null;
   };
 }

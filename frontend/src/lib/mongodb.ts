@@ -1,15 +1,23 @@
 import mongoose from 'mongoose';
 
+declare global {
+  var mongoose: {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+  } | undefined;
+}
+
 const MONGO_URI = process.env.MONGO_URI!;
 
 if (!MONGO_URI) {
   throw new Error('Please define the MONGO_URI environment variable inside .env.local');
 }
 
-let cached = global.mongoose;
+// eslint-disable-next-line prefer-const
+let cached = global.mongoose || { conn: null, promise: null };
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+if (!global.mongoose) {
+  global.mongoose = cached;
 }
 
 async function connectMongo() {
@@ -23,7 +31,7 @@ async function connectMongo() {
     };
 
     cached.promise = mongoose.connect(MONGO_URI, opts).then((mongoose) => {
-      return mongoose;
+      return cached;
     });
   }
 

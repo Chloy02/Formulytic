@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     // Extract token from "Bearer <token>" format
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
     
     const user = await User.findById(decoded.id).select('-password');
     if (!user) {

@@ -120,26 +120,42 @@ export const useAdminData = () => {
         let transformedResponses: Response[] = [];
         
         if (Array.isArray(data)) {
-          transformedResponses = data.map((item: any, index: number) => {
+          transformedResponses = data.map((item: Record<string, unknown>, index: number) => {
             console.log(`Processing item ${index}:`, item);
             
             // Handle different possible data structures
-            const answers = item.answers || {};
-            const section1 = answers.section1 || {};
+            const answers = (item.answers as Record<string, unknown>) || {};
+            const section1 = (answers.section1 as Record<string, unknown>) || {};
+            
+            // Helper function to safely convert to string
+            const toString = (value: unknown): string => {
+              if (typeof value === 'string') return value;
+              if (typeof value === 'number') return value.toString();
+              return 'N/A';
+            };
+            
+            // Helper function to safely convert to date string
+            const toDateString = (value: unknown): string => {
+              if (typeof value === 'string' || typeof value === 'number') {
+                try {
+                  return new Date(value).toLocaleDateString();
+                } catch {
+                  return new Date().toLocaleDateString();
+                }
+              }
+              return new Date().toLocaleDateString();
+            };
             
             return {
-              id: item._id || item.id || `temp-${index}`,
-              name: section1.respondentName || section1.uname || item.name || 'N/A',
+              id: toString(item._id || item.id) || `temp-${index}`,
+              name: toString(section1.respondentName || section1.uname || item.name),
               age: Number(section1.age || item.age || 0),
-              gender: section1.gender || item.gender || 'N/A',
-              location: section1.district || section1.location || item.location || 'N/A',
-              district: section1.district || item.district || item.location || 'N/A',
-              rating: item.rating || 'N/A',
-              submittedAt: item.submissionDate ? new Date(item.submissionDate).toLocaleDateString() : 
-                          item.submittedAt ? new Date(item.submittedAt).toLocaleDateString() : 
-                          item.createdAt ? new Date(item.createdAt).toLocaleDateString() :
-                          new Date().toLocaleDateString(),
-              status: item.status || 'submitted',
+              gender: toString(section1.gender || item.gender),
+              location: toString(section1.district || section1.location || item.location),
+              district: toString(section1.district || item.district || item.location),
+              rating: toString(item.rating),
+              submittedAt: toDateString(item.submissionDate || item.submittedAt || item.createdAt),
+              status: toString(item.status) || 'submitted',
               answers: answers
             };
           });

@@ -7,7 +7,7 @@ interface ButtonProps {
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   disabled?: boolean;
-  as?: any;
+  as?: React.ElementType;
   href?: string;
 }
 

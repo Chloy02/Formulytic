@@ -62,17 +62,19 @@ export async function POST(request: NextRequest) {
       service: 'none'
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Translation API error:', error);
     
     // Return original text if translation fails
     const { text } = await request.json().catch(() => ({ text: '' }));
     
+    const errorMessage = error instanceof Error ? error.message : 'Translation failed';
+    
     return NextResponse.json({ 
       originalText: text,
       translatedText: text, // Fallback to original text
       target: 'kn',
-      error: error.message 
+      error: errorMessage 
     }, { status: 500 });
   }
 }

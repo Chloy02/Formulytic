@@ -68,10 +68,10 @@ export function usePageTranslation(options: PageTranslationOptions = {}) {
   }, [excludeSelectors]);
 
   // Extract texts from questionnaire data structure
-  const extractQuestionnaireTexts = useCallback((questionnaire: any): string[] => {
+  const extractQuestionnaireTexts = useCallback((questionnaire: Record<string, unknown>): string[] => {
     const texts: string[] = [];
     
-    const extractFromObject = (obj: any) => {
+    const extractFromObject = (obj: unknown): void => {
       if (typeof obj === 'string' && obj.trim().length > 0) {
         if (!texts.includes(obj.trim())) {
           texts.push(obj.trim());
@@ -158,7 +158,7 @@ export function usePageTranslation(options: PageTranslationOptions = {}) {
   }, [translationCache, translations]);
 
   // Translate questionnaire data structure
-  const translateQuestionnaire = useCallback(async (questionnaire: any, targetLanguage: string = 'kn'): Promise<any> => {
+  const translateQuestionnaire = useCallback(async (questionnaire: Record<string, unknown>, targetLanguage: string = 'kn'): Promise<Record<string, unknown>> => {
     if (targetLanguage === 'en') {
       return questionnaire;
     }
@@ -166,22 +166,23 @@ export function usePageTranslation(options: PageTranslationOptions = {}) {
     const texts = extractQuestionnaireTexts(questionnaire);
     const translationMap = await bulkTranslate(texts, targetLanguage);
 
-    const translateObject = (obj: any): any => {
+    const translateObject = (obj: unknown): unknown => {
       if (typeof obj === 'string' && obj.trim().length > 0) {
         return translationMap[obj.trim()] || obj;
       } else if (Array.isArray(obj)) {
         return obj.map(translateObject);
       } else if (obj && typeof obj === 'object') {
-        const translated: any = {};
-        Object.keys(obj).forEach(key => {
-          translated[key] = translateObject(obj[key]);
+        const translated: Record<string, unknown> = {};
+        const objRecord = obj as Record<string, unknown>;
+        Object.keys(objRecord).forEach(key => {
+          translated[key] = translateObject(objRecord[key]);
         });
         return translated;
       }
       return obj;
     };
 
-    return translateObject(questionnaire);
+    return translateObject(questionnaire) as Record<string, unknown>;
   }, [extractQuestionnaireTexts, bulkTranslate]);
 
   // Translate entire page content

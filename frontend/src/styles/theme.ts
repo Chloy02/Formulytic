@@ -12,6 +12,7 @@ export const theme = {
       700: '#1d4ed8',
       800: '#1e40af',
       900: '#1e3a8a',
+      blue: '#3b82f6',
       gradient: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
     },
     secondary: {
@@ -109,6 +110,8 @@ export const theme = {
       secondary: '#f8fafc',
       tertiary: '#f1f5f9',
       glass: 'rgba(255, 255, 255, 0.95)',
+      border: '#e2e8f0',
+      white: '#ffffff',
     },
     text: {
       primary: '#0f172a',
@@ -158,6 +161,7 @@ export const theme = {
     xs: '0.25rem',
     sm: '0.5rem',
     base: '1rem',
+    md: '1.25rem',
     lg: '1.5rem',
     xl: '2rem',
     '2xl': '2.5rem',
@@ -193,6 +197,7 @@ export const theme = {
     xs: '320px',
     sm: '640px',
     md: '768px',
+    tablet: '768px',
     lg: '1024px',
     xl: '1280px',
     '2xl': '1536px',
