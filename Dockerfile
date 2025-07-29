@@ -1,45 +1,49 @@
 FROM node:18-alpine
 
-# Build arguments for environment variables
-ARG MONGO_URI
-ARG NEXTAUTH_SECRET
-ARG NEXTAUTH_URL
-ARG JWT_SECRET
-
 # Set working directory
 WORKDIR /app
 
-# Copy all package files
+# Copy backend package files first
 COPY backend/package*.json ./backend/
-COPY frontend/package*.json ./frontend/
 
-# Install backend dependencies (production only)
+# Install backend dependencies
 WORKDIR /app/backend
-RUN npm ci --omit=dev && npm cache clean --force
-
-# Install frontend dependencies (all dependencies for build)
-WORKDIR /app/frontend  
-RUN npm ci && npm cache clean --force
-
-# Set build environment variables
-ENV MONGO_URI=$MONGO_URI
-ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
-ENV NEXTAUTH_URL=$NEXTAUTH_URL
-ENV JWT_SECRET=$JWT_SECRET
-
-# Copy and build frontend
-COPY frontend/ ./
-RUN npm run build
-
-# Remove dev dependencies after build
-RUN npm prune --omit=dev && npm cache clean --force
+RUN npm ci --production && npm cache clean --force
 
 # Copy backend source
-WORKDIR /app/backend
 COPY backend/ ./
+
+# Copy frontend package files
+WORKDIR /app
+COPY frontend/package*.json ./frontend/
+
+# Install frontend dependencies (all deps for build)
+WORKDIR /app/frontend
+RUN npm ci && npm cache clean --force
+
+# Copy frontend source and build
+COPY frontend/ ./
+
+# Build frontend with environment variables available at runtime
+ENV NODE_ENV=production
+RUN npm run build
+
+# Remove frontend dev dependencies to reduce image size
+RUN npm prune --production && npm cache clean --force
+
+# Switch back to backend directory
+WORKDIR /app/backend
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S appuser -u 1001 -G nodejs
+
+# Change ownership
+RUN chown -R appuser:nodejs /app
+USER appuser
 
 # Expose port
 EXPOSE 5000
 
-# Start the backend server
+# Start backend server
 CMD ["npm", "start"]
