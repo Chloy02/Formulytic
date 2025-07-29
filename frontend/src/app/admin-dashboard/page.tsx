@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Navbar2 from '../../components/Navbar2';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from '@/contexts/TranslationContext';
 import { useRouter } from 'next/navigation';
 import { theme } from '../../styles/theme';
 import { useAdminData } from '../../hooks/useAdminData';
@@ -472,6 +473,7 @@ const LoadingSpinner = styled.div`
 
 export default function AdminDashboardPage() {
   const { isLoggedIn } = useAuth();
+  const { t } = useTranslation(); // Translation hook
   const router = useRouter();
   const { responses, stats, loading, error, loadResponses, deleteResponse, exportData } = useAdminData();
   const {

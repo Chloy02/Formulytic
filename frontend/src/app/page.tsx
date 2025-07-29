@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -16,6 +16,7 @@ import {
   Stack
 } from '@/components/ui';
 import EnhancedNavbar from '@/components/EnhancedNavbar';
+import KarnatakaMap from '@/components/KarnatakaMap';
 import { 
   ArrowRight, 
   Sparkles
@@ -34,7 +35,6 @@ const PageWrapper = styled.div`
 
 const HeroSection = styled.section`
   padding: 6rem 0;
-  text-align: center;
   position: relative;
   overflow: hidden;
 
@@ -54,38 +54,167 @@ const HeroBackground = styled.div`
   pointer-events: none;
 `;
 
-const HeroContent = styled(Container)`
+const HeroContainer = styled(Container)`
   position: relative;
   z-index: 1;
-`;
-
-const BadgeWrapper = styled(motion.div)`
-  display: inline-flex;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  color: #1d4ed8;
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-bottom: 1.5rem;
-  border: 1px solid #bfdbfe;
+  gap: 60px;
+  max-width: 1400px;
 
-  .dark & {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
-    color: #60a5fa;
-    border-color: rgba(59, 130, 246, 0.3);
+  @media (max-width: 1024px) {
+    gap: 40px;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 30px;
   }
 `;
 
-const HeroTitle = styled(Heading)`
-  margin-bottom: 1.5rem;
+const HeroContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  max-width: 600px;
+
+  @media (max-width: 768px) {
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+  }
+`;
+
+const HeroVisual = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 500px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 20px;
+  }
+`;
+
+// Floating Christ University Logo (top-right)
+const FloatingChristLogo = styled.div`
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .dark & {
+    background: rgba(30, 41, 59, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    top: 75px;
+    right: 15px;
+    padding: 6px;
+  }
+
+  @media (max-width: 480px) {
+    top: 70px;
+    right: 10px;
+    padding: 4px;
+  }
+`;
+
+const FloatingLogoImage = styled.img`
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    filter: drop-shadow(0 0 15px rgba(0, 123, 255, 0.6)) drop-shadow(0 0 25px rgba(0, 123, 255, 0.4));
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    height: 50px;
+  }
+
+  @media (max-width: 480px) {
+    height: 40px;
+  }
+`;
+
+// Centered Karnataka Logo Container
+const CenteredLogoContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  position: relative;
+
+  @media (max-width: 768px) {
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 20px;
+  }
+`;
+
+const CenteredLogoImage = styled.img`
+  height: 112px; /* 40% bigger than original 80px */
+  width: auto;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    filter: drop-shadow(0 0 15px rgba(0, 123, 255, 0.6)) drop-shadow(0 0 25px rgba(0, 123, 255, 0.4));
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    height: 98px; /* 40% bigger than 70px */
+  }
+
+  @media (max-width: 480px) {
+    height: 84px; /* 40% bigger than 60px */
+  }
+
+  @media (max-width: 360px) {
+    height: 70px; /* 40% bigger than 50px */
+  }
+`;
+
+const MainHeading = styled(Heading)`
+  font-size: 56px;
+  font-weight: 800;
+  color: #1a202c;
+  line-height: 1.2;
+  margin-bottom: 20px;
   background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  line-height: 1.1;
 
   .dark & {
     background: linear-gradient(135deg, #f1f5f9 0%, #60a5fa 100%);
@@ -93,33 +222,214 @@ const HeroTitle = styled(Heading)`
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  @media (max-width: 1024px) {
+    font-size: 48px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 32px;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 26px;
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 24px;
+  }
 `;
 
-const HeroSubtitle = styled(Text)`
-  max-width: 600px;
-  margin: 0 auto 2rem;
+const HighlightText = styled.span`
+  color: #2563eb;
 `;
 
-const CTASection = styled.div`
+const SubText = styled(Text)`
+  font-size: 18px;
+  max-width: 700px;
+  margin-bottom: 40px;
+  line-height: 1.6;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin-bottom: 35px;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 15px;
+    margin-bottom: 30px;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 14px;
+  }
+`;
+
+const HeroButtons = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 20px;
+  margin-bottom: 40px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 35px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+`;
+
+const PrimaryButton = styled(Button)`
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+  padding: 18px 35px;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 16px 30px;
+    font-size: 16px;
+    text-transform: none;
+    letter-spacing: 0.2px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px 25px;
+    font-size: 15px;
+  }
+`;
+
+const SecondaryButton = styled(Button)`
+  background-color: transparent;
+  color: #1f2937;
+  border: 2px solid #d1d5db;
+  font-weight: 600;
+
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+    color: #111827;
+  }
+
+  .dark & {
+    color: #f9fafb;
+    border-color: #4b5563;
+    
+    &:hover {
+      background-color: rgba(55, 65, 81, 0.1);
+      border-color: #6b7280;
+      color: #ffffff;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const FeatureList = styled.div`
+  display: flex;
   justify-content: center;
+  gap: 30px;
   flex-wrap: wrap;
-  margin-bottom: 3rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  @media (max-width: 480px) {
+    gap: 15px;
+  }
+`;
+
+const FeatureItem = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #555;
+  font-weight: 500;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+    font-size: 15px;
+    padding: 8px 0;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    padding: 6px 0;
+  }
+
+  svg {
+    color: #28a745;
+    margin-right: 8px;
+    font-size: 20px;
+    flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      font-size: 18px;
+      margin-right: 6px;
+    }
+  }
+`;
+
+const KarnatakaMapContainer = styled.div`
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  
+  svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 10px 25px rgba(0, 123, 255, 0.15));
+  }
+
+  @media (max-width: 768px) {
+    max-width: 300px;
+    
+    svg {
+      filter: none;
+    }
+  }
 `;
 
 const HomePage: React.FC = () => {
   const { isLoggedIn, user } = useAuth();
-  const { t } = useTranslation(); // Translation hook
+  const { t } = useTranslation();
   const router = useRouter();
+
+  // Redirect admin users to admin dashboard
+  useEffect(() => {
+    if (isLoggedIn && user && user.role === 'admin') {
+      router.push('/admin-dashboard');
+    }
+  }, [isLoggedIn, user, router]);
+
+  // Don't render content for admin users (they'll be redirected)
+  if (isLoggedIn && user && user.role === 'admin') {
+    return null;
+  }
 
   const handleGetStarted = () => {
     if (isLoggedIn) {
-      if (user?.role === 'admin') {
-        router.push('/admin-dashboard');
-      } else {
-        router.push('/questionnaire');
-      }
+      router.push('/questionnaire');
     } else {
       router.push('/signup');
     }
@@ -131,60 +441,78 @@ const HomePage: React.FC = () => {
 
   return (
     <PageWrapper>
+      {/* Floating Christ University Logo */}
+      <FloatingChristLogo>
+        <a href="https://christuniversity.in" target="_blank" rel="noopener noreferrer">
+          <FloatingLogoImage src="/images/christ.svg" alt="Christ University Logo" />
+        </a>
+      </FloatingChristLogo>
+
       <EnhancedNavbar />
       
       <HeroSection>
         <HeroBackground />
-        <HeroContent maxWidth="lg">
-          <BadgeWrapper
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Sparkles size={16} />
-            <span>{t('Revolutionizing Data Collection')}</span>
-          </BadgeWrapper>
+        <HeroContainer maxWidth="lg">
+          <HeroContent>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <CenteredLogoContainer>
+                <a href="https://karnataka.gov.in/english" target="_blank" rel="noopener noreferrer">
+                  <CenteredLogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
+                </a>
+              </CenteredLogoContainer>
+              
+              <MainHeading>
+                {t("Karnataka Social")} <HighlightText>{t("Impact")}</HighlightText> {t("Evaluation Survey")}
+              </MainHeading>
+              
+              <SubText size="lg" color="secondary">
+                {t("Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. Your responses will contribute to improving social equity and integration across beneficiary communities.")}
+              </SubText>
+              
+              <HeroButtons>
+                <PrimaryButton
+                  size="lg"
+                  onClick={handleGetStarted}
+                  as={motion.button}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Stack direction="row" spacing="sm" align="center">
+                    <span>{t("Start Questionnaire")}</span>
+                    <ArrowRight size={16} />
+                  </Stack>
+                </PrimaryButton>
+                
+                {!isLoggedIn && (
+                  <SecondaryButton
+                    onClick={handleSignIn}
+                    as={motion.button}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {t("Already Registered? Sign In")}
+                  </SecondaryButton>
+                )}
+              </HeroButtons>
+            </motion.div>
+          </HeroContent>
           
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <HeroTitle>
-              {t('Transform Your Data Collection with Formulytic')}
-            </HeroTitle>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <HeroSubtitle size="lg" color="secondary">
-              {t('Create intelligent questionnaires, gather valuable insights, and make data-driven decisions with our powerful, easy-to-use platform designed for modern teams.')}
-            </HeroSubtitle>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <CTASection>
-              <Button
-                size="lg"
-                onClick={handleGetStarted}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Stack direction="row" spacing="sm" align="center">
-                  <span>{isLoggedIn ? t('Go to Dashboard') : t('Get Started Free')}</span>
-                  <ArrowRight size={20} />
-                </Stack>
-              </Button>
-            </CTASection>
-          </motion.div>
-        </HeroContent>
+          <HeroVisual>
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <KarnatakaMapContainer>
+                <KarnatakaMap />
+              </KarnatakaMapContainer>
+            </motion.div>
+          </HeroVisual>
+        </HeroContainer>
       </HeroSection>
     </PageWrapper>
   );

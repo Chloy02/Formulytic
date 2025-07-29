@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Shield, Lock, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts/TranslationContext';
 import { theme } from '@/styles/theme';
 import { Button, Input, Card, Heading, Text, Container, Alert, Stack } from '@/components/ui';
 
@@ -95,6 +96,7 @@ const AdminLogin: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   
   const { adminLogin } = useAuth();
+  const { t } = useTranslation(); // Translation hook
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
