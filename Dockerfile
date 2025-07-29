@@ -1,5 +1,11 @@
 FROM node:18-alpine
 
+# Build arguments for environment variables
+ARG MONGO_URI
+ARG NEXTAUTH_SECRET
+ARG NEXTAUTH_URL
+ARG JWT_SECRET
+
 # Set working directory
 WORKDIR /app
 
@@ -16,10 +22,14 @@ RUN npm ci --only=production && npm cache clean --force
 WORKDIR /app/frontend
 RUN npm ci && npm cache clean --force
 
+# Set environment variables for build
+ENV MONGO_URI=$MONGO_URI
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+ENV NEXTAUTH_URL=$NEXTAUTH_URL
+ENV JWT_SECRET=$JWT_SECRET
+
 # Copy frontend source and build
 COPY frontend/ ./
-# Copy environment file for build
-COPY frontend/.env.local ./.env.local
 RUN npm run build
 
 # Clean up dev dependencies after build to reduce image size
