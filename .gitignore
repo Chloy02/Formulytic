@@ -149,8 +149,6 @@ backend/logs/
 *.sqlite
 *.db
 
-# Package lock files (keep only one)
-package-lock.json
 yarn.lock
 
 # Turbo
