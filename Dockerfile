@@ -35,6 +35,10 @@ FROM node:18-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 
+# Copy the root package files and install root dependencies (like concurrently)
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
 # Copy backend code and production dependencies from the first stage
 COPY --from=backend-deps /app/node_modules ./backend/node_modules
 COPY backend/ ./backend
