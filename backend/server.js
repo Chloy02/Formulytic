@@ -110,7 +110,8 @@ app.use('/api/responses', responseRoutes);
 app.use('/api/questions', questionRoutes);
 
 // Connect to Database and Start Server
-console.log('Mongo URI:', process.env.MONGO_URI ? 'Loaded' : 'Not Loaded'); // Check if MONGO_URI is loaded
+console.log('Mongo URI:', process.env.MONGO_URI ? 'Loaded' : 'Not Loaded');
+console.log('Starting Railway deployment...');
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
