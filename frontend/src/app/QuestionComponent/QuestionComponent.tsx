@@ -25,7 +25,11 @@ interface CardData {
   icon: string
 }
 
-export default function QuestionComponent() {
+interface QuestionComponentProps {
+  onCardSelect?: (card: CardData) => void;
+}
+
+export default function QuestionComponent({ onCardSelect }: QuestionComponentProps) {
   const [cards, setCards] = useState<CardData[]>([])
   const router = useRouter() // ✅ Now `router` is available
 
@@ -40,7 +44,11 @@ export default function QuestionComponent() {
 
   // ✅ Moved here so it can access `router`
   const handleStartSurvey = (card: CardData) => {
-    router.push(`/section/${card.questionnaireID}`)
+    if (onCardSelect) {
+      onCardSelect(card);
+    } else {
+      router.push(`/section/${card.questionnaireID}`)
+    }
   }
 
   const getGradientClass = (color: CardData["color"]): string => {
@@ -51,8 +59,8 @@ export default function QuestionComponent() {
   }
 
   const getIconComponent = (iconName: string) => {
-    const LucideIcon = Icons[iconName as keyof typeof Icons]
-    return LucideIcon ? <LucideIcon className="h-12 w-12 text-white" /> : null
+    const LucideIcon = Icons[iconName as keyof typeof Icons] as React.ComponentType<{ className?: string }>;
+    return LucideIcon ? <LucideIcon className="h-12 w-12 text-white" /> : <Icons.FileText className="h-12 w-12 text-white" />
   }
 
   return (

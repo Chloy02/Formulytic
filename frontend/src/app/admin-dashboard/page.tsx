@@ -520,7 +520,7 @@ export default function AdminDashboardPage() {
 
   // Helper: Prepare district data for BarChart
   const districtCounts: Record<string, number> = {};
-  responses.forEach((r: any) => {
+  responses.forEach((r: ResponseData) => {
     if (r.district && r.district !== 'N/A') {
       districtCounts[r.district] = (districtCounts[r.district] || 0) + 1;
     }
@@ -531,7 +531,7 @@ export default function AdminDashboardPage() {
   const ageBins = [0, 18, 25, 35, 45, 60, 100];
   const ageLabels = ['<18', '18-24', '25-34', '35-44', '45-59', '60+'];
   const ageCounts = Array(ageLabels.length).fill(0);
-  responses.forEach((r: any) => {
+  responses.forEach((r: ResponseData) => {
     const age = Number(r.age);
     for (let i = 0; i < ageBins.length - 1; i++) {
       if (age >= ageBins[i] && age < ageBins[i + 1]) {

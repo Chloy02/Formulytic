@@ -981,7 +981,7 @@ const defaultFormData: FormData = {
 };
 
 const SECTION_ICONS = [
-  <FaUser />, <FaChartLine />, <FaUsers />, <FaClipboardCheck />, <FaCommentDots />, <FaChild />
+  <FaUser key="icon-1" />, <FaChartLine key="icon-2" />, <FaUsers key="icon-3" />, <FaClipboardCheck key="icon-4" />, <FaCommentDots key="icon-5" />, <FaChild key="icon-6" />
 ];
 const SECTIONS = [
   { title: 'Basic Information', description: 'Demographics and background' },
