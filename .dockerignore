@@ -1,18 +1,27 @@
-node_modules
-npm-debug.log
+# Git files
 .git
 .gitignore
-README.md
-.env
-.nyc_output
-coverage
-.coverage
-.coverage.*
-.cache
-.DS_Store
-.vscode
-backend/node_modules
-frontend/node_modules
+
+# Node modules
+**/node_modules
+
+# Build artifacts
 frontend/.next
 frontend/out
+
+# Logs
 *.log
+npm-debug.log*
+
+# Env files (Railway provides these)
+.env
+.env.local
+.env.*
+
+# Package lock files (these should NOT be ignored for Docker)
+# package-lock.json
+
+# Other
+.DS_Store
+.vscode
+README.md
