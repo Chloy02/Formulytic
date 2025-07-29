@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('/api/auth/me');
+      const response = await axios.get(`${API_CONFIG.BASE_URL}/api/auth/me`);
       setUser(response.data.user);
     } catch (error) {
       console.error('Failed to fetch user data:', error);
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string, project: string) => {
     try {
-      const response = await axios.post('/api/auth/login', { email, password, project });
+      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/auth/login`, { email, password, project });
       const { token, user: userData } = response.data;
       localStorage.setItem('token', token);
       setToken(token);
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const adminLogin = async (username: string, password: string) => {
     try {
-      const response = await axios.post('/api/auth/login', { 
+      const response = await axios.post(`${API_CONFIG.BASE_URL}/api/auth/login`, { 
         email: username, 
         password, 
         project: 'admin' 

@@ -63,11 +63,11 @@ const saveDraft = async (req, res) => {
 
     const userID = req.user.id;
     const userLatestResponse = req.body.answers;
-    const responseID = req.body.responseId;
+    const responseID = req.body.responseId || 'scsp-tsp-evaluation'; // Default responseId
 
     console.log("user ID: " + userID);
 
-    if (!userLatestResponse || !responseID || !userID) {
+    if (!userLatestResponse || !userID) {
       return res.status(400).json({ message: 'User response not provided.' });
     }
 

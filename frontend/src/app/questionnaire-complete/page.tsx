@@ -1173,7 +1173,10 @@ export default function QuestionnairePage() {
     try {
       const token = localStorage.getItem('token');
       await axios.post('http://localhost:5000/api/responses/draft', 
-        { answers: formData },
+        { 
+          answers: formData,
+          responseId: 'scsp-tsp-evaluation' // Required by backend
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -1182,7 +1185,8 @@ export default function QuestionnairePage() {
       );
       setSuccess('Draft saved successfully!');
       setTimeout(() => setSuccess(''), 3000);
-    } catch {
+    } catch (error) {
+      console.error('Save draft error:', error);
       setError('Failed to save draft. Please try again.');
       setTimeout(() => setError(''), 3000);
     } finally {
@@ -1195,7 +1199,10 @@ export default function QuestionnairePage() {
     try {
       const token = localStorage.getItem('token');
       await axios.post('http://localhost:5000/api/responses', 
-        { answers: formData },
+        { 
+          answers: formData,
+          responseId: 'scsp-tsp-evaluation' // Required by backend
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`

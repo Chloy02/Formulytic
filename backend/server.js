@@ -16,9 +16,10 @@ const app = express();
 
 // More specific CORS configuration
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://10.211.21.103:3000'], // Support both Next.js default and alternative ports
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://10.211.21.103:3000', 'http://10.144.123.84:3001'], // Support both Next.js default and alternative ports
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // Allow credentials
 };
 
 // To Remove in Production
