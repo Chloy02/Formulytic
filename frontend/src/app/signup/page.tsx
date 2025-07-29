@@ -283,16 +283,24 @@ export default function SignUpPage() {
     }
 
     try {
-      await axios.post('/api/auth/register', {
+      console.log('Attempting registration with:', { email, project });
+      
+      const response = await axios.post('/api/auth/register', {
         email,
         password,
         project,
       });
+      
+      console.log('Registration successful:', response.data);
       setSuccess('Account created successfully! Redirecting to sign in...');
       setTimeout(() => {
         router.push('/signin');
       }, 2000);
     } catch (error: any) {
+      console.error('Registration error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      
       // Prioritize API-specific error messages if available
       const apiErrorMessage = error.response?.data?.message;
       const apiErrors = error.response?.data?.errors; // Assuming your API might return a structured 'errors' object
@@ -312,9 +320,9 @@ export default function SignUpPage() {
 
       } else {
         // Fallback for general server errors (e.g., server down, network issue, or unhandled API error)
-        setGeneralError(apiErrorMessage || 'Signup failed. Please try again. Network or server issue.');
+        const errorMessage = apiErrorMessage || error.message || 'Signup failed. Please try again. Network or server issue.';
+        setGeneralError(errorMessage);
       }
-      console.error('Signup failed:', error.response?.data || error.message);
     } finally {
       setIsLoading(false);
     }
