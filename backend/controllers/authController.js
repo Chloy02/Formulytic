@@ -21,13 +21,18 @@ function generateToken(id, role) {
 
 async function register(req, res) {
   try {
-    const { username, password, email } = req.body;
+    const { username, password, email, role } = req.body;
 
     const existing = await getUserInfo(username);
     if (existing) return res.status(400).json({ message: 'User already exists' });
 
     const hashed = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, password: hashed, email });
+    const newUser = new User({ 
+      username, 
+      password: hashed, 
+      email,
+      role: role || 'user' // Default to 'user' if no role specified
+    });
 
     const data = await saveUserInfo(newUser);
 

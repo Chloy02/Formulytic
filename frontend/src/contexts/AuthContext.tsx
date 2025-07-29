@@ -69,8 +69,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string, project: string) => {
     try {
-      // --- FIX: Use the full ServerLink for the login endpoint ---
-      const response = await axios.post(`${ServerLink}/auth/login`, { email, password, project });
+      // Use the frontend API route with correct parameters
+      const response = await axios.post('/api/auth/login', { 
+        email: email, 
+        password: password,
+        project: project 
+      });
       const { token, user: userData } = response.data;
       localStorage.setItem('token', token);
       setToken(token);
@@ -89,11 +93,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const adminLogin = async (username: string, password: string) => {
     try {
-      // --- FIX: Use the full ServerLink for the admin login endpoint ---
-      const response = await axios.post(`${ServerLink}/auth/login`, { 
+      // Use the frontend API route with correct parameters
+      const response = await axios.post('/api/auth/login', { 
         email: username, 
-        password, 
-        project: 'admin' 
+        password: password,
+        project: 'admin'
       });
       
       const { token, user: userData } = response.data;
