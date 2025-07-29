@@ -1,8 +1,6 @@
 // API configuration
 export const API_CONFIG = {
-  BASE_URL: process.env.NODE_ENV === 'production' 
-    ? '' // Same domain in production (Railway)
-    : 'http://localhost:5000',
+  BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5001',
   ENDPOINTS: {
     AUTH: {
       LOGIN: '/api/auth/login',

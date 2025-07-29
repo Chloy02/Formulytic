@@ -1,39 +1,32 @@
 {
-  "name": "formulytic-fullstack",
+  "name": "formulytic",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
-    "start": "cd backend && npm start",
     "dev": "concurrently --names \"🖥️ BACKEND,🌐 FRONTEND\" --prefix-colors \"bgBlue.bold,bgMagenta.bold\" \"npm run server\" \"npm run frontend\"",
     "server": "npm --prefix backend run dev",
     "frontend": "npm --prefix frontend run dev",
+    "start": "concurrently \"npm run server:prod\" \"npm run frontend:prod\"",
     "server:prod": "cd backend && npm start",
     "frontend:prod": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
     "install:all": "npm install && npm install --prefix frontend && npm install --prefix backend",
-    "install-backend": "cd backend && npm install",
-    "install-frontend": "cd frontend && npm install",
     "server:only": "npm --prefix backend run dev",
     "frontend:only": "npm --prefix frontend run dev",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "npm run build && npm run start"
-  },
-  "engines": {
-    "node": "18.x",
-    "npm": "9.x"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Chloy02/Formulytic.git"
   },
-  "keywords": ["questionnaire", "survey", "karnataka", "social-impact"],
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Chloy02/Formulytic/issues"
   },
   "homepage": "https://github.com/Chloy02/Formulytic#readme",
-  "description": "Karnataka Social Impact Evaluation Survey - Full Stack Application",
+  "description": "",
   "devDependencies": {
     "concurrently": "^9.2.0"
   }

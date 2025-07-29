@@ -2,14 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const path = require('path');
 
 dotenv.config({ path: __dirname + '/.env' });
 
 const authRoutes = require('./routes/authRoutes');
 const responseRoutes = require('./routes/responseRoutes');
 const questionRoutes = require('./routes/questions.router');
-const healthRoutes = require('./routes/healthRoutes');
 
 // Data Module
 const { addQuestion } = require('./data/questions/questions.data');
@@ -18,17 +16,9 @@ const app = express();
 
 // More specific CORS configuration
 const corsOptions = {
-  origin: [
-    'http://localhost:3000', 
-    'http://localhost:3001', 
-    'http://10.211.21.103:3000', 
-    'http://10.144.123.84:3001',
-    process.env.RAILWAY_STATIC_URL,
-    process.env.RAILWAY_PUBLIC_DOMAIN
-  ].filter(Boolean), // Remove undefined values
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://10.211.21.103:3000'], // Support both Next.js default and alternative ports
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // Allow credentials
 };
 
 // To Remove in Production
@@ -98,16 +88,6 @@ function addData() {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Health check route
-app.use('/api', healthRoutes);
-
-// Serve static files from Next.js build in production
-if (process.env.NODE_ENV === 'production') {
-  // Serve static files from the Next.js build
-  app.use(express.static(path.join(__dirname, '../frontend/.next/static')));
-  app.use(express.static(path.join(__dirname, '../frontend/public')));
-}
-
 app.use('/api/auth', authRoutes);
 app.use('/api/responses', responseRoutes);
 app.use('/api/questions', questionRoutes);
@@ -116,12 +96,8 @@ console.log('Mongo URI:', process.env.MONGO_URI);
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📱 Frontend: http://localhost:${PORT}`);
-      console.log(`🔗 API: http://localhost:${PORT}/api`);
-      console.log(`❤️ Health: http://localhost:${PORT}/api/health`);
+    app.listen(process.env.PORT || 5000, () => {
+      console.log('Server running on port', process.env.PORT || 5000);
     });
   })
   .catch(err => console.error(err));

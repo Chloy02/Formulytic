@@ -21,26 +21,13 @@ function generateToken(id, role) {
 
 async function register(req, res) {
   try {
-    const { username, password, email, project } = req.body;
+    const { username, password, email } = req.body;
 
-    // Support both email and username for registration
-    const identifier = email || username;
-    if (!identifier || !password || !project) {
-      return res.status(400).json({ 
-        message: 'Email (or username), password, and project are required' 
-      });
-    }
-
-    const existing = await getUserInfo(identifier, 1); // Check both email and username
+    const existing = await getUserInfo(username);
     if (existing) return res.status(400).json({ message: 'User already exists' });
 
     const hashed = await bcrypt.hash(password, 10);
-    const newUser = new User({ 
-      username: username || null, 
-      email: email || identifier, 
-      password: hashed, 
-      project 
-    });
+    const newUser = new User({ username, password: hashed, email });
 
     const data = await saveUserInfo(newUser);
 
@@ -56,16 +43,10 @@ async function register(req, res) {
 
 async function login(req, res) {
   try {
-    const { username, password, email } = req.body;
-
-    // Support both username and email for login
-    const identifier = email || username;
-    if (!identifier || !password) {
-      return res.status(400).json({ message: 'Email/username and password are required' });
-    }
+    const { username, password } = req.body;
 
     // Allow login with either username or email
-    const user = await getUserInfo(identifier, 1);
+    const user = await getUserInfo(username, 1);
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -82,8 +63,7 @@ async function login(req, res) {
       id: user._id,
       username: user.username,
       email: user.email,
-      role: user.role,
-      project: user.project
+      role: user.role
     };
 
     return res.status(200).json({ token, user: userData });

@@ -12,12 +12,14 @@ COPY frontend/package*.json ./frontend/
 WORKDIR /app/backend
 RUN npm ci --only=production && npm cache clean --force
 
-# Install frontend dependencies and build
+# Install frontend dependencies (including devDependencies for build)
 WORKDIR /app/frontend
 RUN npm ci && npm cache clean --force
 
 # Copy frontend source and build
 COPY frontend/ ./
+# Copy environment file for build
+COPY frontend/.env.local ./.env.local
 RUN npm run build
 
 # Clean up dev dependencies after build to reduce image size
