@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/Chloy02/Formulytic#readme",
   "description": "",
-  "devDependencies": {
+  "dependencies": {
     "concurrently": "^9.2.0"
   }
 }
