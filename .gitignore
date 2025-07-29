@@ -150,7 +150,8 @@ backend/logs/
 *.db
 
 # Package lock files (keep only one)
-package-lock.json
+# Lock files
+# package-lock.json (commented out - needed for Railway deployment)
 yarn.lock
 
 # Turbo
