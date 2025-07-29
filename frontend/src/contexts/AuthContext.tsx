@@ -2,7 +2,8 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import { API_CONFIG } from '../config/api';
+// --- FIX: Import the ServerLink ---
+import ServerLink from '../lib/api/serverURL'; 
 
 interface User {
   id: string;
@@ -19,10 +20,8 @@ interface AuthContextType {
   logout: () => void;
 }
 
-// Create a Context for authentication
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// AuthProvider component to manage and provide auth state
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -39,23 +38,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('/api/auth/me');
+      // --- FIX: Use the full ServerLink for the 'me' endpoint ---
+      const response = await axios.get(`${ServerLink}/auth/me`);
       setUser(response.data.user);
     } catch (error) {
       console.error('Failed to fetch user data:', error);
-      // If token is invalid, logout
       logout();
     }
   };
 
   useEffect(() => {
-    // Only access localStorage on the client side
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       setToken(storedToken);
       axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
       setIsLoggedIn(true);
-      // Fetch user data when token exists
       fetchUserData().catch((error) => {
         console.error('Error fetching user data on initialization:', error);
         logout();
@@ -72,7 +69,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string, project: string) => {
     try {
-      const response = await axios.post('/api/auth/login', { email, password, project });
+      // --- FIX: Use the full ServerLink for the login endpoint ---
+      const response = await axios.post(`${ServerLink}/auth/login`, { email, password, project });
       const { token, user: userData } = response.data;
       localStorage.setItem('token', token);
       setToken(token);
@@ -91,7 +89,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const adminLogin = async (username: string, password: string) => {
     try {
-      const response = await axios.post('/api/auth/login', { 
+      // --- FIX: Use the full ServerLink for the admin login endpoint ---
+      const response = await axios.post(`${ServerLink}/auth/login`, { 
         email: username, 
         password, 
         project: 'admin' 
@@ -118,11 +117,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         success: true, 
         user: userData 
       };
-    } catch (error) {
+    } catch (error: any) { // Catch as 'any' to inspect the response
       console.error('Admin login failed', error);
+      // Provide more detailed error from the server if available
+      const errorMessage = error.response?.data?.error || (error instanceof Error ? error.message : 'Login failed');
       return { 
         success: false, 
-        error: error instanceof Error ? error.message : 'Login failed' 
+        error: errorMessage
       };
     }
   };
@@ -134,7 +135,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Custom hook to easily consume the AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
