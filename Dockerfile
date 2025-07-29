@@ -1,49 +1,34 @@
-FROM node:18-alpine
-
-# Set working directory
+# ---- Base ----
+FROM node:18-alpine AS base
 WORKDIR /app
 
-# Copy backend package files first
-COPY backend/package*.json ./backend/
+# ---- Dependencies ----
+FROM base AS dependencies
+COPY backend/package.json backend/package-lock.json* ./backend/
+RUN cd backend && npm ci --omit=dev
 
-# Install backend dependencies
-WORKDIR /app/backend
-RUN npm ci --production && npm cache clean --force
+COPY frontend/package.json frontend/package-lock.json* ./frontend/
+RUN cd frontend && npm ci
 
-# Copy backend source
-COPY backend/ ./
+# ---- Frontend Build ----
+FROM base AS frontend-builder
+COPY --from=dependencies /app/frontend/node_modules ./frontend/node_modules
+COPY frontend/ ./frontend/
+RUN cd frontend && npm run build
 
-# Copy frontend package files
-WORKDIR /app
-COPY frontend/package*.json ./frontend/
-
-# Install frontend dependencies (all deps for build)
-WORKDIR /app/frontend
-RUN npm ci && npm cache clean --force
-
-# Copy frontend source and build
-COPY frontend/ ./
-
-# Build frontend with environment variables available at runtime
+# ---- Production ----
+FROM base AS production
 ENV NODE_ENV=production
-RUN npm run build
 
-# Remove frontend dev dependencies to reduce image size
-RUN npm prune --production && npm cache clean --force
+# Copy production backend dependencies
+COPY --from=dependencies /app/backend/node_modules ./backend/node_modules
+COPY backend/ ./backend/
 
-# Switch back to backend directory
-WORKDIR /app/backend
+# Copy built frontend assets
+COPY --from=frontend-builder /app/frontend/.next ./frontend/.next
+COPY --from=frontend-builder /app/frontend/public ./frontend/public
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S appuser -u 1001 -G nodejs
-
-# Change ownership
-RUN chown -R appuser:nodejs /app
-USER appuser
-
-# Expose port
+# Expose port and start server
 EXPOSE 5000
+CMD ["npm", "start", "--prefix", "backend"]
 
-# Start backend server
-CMD ["npm", "start"]
