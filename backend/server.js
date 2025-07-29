@@ -104,20 +104,54 @@ function addData() {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// Health check endpoint for Railway debugging
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    port: process.env.PORT,
+    mongoConnected: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
+  });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Formulytic Backend API', 
+    status: 'Running',
+    version: '1.0.0'
+  });
+});
+
 // Apply Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/responses', responseRoutes);
 app.use('/api/questions', questionRoutes);
 
 // Connect to Database and Start Server
-console.log('Mongo URI:', process.env.MONGO_URI ? 'Loaded' : 'Not Loaded'); // Check if MONGO_URI is loaded
+console.log('Mongo URI:', process.env.MONGO_URI ? 'Loaded' : 'Not Loaded');
+console.log('Starting Railway deployment...');
+console.log('PORT from env:', process.env.PORT);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+
+const PORT = process.env.PORT || 5000;
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(process.env.PORT || 5000, '0.0.0.0', () => {
-      console.log('Server running on port', process.env.PORT || 5000);
-      console.log('Environment:', process.env.NODE_ENV);
-      console.log('Frontend URL:', process.env.FRONTEND_URL);
+    const server = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`✅ Server running on host 0.0.0.0 port ${PORT}`);
+      console.log(`✅ Environment: ${process.env.NODE_ENV}`);
+      console.log(`✅ Frontend URL: ${process.env.FRONTEND_URL}`);
+      console.log(`✅ Health check: http://0.0.0.0:${PORT}/health`);
+    });
+    
+    server.on('error', (err) => {
+      console.error('❌ Server error:', err);
     });
   })
-  .catch(err => console.error('Failed to connect to MongoDB', err));
+  .catch(err => {
+    console.error('❌ Failed to connect to MongoDB', err);
+    process.exit(1);
+  });
