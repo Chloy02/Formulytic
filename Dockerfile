@@ -14,11 +14,14 @@ RUN npm ci --only=production && npm cache clean --force
 
 # Install frontend dependencies and build
 WORKDIR /app/frontend
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci && npm cache clean --force
 
 # Copy frontend source and build
 COPY frontend/ ./
 RUN npm run build
+
+# Clean up dev dependencies after build to reduce image size
+RUN npm prune --production && npm cache clean --force
 
 # Copy backend source
 WORKDIR /app
