@@ -736,6 +736,67 @@ const ModernSectionDesc = styled.div`
   color: rgba(255,255,255,0.92);
 `;
 
+const SubmissionHistorySection = styled.div`
+  background: linear-gradient(135deg, rgba(103, 58, 183, 0.1), rgba(156, 39, 176, 0.1));
+  border: 1px solid rgba(103, 58, 183, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+`;
+
+const SubmissionCard = styled.div`
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(103, 58, 183, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(103, 58, 183, 0.1);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const SubmissionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
+const SubmissionDate = styled.span`
+  color: #673ab7;
+  font-weight: 600;
+  font-size: 0.9rem;
+`;
+
+const SubmissionStatus = styled.span<{ status: string }>`
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: ${props => props.status === 'submitted' ? '#e8f5e8' : '#fff3e0'};
+  color: ${props => props.status === 'submitted' ? '#2e7d32' : '#f57c00'};
+`;
+
+const ToggleButton = styled.button`
+  background: linear-gradient(135deg, #673ab7, #9c27b0);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(103, 58, 183, 0.3);
+  }
+`;
+
 interface FormData {
   section1: {
     respondentName: string;
@@ -933,6 +994,8 @@ export default function QuestionnairePage() {
   const router = useRouter();
   const [currentSection, setCurrentSection] = useState(1);
   const [validFields, setValidFields] = useState(new Set());
+  const [previousSubmissions, setPreviousSubmissions] = useState<any[]>([]);
+  const [showSubmissionHistory, setShowSubmissionHistory] = useState(false);
 
   // Helper function to check if a field has a valid value
   const isFieldValid = (value: string | string[] | null | undefined) => {
@@ -1141,39 +1204,122 @@ export default function QuestionnairePage() {
   });
 
   useEffect(() => {
+    // Don't run if we're not authenticated yet
     if (!isLoggedIn) {
       router.push('/signin');
       return;
     }
 
+    // Don't load drafts for admin users
     if (user && user.role === 'admin') {
       router.push('/admin-dashboard');
       return;
     }
 
-    // Load draft if exists
-    loadDraft();
-  }, [isLoggedIn, user, router]);
+    // Only load draft when we have a confirmed user and haven't loaded already
+    if (user && isLoggedIn && user.id) {
+      console.log('User confirmed, loading draft for:', user);
+      loadDraft();
+      loadPreviousSubmissions();
+    }
+  }, [isLoggedIn, user?.id]); // Depend on user.id specifically
+
+  const loadPreviousSubmissions = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        console.log('No token found, cannot load submissions');
+        return;
+      }
+
+      console.log('Loading previous submissions for user:', user?.id);
+      const response = await axios.get('/api/responses/user', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      console.log('Previous submissions:', response.data);
+      setPreviousSubmissions(response.data || []);
+    } catch (error: any) {
+      console.log('No previous submissions found or error loading:', error);
+      setPreviousSubmissions([]);
+    }
+  };
 
   const loadDraft = async () => {
     try {
+      setLoading(true);
       const token = localStorage.getItem('token');
+      
+      if (!token) {
+        console.log('No token found, cannot load draft');
+        return;
+      }
+
+      console.log('Attempting to load draft for user:', user?.id);
       const response = await axios.get('/api/responses/draft', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      if (response.data) {
-        setFormData({
+      
+      console.log('Draft response:', response.data);
+      
+      if (response.data && response.data.answers) {
+        // Merge the loaded draft with default form data to ensure all fields exist
+        const loadedData = {
           ...defaultFormData,
           ...response.data.answers,
-        });
-        setSuccess('Draft loaded successfully!');
+          // Ensure arrays are properly restored
+          section1: {
+            ...defaultFormData.section1,
+            ...(response.data.answers.section1 || {}),
+            schemes: response.data.answers.section1?.schemes || [],
+            utilization: response.data.answers.section1?.utilization || [],
+          },
+          section3: {
+            ...defaultFormData.section3,
+            ...(response.data.answers.section3 || {}),
+            widowChallenges: response.data.answers.section3?.widowChallenges || [],
+            widowSchemeBenefits: response.data.answers.section3?.widowSchemeBenefits || [],
+            beneficialPrograms: response.data.answers.section3?.beneficialPrograms || [],
+          },
+          section5: {
+            ...defaultFormData.section5,
+            ...(response.data.answers.section5 || {}),
+            areasForImprovement: response.data.answers.section5?.areasForImprovement || [],
+            experiencedBenefits: response.data.answers.section5?.experiencedBenefits || [],
+            futureSupportExpected: response.data.answers.section5?.futureSupportExpected || [],
+          }
+        };
+        
+        setFormData(loadedData);
+        setSuccess('✅ Previous draft loaded successfully! You can continue where you left off.');
+        console.log('Draft loaded successfully:', loadedData);
+        setTimeout(() => setSuccess(''), 5000);
+      } else {
+        console.log('No draft data found in response - starting fresh');
+        setSuccess('📝 Welcome! Starting with a fresh questionnaire.');
         setTimeout(() => setSuccess(''), 3000);
       }
-    } catch {
-      // No draft found, continue with empty form
-      console.log('No draft found');
+    } catch (error: any) {
+      // Handle different error cases
+      if (error.response?.status === 404) {
+        console.log('No saved draft found - starting with fresh form');
+        setSuccess('📝 Welcome! Starting with a fresh questionnaire.');
+        setTimeout(() => setSuccess(''), 3000);
+      } else if (error.response?.status === 401) {
+        console.log('Authentication failed - redirecting to login');
+        router.push('/signin');
+      } else {
+        console.error('Error loading draft:', error);
+        setError('Failed to load saved draft. Starting with fresh form.');
+        setTimeout(() => setError(''), 3000);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -1211,6 +1357,7 @@ export default function QuestionnairePage() {
       const token = localStorage.getItem('token');
       const responseId = user?.id ? `draft_${user.id}_${Date.now()}` : `draft_${Date.now()}`;
       
+      console.log('Saving draft for user:', user?.id);
       await axios.post('/api/responses/draft', 
         { 
           answers: formData,
@@ -1222,8 +1369,8 @@ export default function QuestionnairePage() {
           }
         }
       );
-      setSuccess('Draft saved successfully!');
-      setTimeout(() => setSuccess(''), 3000);
+      setSuccess('💾 Draft saved successfully! Your progress has been saved.');
+      setTimeout(() => setSuccess(''), 4000);
     } catch (err) {
       console.error('Draft save error:', err);
       setError('Failed to save draft. Please try again.');
@@ -1251,6 +1398,10 @@ export default function QuestionnairePage() {
         }
       );
       setSuccess(t('Response submitted successfully!'));
+      
+      // Reload submissions to show the new submission
+      loadPreviousSubmissions();
+      
       setTimeout(() => {
         router.push('/');
       }, 2000);
@@ -1293,6 +1444,32 @@ export default function QuestionnairePage() {
     return null;
   }
 
+  // Show loading indicator while loading draft
+  if (loading) {
+    return (
+      <PageContainer>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          minHeight: '50vh',
+          gap: '20px'
+        }}>
+          <div style={{
+            width: '50px',
+            height: '50px',
+            border: '4px solid #f3f4f6',
+            borderTop: '4px solid #667eea',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}></div>
+          <p style={{ color: '#6b7280', fontSize: '16px' }}>Loading your questionnaire...</p>
+        </div>
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer>
       <Header>
@@ -1308,6 +1485,51 @@ export default function QuestionnairePage() {
         <Title>SCSP/TSP Impact Evaluation Questionnaire</Title>
         <Subtitle>Your responses will help us improve these important social programs</Subtitle>
         <TimeEstimate>Takes less than 8 minutes</TimeEstimate>
+        
+        {/* Previous Submissions Section */}
+        {previousSubmissions.length > 0 && (
+          <SubmissionHistorySection>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ margin: 0, color: '#673ab7', fontSize: '1.2rem' }}>
+                📋 Your Previous Submissions ({previousSubmissions.length})
+              </h3>
+              <ToggleButton onClick={() => setShowSubmissionHistory(!showSubmissionHistory)}>
+                {showSubmissionHistory ? 'Hide' : 'Show'} History
+              </ToggleButton>
+            </div>
+            
+            {showSubmissionHistory && (
+              <div>
+                {previousSubmissions.map((submission, index) => (
+                  <SubmissionCard key={submission._id || index}>
+                    <SubmissionHeader>
+                      <SubmissionDate>
+                        📅 {new Date(submission.submittedAt || submission.lastSaved).toLocaleDateString('en-IN', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </SubmissionDate>
+                      <SubmissionStatus status={submission.status}>
+                        {submission.status === 'submitted' ? '✅ Submitted' : '📝 Draft'}
+                      </SubmissionStatus>
+                    </SubmissionHeader>
+                    <div style={{ color: '#666', fontSize: '0.9rem' }}>
+                      Response ID: {submission.responseId}
+                    </div>
+                    {submission.answers?.section1?.respondentName && (
+                      <div style={{ color: '#666', fontSize: '0.9rem' }}>
+                        Name: {submission.answers.section1.respondentName}
+                      </div>
+                    )}
+                  </SubmissionCard>
+                ))}
+              </div>
+            )}
+          </SubmissionHistorySection>
+        )}
         
         <ProgressSteps>
           {[1, 2, 3, 4, 5, 6].map((step) => (

@@ -142,15 +142,11 @@ const getDraft = async (req, res) => {
  * ================================================================
  * GET ALL RESPONSES
  * @route   GET /api/responses
- * @desc    Admin-only access to all submitted responses
- * @access  Private (admin)
+ * @desc    Get all submitted responses for the logged-in user
+ * @access  Private (user)
  * ================================================================
  */
 const getAllResponses = async (req, res) => {
-  if (req.user.role !== 'user') {
-    return res.status(403).json({ message: 'Access denied' });
-  }
-
   try {
     const responses = await getAllResponsesFromDB(req.user.id);
     return res.status(200).json(responses);
