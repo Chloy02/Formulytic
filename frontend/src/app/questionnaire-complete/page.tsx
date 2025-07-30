@@ -126,7 +126,7 @@ const ProgressSteps = styled.div`
   position: relative;
 `;
 
-const ProgressStep = styled.div<{ isActive: boolean; isCompleted: boolean }>`
+const ProgressStep = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -153,21 +153,24 @@ const ProgressStep = styled.div<{ isActive: boolean; isCompleted: boolean }>`
     left: 60%;
     right: -40%;
     height: 2px;
-    background-color: ${props => props.isCompleted ? '#48bb78' : '#e2e8f0'};
+    background-color: ${props => props.$isCompleted ? '#48bb78' : '#e2e8f0'};
     z-index: 1;
   }
 `;
 
-const StepNumber = styled.div<{ isActive: boolean; isCompleted: boolean }>`
+const StepNumber = styled.div<{
+  $isActive: boolean;
+  $isCompleted: boolean;
+}>`
   width: 30px;
   height: 30px;
   border-radius: 50%;
   background-color: ${props => 
-    props.isCompleted ? '#48bb78' : 
-    props.isActive ? '#3182ce' : '#e2e8f0'
+    props.$isCompleted ? '#48bb78' : 
+    props.$isActive ? '#3182ce' : '#e2e8f0'
   };
   color: ${props => 
-    props.isCompleted || props.isActive ? 'white' : '#a0aec0'
+    props.$isCompleted || props.$isActive ? 'white' : '#a0aec0'
   };
   display: flex;
   align-items: center;
@@ -178,23 +181,24 @@ const StepNumber = styled.div<{ isActive: boolean; isCompleted: boolean }>`
   z-index: 2;
   transition: all 0.3s ease;
   box-shadow: ${props => 
-    props.isActive ? '0 0 0 4px rgba(66, 153, 225, 0.2)' : 
-    props.isCompleted ? '0 0 0 4px rgba(72, 187, 120, 0.2)' : 'none'
+    props.$isActive ? '0 0 0 4px rgba(66, 153, 225, 0.2)' : 
+    props.$isCompleted ? '0 0 0 4px rgba(72, 187, 120, 0.2)' : 'none'
   };
-  
+
   ${ProgressStep}:hover & {
     transform: scale(1.1);
-    box-shadow: ${props => 
-      props.isCompleted ? '0 0 0 4px rgba(72, 187, 120, 0.3)' :
-      '0 0 0 4px rgba(66, 153, 225, 0.15)'
-    };
+    box-shadow: ${props =>
+      props.$isCompleted
+        ? '0 0 0 4px rgba(72, 187, 120, 0.3)'
+        : '0 0 0 4px rgba(66, 153, 225, 0.15)'};
   }
 `;
 
-const StepLabel = styled.span<{ isActive: boolean }>`
+
+const StepLabel = styled.span<{ $isActive: boolean }>`
   font-size: 0.75rem;
-  color: ${props => props.isActive ? '#3182ce' : '#666'};
-  font-weight: ${props => props.isActive ? '600' : '400'};
+  color: ${props => props.$isActive ? '#3182ce' : '#666'};
+  font-weight: ${props => props.$isActive ? '600' : '400'};
   margin-top: 8px;
   text-align: center;
   max-width: 80px;
@@ -1535,18 +1539,18 @@ export default function QuestionnairePage() {
           {[1, 2, 3, 4, 5, 6].map((step) => (
             <ProgressStep 
               key={step}
-              isActive={currentSection === step}
-              isCompleted={isSectionCompleted(step)}
+              $isActive={currentSection === step}
+              $isCompleted={isSectionCompleted(step)}
               onClick={() => navigateToSection(step)}
               title={`Go to section ${step}`}
             >
               <StepNumber 
-                isActive={currentSection === step}
-                isCompleted={isSectionCompleted(step)}
+                $isActive={currentSection === step}
+                $isCompleted={isSectionCompleted(step)}
               >
                 {isSectionCompleted(step) ? '✓' : step}
               </StepNumber>
-              <StepLabel isActive={currentSection === step}>
+              <StepLabel $isActive={currentSection === step}>
                 {step === 1 && 'Basic Info'}
                 {step === 2 && 'Demographics'}
                 {step === 3 && 'Scheme Details'}
