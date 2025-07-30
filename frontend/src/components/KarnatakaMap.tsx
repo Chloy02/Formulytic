@@ -11,8 +11,7 @@ const MapContainer = styled.div`
 `;
 
 const MapImage = styled(Image)`
-  width: 100%;
-  height: auto;
+  aspect-ratio: 16 / 9;
   max-width: 400px;
   filter: drop-shadow(0 10px 25px rgba(0, 123, 255, 0.15));
   
