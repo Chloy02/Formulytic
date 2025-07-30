@@ -17,18 +17,24 @@ const NavbarContainer = styled(motion.nav)`
   align-items: center;
   padding: 1rem 1.5rem;
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid #e2e8f0;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
   position: sticky;
   top: 0;
   z-index: 1000;
   width: 100%;
   box-sizing: border-box;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
   .dark & {
     background: rgba(15, 23, 42, 0.95);
-    border-bottom-color: #334155;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 
   @media (max-width: 768px) {
@@ -39,23 +45,40 @@ const NavbarContainer = styled(motion.nav)`
 const NavBrand = styled(Link)`
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2563eb;
+  color: ${theme.colors.primary[600]};
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
 
   &:hover {
-    color: #1d4ed8;
-    transform: scale(1.05);
+    color: ${theme.colors.primary[700]};
+    transform: scale(1.05) rotate(1deg);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background: ${theme.colors.primary.gradient};
+    transition: width 0.3s ease;
+    border-radius: ${theme.borderRadius.full};
+  }
+
+  &:hover::after {
+    width: 100%;
   }
 
   .dark & {
-    color: #3b82f6;
+    color: ${theme.colors.primary[400]};
     
     &:hover {
-      color: #60a5fa;
+      color: ${theme.colors.primary[300]};
     }
   }
 
@@ -67,14 +90,41 @@ const NavBrand = styled(Link)`
 const BrandIcon = styled.div`
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, ${theme.colors.primary[500]} 0%, ${theme.colors.primary[600]} 100%);
-  border-radius: ${theme.borderRadius.md};
+  background: ${theme.colors.primary.gradient};
+  border-radius: ${theme.borderRadius.lg};
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-weight: ${theme.typography.fontWeight.bold};
   font-size: ${theme.typography.fontSize.sm};
+  position: relative;
+  overflow: hidden;
+  box-shadow: ${theme.shadows.md};
+  transition: all 0.3s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: rotate(45deg);
+    transition: all 0.6s ease;
+    opacity: 0;
+  }
+
+  &:hover::before {
+    animation: shimmer 0.6s ease-in-out;
+    opacity: 1;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+  }
 `;
 
 const DesktopNavLinks = styled.ul`
