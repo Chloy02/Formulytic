@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Navbar2 from '../../components/Navbar2';
+import EnhancedNavbar from '../../components/EnhancedNavbar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -113,7 +113,7 @@ export default function AdminSignupPage() {
 
   return (
     <PageContainer style={{ backgroundColor: '#f0f4f8' }}>
-      <Navbar2 />
+      <EnhancedNavbar />
       <ContentArea>
         <GlassCard style={{ maxWidth: '450px', width: '100%' }}>
           <CardHeader>

@@ -780,6 +780,15 @@ interface FormData {
     inLawDiscriminationDetails: string;
     filedPoliceComplaint: string;
     supportFromNgosOrOfficials: string;
+    // Widow remarriage specific fields
+    widowDuration?: string;
+    widowChallenges?: string[];
+    widowSchemeBenefits?: string[];
+    recommendWidowScheme?: string;
+    // SC/ST specific fields
+    casteDiscriminationExperience?: string;
+    beneficialPrograms?: string[];
+    communityImpact?: string;
   };
   section4: {
     schemeAwarenessSource: string;
@@ -860,6 +869,15 @@ const defaultFormData: FormData = {
     inLawDiscriminationDetails: '',
     filedPoliceComplaint: '',
     supportFromNgosOrOfficials: '',
+    // Widow remarriage specific fields
+    widowDuration: '',
+    widowChallenges: [],
+    widowSchemeBenefits: [],
+    recommendWidowScheme: '',
+    // SC/ST specific fields
+    casteDiscriminationExperience: '',
+    beneficialPrograms: [],
+    communityImpact: '',
   },
   section4: {
     schemeAwarenessSource: '',
@@ -1002,6 +1020,13 @@ export default function QuestionnairePage() {
   };
 
   const validateSection6 = (data: FormData['section6_DevadasiChildren']) => {
+    // Section 6 is optional - check if user has started filling it
+    const hasAnyData = Object.values(data).some(value => isFieldValid(value));
+    
+    // If no data entered, section is valid (optional)
+    if (!hasAnyData) return true;
+    
+    // If some data entered, validate required fields
     const requiredFields = [
       'childAgeAtMarriage', 'schemeImprovedDignity', 'treatmentDifference',
       'spouseCaste', 'ownsPropertyNow', 'inLawAcceptabilityScale', 'facedStigma'
@@ -1070,6 +1095,15 @@ export default function QuestionnairePage() {
       inLawDiscriminationDetails: '',
       filedPoliceComplaint: '',
       supportFromNgosOrOfficials: '',
+      // Widow remarriage specific fields
+      widowDuration: '',
+      widowChallenges: [],
+      widowSchemeBenefits: [],
+      recommendWidowScheme: '',
+      // SC/ST specific fields
+      casteDiscriminationExperience: '',
+      beneficialPrograms: [],
+      communityImpact: '',
     },
     section4: {
       schemeAwarenessSource: '',
@@ -1548,24 +1582,25 @@ export default function QuestionnairePage() {
 
                 {formData.section1.receivedBenefit === 'yes' && (
                   <>
-                    <FormGroup>
-                      <TranslatedLabel text="Which schemes have you benefited from? (Select all that apply)" />
-                      <CheckboxGroup>
-                        {['inter_caste_marriage', 'widow_remarriage', 'others_scheme'].map((scheme) => (
-                          <CheckboxItem key={scheme}>
-                            <Checkbox
-                              checked={formData.section1.schemes.includes(scheme)}
-                              onChange={(e) => handleCheckboxChange('section1', 'schemes', scheme, e.target.checked)}
-                            />
-                            {scheme === 'inter_caste_marriage' && <TranslatedText>Inter-caste Marriage Scheme</TranslatedText>}
-                            {scheme === 'widow_remarriage' && <TranslatedText>Widow Remarriage Scheme</TranslatedText>}
-                            {scheme === 'others_scheme' && <TranslatedText>Other Schemes</TranslatedText>}
-                          </CheckboxItem>
-                        ))}
-                      </CheckboxGroup>
-                    </FormGroup>
-
-                    <FormGroup>
+                <FormGroup>
+                  <TranslatedLabel text="Which schemes have you benefited from? (Select all that apply)" />
+                  <CheckboxGroup>
+                    {['inter_caste_marriage', 'widow_remarriage', 'devadasi_children_marriage', 'sc_development', 'st_development', 'others_scheme'].map((scheme) => (
+                      <CheckboxItem key={scheme}>
+                        <Checkbox
+                          checked={formData.section1.schemes.includes(scheme)}
+                          onChange={(e) => handleCheckboxChange('section1', 'schemes', scheme, e.target.checked)}
+                        />
+                        {scheme === 'inter_caste_marriage' && <TranslatedText>Inter-caste Marriage Incentive Scheme</TranslatedText>}
+                        {scheme === 'widow_remarriage' && <TranslatedText>Widow Remarriage Scheme (₹1 lakh incentive)</TranslatedText>}
+                        {scheme === 'devadasi_children_marriage' && <TranslatedText>Marriage Scheme for Devadasi Children</TranslatedText>}
+                        {scheme === 'sc_development' && <TranslatedText>Scheduled Caste Development Programs</TranslatedText>}
+                        {scheme === 'st_development' && <TranslatedText>Scheduled Tribe Development Programs</TranslatedText>}
+                        {scheme === 'others_scheme' && <TranslatedText>Other Government Welfare Schemes</TranslatedText>}
+                      </CheckboxItem>
+                    ))}
+                  </CheckboxGroup>
+                </FormGroup>                    <FormGroup>
                       <TranslatedLabel text="Date of Benefit Received" />
                       <Input
                         type="date"
@@ -2201,6 +2236,210 @@ export default function QuestionnairePage() {
                   </RadioItem>
                 </RadioGroup>
               </FormGroup>
+
+              {/* Additional Widow Remarriage Section */}
+              {formData.section1.schemes.includes('widow_remarriage') && (
+                <QuestionCard style={{ marginTop: '25px', backgroundColor: '#fef7e0', border: '2px solid #f59e0b' }}>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#92400e', fontSize: '1.2rem', fontWeight: '700' }}>
+                    Additional Questions for Widow Remarriage Beneficiaries
+                  </h4>
+                  
+                  <FormGroup>
+                    <Label>How long were you a widow before remarrying?</Label>
+                    <Select
+                      value={formData.section3.widowDuration || ''}
+                      onChange={(e) => handleInputChange('section3', 'widowDuration', e.target.value)}
+                    >
+                      <option value="">Select duration</option>
+                      <option value="less_than_1_year">Less than 1 year</option>
+                      <option value="1_3_years">1-3 years</option>
+                      <option value="3_5_years">3-5 years</option>
+                      <option value="5_10_years">5-10 years</option>
+                      <option value="more_than_10_years">More than 10 years</option>
+                    </Select>
+                  </FormGroup>
+
+                  <FormGroup>
+                    <Label>Did you face specific challenges as a widow before remarriage?</Label>
+                    <CheckboxGroup>
+                      {['financial_hardship', 'social_ostracism', 'family_pressure', 'childcare_burden', 'employment_issues', 'housing_problems'].map((challenge) => (
+                        <CheckboxItem key={challenge}>
+                          <Checkbox
+                            checked={(formData.section3.widowChallenges || []).includes(challenge)}
+                            onChange={(e) => handleCheckboxChange('section3', 'widowChallenges', challenge, e.target.checked)}
+                          />
+                          {challenge.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                        </CheckboxItem>
+                      ))}
+                    </CheckboxGroup>
+                  </FormGroup>
+
+                  <FormGroup>
+                    <Label>How did the widow remarriage scheme specifically help you?</Label>
+                    <CheckboxGroup>
+                      {['financial_independence', 'social_acceptance', 'emotional_support', 'family_stability', 'reduced_stigma', 'better_future_for_children'].map((benefit) => (
+                        <CheckboxItem key={benefit}>
+                          <Checkbox
+                            checked={(formData.section3.widowSchemeBenefits || []).includes(benefit)}
+                            onChange={(e) => handleCheckboxChange('section3', 'widowSchemeBenefits', benefit, e.target.checked)}
+                          />
+                          {benefit.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                        </CheckboxItem>
+                      ))}
+                    </CheckboxGroup>
+                  </FormGroup>
+
+                  <FormGroup>
+                    <Label>Would you recommend the widow remarriage scheme to other widows?</Label>
+                    <RadioGroup>
+                      <RadioItem>
+                        <Radio
+                          name="recommendWidowScheme"
+                          value="definitely_yes"
+                          checked={formData.section3.recommendWidowScheme === 'definitely_yes'}
+                          onChange={(e) => handleInputChange('section3', 'recommendWidowScheme', e.target.value)}
+                        />
+                        Definitely Yes
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="recommendWidowScheme"
+                          value="yes_with_conditions"
+                          checked={formData.section3.recommendWidowScheme === 'yes_with_conditions'}
+                          onChange={(e) => handleInputChange('section3', 'recommendWidowScheme', e.target.value)}
+                        />
+                        Yes, with certain conditions
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="recommendWidowScheme"
+                          value="uncertain"
+                          checked={formData.section3.recommendWidowScheme === 'uncertain'}
+                          onChange={(e) => handleInputChange('section3', 'recommendWidowScheme', e.target.value)}
+                        />
+                        Uncertain
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="recommendWidowScheme"
+                          value="no"
+                          checked={formData.section3.recommendWidowScheme === 'no'}
+                          onChange={(e) => handleInputChange('section3', 'recommendWidowScheme', e.target.value)}
+                        />
+                        No
+                      </RadioItem>
+                    </RadioGroup>
+                  </FormGroup>
+                </QuestionCard>
+              )}
+
+              {/* Additional SC/ST Specific Section */}
+              {(formData.section1.casteCategory === 'sc' || formData.section1.casteCategory === 'st') && (
+                <QuestionCard style={{ marginTop: '25px', backgroundColor: '#f0f9ff', border: '2px solid #0ea5e9' }}>
+                  <h4 style={{ margin: '0 0 20px 0', color: '#0c4a6e', fontSize: '1.2rem', fontWeight: '700' }}>
+                    Additional Questions for {formData.section1.casteCategory === 'sc' ? 'Scheduled Caste' : 'Scheduled Tribe'} Beneficiaries
+                  </h4>
+                  
+                  <FormGroup>
+                    <Label>Have you experienced specific caste-based discrimination in your community?</Label>
+                    <RadioGroup>
+                      <RadioItem>
+                        <Radio
+                          name="casteDiscriminationExperience"
+                          value="frequent"
+                          checked={formData.section3.casteDiscriminationExperience === 'frequent'}
+                          onChange={(e) => handleInputChange('section3', 'casteDiscriminationExperience', e.target.value)}
+                        />
+                        Frequently
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="casteDiscriminationExperience"
+                          value="sometimes"
+                          checked={formData.section3.casteDiscriminationExperience === 'sometimes'}
+                          onChange={(e) => handleInputChange('section3', 'casteDiscriminationExperience', e.target.value)}
+                        />
+                        Sometimes
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="casteDiscriminationExperience"
+                          value="rarely"
+                          checked={formData.section3.casteDiscriminationExperience === 'rarely'}
+                          onChange={(e) => handleInputChange('section3', 'casteDiscriminationExperience', e.target.value)}
+                        />
+                        Rarely
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="casteDiscriminationExperience"
+                          value="never"
+                          checked={formData.section3.casteDiscriminationExperience === 'never'}
+                          onChange={(e) => handleInputChange('section3', 'casteDiscriminationExperience', e.target.value)}
+                        />
+                        Never
+                      </RadioItem>
+                    </RadioGroup>
+                  </FormGroup>
+
+                  <FormGroup>
+                    <Label>Which SCSP/TSP programs have been most beneficial for your community?</Label>
+                    <CheckboxGroup>
+                      {['education_scholarships', 'employment_opportunities', 'housing_schemes', 'healthcare_access', 'skill_development', 'entrepreneur_support', 'infrastructure_development'].map((program) => (
+                        <CheckboxItem key={program}>
+                          <Checkbox
+                            checked={(formData.section3.beneficialPrograms || []).includes(program)}
+                            onChange={(e) => handleCheckboxChange('section3', 'beneficialPrograms', program, e.target.checked)}
+                          />
+                          {program.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                        </CheckboxItem>
+                      ))}
+                    </CheckboxGroup>
+                  </FormGroup>
+
+                  <FormGroup>
+                    <Label>How has SCSP/TSP implementation impacted your community overall?</Label>
+                    <RadioGroup>
+                      <RadioItem>
+                        <Radio
+                          name="communityImpact"
+                          value="very_positive"
+                          checked={formData.section3.communityImpact === 'very_positive'}
+                          onChange={(e) => handleInputChange('section3', 'communityImpact', e.target.value)}
+                        />
+                        Very Positive Impact
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="communityImpact"
+                          value="somewhat_positive"
+                          checked={formData.section3.communityImpact === 'somewhat_positive'}
+                          onChange={(e) => handleInputChange('section3', 'communityImpact', e.target.value)}
+                        />
+                        Somewhat Positive
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="communityImpact"
+                          value="minimal_impact"
+                          checked={formData.section3.communityImpact === 'minimal_impact'}
+                          onChange={(e) => handleInputChange('section3', 'communityImpact', e.target.value)}
+                        />
+                        Minimal Impact
+                      </RadioItem>
+                      <RadioItem>
+                        <Radio
+                          name="communityImpact"
+                          value="no_impact"
+                          checked={formData.section3.communityImpact === 'no_impact'}
+                          onChange={(e) => handleInputChange('section3', 'communityImpact', e.target.value)}
+                        />
+                        No Impact
+                      </RadioItem>
+                    </RadioGroup>
+                  </FormGroup>
+                </QuestionCard>
+              )}
                 </QuestionCard>
               </QuestionGroup>
             </SectionContent>
@@ -2787,12 +3026,60 @@ export default function QuestionnairePage() {
         {currentSection === 6 && (
           <>
             <ModernSectionHeader>
-              <ModernSectionTitle>Section 6: Devadasi Children</ModernSectionTitle>
-              <ModernSectionDesc>Special section for Devadasi children</ModernSectionDesc>
+              <ModernSectionTitle>Section 6: Devadasi Children (Optional)</ModernSectionTitle>
+              <ModernSectionDesc>Special section for Devadasi children - Skip if not applicable</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
-              <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f0f4f8', borderRadius: '8px', borderLeft: '4px solid #4299e1' }}>
-                <strong>Note:</strong> This section is specifically for children of Devadasi women who have benefited from marriage incentive schemes. If this doesn&apos;t apply to you, you can skip this section.
+              <div style={{ 
+                marginBottom: '25px', 
+                padding: '20px', 
+                backgroundColor: '#e8f4fd', 
+                borderRadius: '12px', 
+                borderLeft: '5px solid #2563eb',
+                border: '1px solid #bfdbfe'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>ℹ️</span>
+                  <strong style={{ color: '#1e40af', fontSize: '1.1rem' }}>This Section is Optional</strong>
+                </div>
+                <p style={{ margin: '0', color: '#1e40af', lineHeight: '1.6' }}>
+                  This section is specifically designed for children of Devadasi women who have benefited from marriage incentive schemes. 
+                  <strong> If this doesn't apply to your situation, you can skip this section entirely</strong> and proceed to submit your response.
+                </p>
+                <div style={{ marginTop: '15px', display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+                  <button 
+                    onClick={() => setCurrentSection(1)}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem',
+                      fontWeight: '500'
+                    }}
+                  >
+                    ← Back to Section 1
+                  </button>
+                  <button 
+                    onClick={submitForm}
+                    disabled={loading}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#10b981',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      fontSize: '0.9rem',
+                      fontWeight: '500',
+                      opacity: loading ? 0.6 : 1
+                    }}
+                  >
+                    {loading ? 'Submitting...' : 'Skip & Submit Response'}
+                  </button>
+                </div>
               </div>
 
               <QuestionGroup>

@@ -9,10 +9,17 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { theme } from '@/styles/theme';
 import { Button, Input, Card, Heading, Text, Container, Alert, Stack } from '@/components/ui';
+import EnhancedNavbar from '@/components/EnhancedNavbar';
 
-const PageContainer = styled.div`
+const PageWrapper = styled.div`
   min-height: 100vh;
   background: linear-gradient(135deg, ${theme.colors.primary[50]} 0%, ${theme.colors.secondary[50]} 100%);
+  display: flex;
+  flex-direction: column;
+`;
+
+const PageContainer = styled.div`
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,92 +143,95 @@ const AdminLogin: React.FC = () => {
   };
 
   return (
-    <PageContainer>
-      <Container maxWidth="sm">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <AdminLoginCard>
-            <AdminBadge>
-              <Shield size={16} />
-              Administrator Access
-            </AdminBadge>
+    <PageWrapper>
+      <EnhancedNavbar />
+      <PageContainer>
+        <Container maxWidth="sm">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <AdminLoginCard>
+              <AdminBadge>
+                <Shield size={16} />
+                Administrator Access
+              </AdminBadge>
 
-            <Stack spacing="lg" align="center">
-              <Stack spacing="sm" align="center">
-                <Heading level={2} color="primary">
-                  Admin Login
-                </Heading>
-                <Text color="secondary" size="sm" align="center">
-                  Secure access to administrator dashboard
-                </Text>
-              </Stack>
+              <Stack spacing="lg" align="center">
+                <Stack spacing="sm" align="center">
+                  <Heading level={2} color="primary">
+                    Admin Login
+                  </Heading>
+                  <Text color="secondary" size="sm" align="center">
+                    Secure access to administrator dashboard
+                  </Text>
+                </Stack>
 
-              {error && (
-                <Alert variant="error" style={{ width: '100%' }}>
-                  {error}
-                </Alert>
-              )}
+                {error && (
+                  <Alert variant="error" style={{ width: '100%' }}>
+                    {error}
+                  </Alert>
+                )}
 
-              <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                <Stack spacing="lg">
-                  <Stack spacing="base">
-                    <Input
-                      type="text"
-                      name="username"
-                      placeholder="Admin Username or Email"
-                      value={formData.username}
-                      onChange={handleChange}
-                      required
-                      fullWidth
-                      icon={<User size={20} />}
-                    />
-
-                    <PasswordInputWrapper>
+                <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                  <Stack spacing="lg">
+                    <Stack spacing="base">
                       <Input
-                        type={showPassword ? 'text' : 'password'}
-                        name="password"
-                        placeholder="Admin Password"
-                        value={formData.password}
+                        type="text"
+                        name="username"
+                        placeholder="Admin Username or Email"
+                        value={formData.username}
                         onChange={handleChange}
                         required
                         fullWidth
-                        icon={<Lock size={20} />}
-                        style={{ paddingRight: '48px' }}
+                        icon={<User size={20} />}
                       />
-                      <PasswordToggle
-                        type="button"
-                        onClick={togglePasswordVisibility}
-                      >
-                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                      </PasswordToggle>
-                    </PasswordInputWrapper>
+
+                      <PasswordInputWrapper>
+                        <Input
+                          type={showPassword ? 'text' : 'password'}
+                          name="password"
+                          placeholder="Admin Password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          required
+                          fullWidth
+                          icon={<Lock size={20} />}
+                          style={{ paddingRight: '48px' }}
+                        />
+                        <PasswordToggle
+                          type="button"
+                          onClick={togglePasswordVisibility}
+                        >
+                          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </PasswordToggle>
+                      </PasswordInputWrapper>
+                    </Stack>
+
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="lg"
+                      fullWidth
+                      disabled={isLoading}
+                    >
+                      {isLoading ? 'Verifying...' : 'Access Admin Dashboard'}
+                    </Button>
                   </Stack>
+                </form>
+              </Stack>
 
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    fullWidth
-                    disabled={isLoading}
-                  >
-                    {isLoading ? 'Verifying...' : 'Access Admin Dashboard'}
-                  </Button>
-                </Stack>
-              </form>
-            </Stack>
-
-            <FormFooter>
-              <Text size="sm" color="secondary">
-                Need admin access? Contact your system administrator.
-              </Text>
-            </FormFooter>
-          </AdminLoginCard>
-        </motion.div>
-      </Container>
-    </PageContainer>
+              <FormFooter>
+                <Text size="sm" color="secondary">
+                  Need admin access? Contact your system administrator.
+                </Text>
+              </FormFooter>
+            </AdminLoginCard>
+          </motion.div>
+        </Container>
+      </PageContainer>
+    </PageWrapper>
   );
 };
 

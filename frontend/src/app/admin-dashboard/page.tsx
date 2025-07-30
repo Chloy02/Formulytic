@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import Navbar2 from '../../components/Navbar2';
+import EnhancedNavbar from '../../components/EnhancedNavbar';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { useRouter } from 'next/navigation';
@@ -552,7 +552,7 @@ export default function AdminDashboardPage() {
 
   return (
     <PageContainer>
-      <Navbar2 />
+      <EnhancedNavbar />
       <ContentWrapper>
         <GlassCard>
           <Title size="lg">Admin Dashboard</Title>
