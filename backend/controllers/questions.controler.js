@@ -17,7 +17,7 @@ async function addNewQuestion(req, res) {
 
         const newQuestion = await addQuestion(question);
         return res.status(201).json(newQuestion);
-    } catch {
+    } catch (error) {
         console.error('Error fetching questions:', error);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
