@@ -22,24 +22,67 @@ import {
   Sparkles
 } from 'lucide-react';
 
-const PageWrapper = styled.div`
+const PageWrapper = styled(motion.div)`
   min-height: 100vh;
-  background: linear-gradient(135deg, #eff6ff 0%, #f1f5f9 100%);
+  background: linear-gradient(135deg, #eff6ff 0%, #f1f5f9 50%, #e0f2fe 100%);
+  background-attachment: fixed;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
   .dark & {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0c4a6e 100%);
+    
+    &::before {
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
+    }
   }
 `;
 
-const HeroSection = styled.section`
+const HeroSection = styled(motion.section)`
   padding: 6rem 0;
   position: relative;
   overflow: hidden;
+  z-index: 1;
 
   @media (max-width: 768px) {
     padding: 4rem 0;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+      linear-gradient(45deg, transparent 40%, rgba(59, 130, 246, 0.03) 50%, transparent 60%),
+      linear-gradient(-45deg, transparent 40%, rgba(139, 92, 246, 0.03) 50%, transparent 60%);
+    animation: float 20s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    50% { transform: rotate(180deg) translateY(-20px); }
   }
 `;
 
