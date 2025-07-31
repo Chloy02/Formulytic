@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -18,12 +18,10 @@ import {
   FormGroup,
   Label,
   Alert,
-  Stack,
-  Select
+  Stack
 } from '@/components/ui';
 import EnhancedNavbar from '@/components/EnhancedNavbar';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
-import axios from 'axios';
 
 const PageWrapper = styled.div`
   min-height: 100vh;
@@ -45,11 +43,24 @@ const ContentArea = styled.div`
 
   @media (max-width: ${theme.breakpoints.md}) {
     padding: ${theme.spacing['2xl']} ${theme.spacing.base};
+    align-items: flex-start;
+    padding-top: ${theme.spacing['3xl']};
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.xl} ${theme.spacing.sm};
+    padding-top: ${theme.spacing['2xl']};
   }
 `;
 
 const SignInContainer = styled(Container)`
   max-width: 480px;
+  width: 100%;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    max-width: 100%;
+    padding: 0;
+  }
 `;
 
 const SignInCard = styled(Card)`
@@ -58,7 +69,14 @@ const SignInCard = styled(Card)`
   overflow: visible;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing['2xl']};
+    padding: ${theme.spacing.xl};
+    border-radius: ${theme.borderRadius.lg};
+    margin: 0 ${theme.spacing.xs};
+  }
+
+  @media (max-width: 320px) {
+    padding: ${theme.spacing.lg};
+    margin: 0;
   }
 
   &::before {
@@ -83,6 +101,10 @@ const SignInCard = styled(Card)`
 const HeaderSection = styled.div`
   text-align: center;
   margin-bottom: ${theme.spacing['2xl']};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    margin-bottom: ${theme.spacing.xl};
+  }
 `;
 
 const IconWrapper = styled(motion.div)`
@@ -95,6 +117,12 @@ const IconWrapper = styled(motion.div)`
   border-radius: ${theme.borderRadius.xl};
   margin-bottom: ${theme.spacing.lg};
   box-shadow: ${theme.shadows.lg};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: 56px;
+    height: 56px;
+    margin-bottom: ${theme.spacing.base};
+  }
 `;
 
 const SubTitle = styled(Text)`
@@ -204,95 +232,43 @@ const LoadingSpinner = styled(motion.div)`
 const SignInPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [project, setProject] = useState('');
-  // Corrected type for projects:
-  const [projects, setProjects] = useState<Array<{id: string, name: string, description: string}>>([]); 
-  const [projectsLoading, setProjectsLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null); // This 'error' is a general error for the whole form/login attempt
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth(); // Assuming useAuth provides a login function
-  const { t } = useTranslation(); // Translation hook
+  const { login } = useAuth();
+  const { t } = useTranslation();
   const router = useRouter();
-
-  // Fetch available projects on component mount
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setProjectsLoading(true);
-        // Clear any previous general error before fetching projects
-        setError(null); 
-        
-        console.log('Fetching projects...'); // Debug logging
-        const response = await axios.get('/api/projects');
-        console.log('Projects response:', response.data); // Debug logging
-        
-        if (response.data.success && response.data.projects) {
-          setProjects(response.data.projects);
-          console.log('Projects loaded successfully:', response.data.projects);
-        } else {
-          // Fallback: provide default projects if API doesn't return expected format
-          const fallbackProjects = [
-            { id: 'project1', name: 'Project 1', description: 'First project' },
-            { id: 'project2', name: 'Project 2', description: 'Second project' }
-          ];
-          setProjects(fallbackProjects);
-          console.log('Using fallback projects:', fallbackProjects);
-        }
-      } catch (error: unknown) {
-        const errorObj = error as { response?: { data?: string }; message?: string };
-        console.error('Failed to fetch projects:', error);
-        console.error('Error details:', errorObj.response?.data || errorObj.message);
-        
-        // Provide fallback projects even if API fails
-        const fallbackProjects = [
-          { id: 'project1', name: 'Project 1', description: 'First project' },
-          { id: 'project2', name: 'Project 2', description: 'Second project' }
-        ];
-        setProjects(fallbackProjects);
-        
-        // Set a specific error message for project loading failure
-        setError('Failed to load projects from server. Using default projects.'); 
-      } finally {
-        setProjectsLoading(false);
-      }
-    };
-
-    fetchProjects();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Clear previous errors
+    setError(null);
     setIsLoading(true);
     
     // Basic client-side validation for required fields
-    if (!email || !password || !project) {
-        setError('Please fill in all required fields (Email, Password, Project).');
+    if (!email || !password) {
+        setError('Please fill in all required fields (Email and Password).');
         setIsLoading(false);
         return;
     }
 
     try {
-      const result = await login(email, password, project); // Call the login function from AuthContext
+      const result = await login(email, password);
       
       // Redirect based on user role provided by the login result
-      if (result && result.role) { // Check if result and role exist
+      if (result && result.role) {
         if (result.role === 'admin') {
           router.push('/admin-dashboard');
         } else {
-          router.push('/questionnaire');
+          router.push('/');
         }
       } else {
-        // Handle unexpected login result structure
         setError('Login successful, but user role not found for redirection. Please contact support.');
       }
     } catch (err: unknown) {
       const errorObj = err as { response?: { data?: { message?: string } } };
-      // Axios errors usually have a `response.data.message`
       const errorMessage = errorObj.response?.data?.message || 'An unexpected error occurred during sign-in. Please try again.';
       setError(errorMessage);
-      console.error('Sign-in failed:', err); // Log full error for debugging
+      console.error('Sign-in failed:', err);
     } finally {
       setIsLoading(false);
     }
@@ -376,40 +352,11 @@ const SignInPage: React.FC = () => {
                   </InputWrapper>
                 </FormGroup>
 
-                <FormGroup>
-                  <Label htmlFor="project">{t('Project')}</Label>
-                  <Select
-                    id="project"
-                    value={project}
-                    onChange={(e) => setProject(e.target.value)}
-                    required
-                    fullWidth
-                    // `hasError` should ideally be tied to project-specific validation error
-                    // For now, it's tied to the general 'error' state
-                    hasError={!!error} 
-                    disabled={projectsLoading}
-                  >
-                    <option value="">
-                      {projectsLoading ? t('Loading projects...') : t('Select a project')}
-                    </option>
-                    {projects.map((proj) => (
-                      <option key={proj.id} value={proj.id}>
-                        {proj.name}
-                      </option>
-                    ))}
-                  </Select>
-                  {projectsLoading && (
-                    <Text size="sm" color="secondary" style={{ marginTop: '0.5rem' }}>
-                      {t('Fetching available projects from database...')}
-                    </Text>
-                  )}
-                  {/* If there's an error from loading projects or a general error, display it here */}
-                  {error && (
-                    <Text size="sm" style={{ color: theme.colors.error[500], marginTop: '0.5rem' }}>
-                      {error}
-                    </Text>
-                  )}
-                </FormGroup>
+                {error && (
+                  <Alert variant="error" style={{ marginBottom: theme.spacing.lg }}>
+                    {error}
+                  </Alert>
+                )}
 
                 <div style={{ textAlign: 'right' }}>
                   <ForgotPasswordLink href="/forgot-password">
@@ -433,7 +380,7 @@ const SignInPage: React.FC = () => {
                   type="submit"
                   fullWidth
                   size="lg"
-                  disabled={isLoading || !email || !password || !project}
+                  disabled={isLoading || !email || !password}
                   whileHover={{ scale: isLoading ? 1 : 1.02 }}
                   whileTap={{ scale: isLoading ? 1 : 0.98 }}
                 >

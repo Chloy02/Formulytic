@@ -138,9 +138,15 @@ const UserSection = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-shrink: 0;
+  min-width: 0;
 
   @media (max-width: ${theme.breakpoints.md}) {
     gap: 0.5rem;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    gap: 0.25rem;
   }
 `;
 

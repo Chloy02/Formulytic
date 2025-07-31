@@ -24,6 +24,9 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [translatingTexts, setTranslatingTexts] = useState<Set<string>>(new Set());
 
+  // Empty static translations - relying fully on Azure Translator API
+  const staticTranslations: Record<string, string> = {};
+
   // Load language preference from localStorage on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -42,47 +45,42 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
   };
 
   const t = (text: string): string => {
-    console.log('Translation called for:', text, 'Language:', language);
-    
     if (language === 'en') {
       return text;
     }
 
+    // Check static translations first
+    if (staticTranslations[text]) {
+      return staticTranslations[text];
+    }
+
     // Check cached dynamic translations
     if (translations[text]) {
-      console.log('Found cached translation:', text, '->', translations[text]);
       return translations[text];
     }
 
-    // For uncached translations, try LibreTranslate API asynchronously (no setState during render)
+    // For uncached translations, try Azure Translator API immediately
     if (language === 'kn' && !translatingTexts.has(text)) {
-      console.log('Attempting API translation for:', text);
       // Use setTimeout to avoid setState during render
       setTimeout(() => {
         translateWithAPI(text);
       }, 0);
     }
 
-    console.log('Returning original text:', text);
-    return text; // Return original text while translation is pending
+    // Return original text while translation is pending
+    return text;
   };
 
   const translateWithAPI = async (text: string) => {
-    console.log('translateWithAPI called for:', text);
-    
     // Check if we already have this translation or if it's already being processed
     if (translations[text] || translatingTexts.has(text)) {
-      console.log('Translation already exists or in progress for:', text);
       return;
     }
 
     // Mark as being translated
     setTranslatingTexts(prev => new Set(prev).add(text));
-    console.log('Marked as translating:', text);
 
     try {
-      console.log('Making server-side API request for:', text);
-      
       const response = await fetch('/api/translate', {
         method: 'POST',
         headers: {
@@ -95,15 +93,13 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
       });
 
       if (!response.ok) {
-        throw new Error(`Server translation API error: ${response.status}`);
+        throw new Error(`Translation API error: ${response.status}`);
       }
 
       const data = await response.json();
       const translatedText = data.translatedText || text;
-      
-      console.log('Server API translation result:', text, '->', translatedText);
 
-      // Cache the translation
+      // Cache the translation and trigger re-render
       setTranslations(prev => ({
         ...prev,
         [text]: translatedText
@@ -111,7 +107,7 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
 
     } catch (error) {
       console.warn('Translation failed for:', text, error);
-      // Still cache the original text to avoid repeated API calls
+      // Cache the original text to avoid repeated API calls
       setTranslations(prev => ({
         ...prev,
         [text]: text
@@ -123,7 +119,6 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
         newSet.delete(text);
         return newSet;
       });
-      console.log('Finished translating:', text);
     }
   };
 
