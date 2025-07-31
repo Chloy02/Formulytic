@@ -1000,6 +1000,8 @@ export default function QuestionnairePage() {
   const [validFields, setValidFields] = useState(new Set());
   const [previousSubmissions, setPreviousSubmissions] = useState<any[]>([]);
   const [showSubmissionHistory, setShowSubmissionHistory] = useState(false);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timeout | null>(null);
 
   // Helper function to check if a field has a valid value
   const isFieldValid = (value: string | string[] | null | undefined) => {
@@ -1220,13 +1222,47 @@ export default function QuestionnairePage() {
       return;
     }
 
-    // Only load draft when we have a confirmed user and haven't loaded already
-    if (user && isLoggedIn && user.id) {
-      console.log('User confirmed, loading draft for:', user);
-      loadDraft();
+    // Load draft when we have authentication (even without full user object)
+    // This ensures draft loads even on page refresh before user object is fully loaded
+    if (isLoggedIn && !draftLoaded) {
+      console.log('Authentication confirmed, loading draft...');
+      loadDraftWithRetry();
       loadPreviousSubmissions();
+      setDraftLoaded(true);
     }
-  }, [isLoggedIn, user?.id]); // Depend on user.id specifically
+  }, [isLoggedIn, draftLoaded]);
+
+  // Separate useEffect for user-specific actions once user is loaded
+  useEffect(() => {
+    if (user && user.id && draftLoaded) {
+      console.log('User data loaded:', user);
+      // Additional user-specific setup can go here
+    }
+  }, [user?.id, draftLoaded]);
+
+  // Auto-save functionality (like Google Forms)
+  useEffect(() => {
+    // Clear existing timer
+    if (autoSaveTimer) {
+      clearTimeout(autoSaveTimer);
+    }
+
+    // Set new timer for auto-save after 3 seconds of inactivity
+    const timer = setTimeout(() => {
+      if (isLoggedIn && user && draftLoaded) {
+        autoSaveDraft();
+      }
+    }, 3000);
+
+    setAutoSaveTimer(timer);
+
+    // Cleanup timer on unmount
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [formData, isLoggedIn, user, draftLoaded]);
 
   const loadPreviousSubmissions = async () => {
     try {
@@ -1252,17 +1288,21 @@ export default function QuestionnairePage() {
     }
   };
 
-  const loadDraft = async () => {
+  const loadDraftWithRetry = async (retryCount = 0) => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
       
       if (!token) {
         console.log('No token found, cannot load draft');
+        if (retryCount < 3) {
+          // Retry after a short delay in case token is still loading
+          setTimeout(() => loadDraftWithRetry(retryCount + 1), 1000);
+        }
         return;
       }
 
-      console.log('Attempting to load draft for user:', user?.id);
+      console.log('Attempting to load draft (attempt:', retryCount + 1, ')');
       const response = await axios.get('/api/responses/draft', {
         headers: {
           Authorization: `Bearer ${token}`
@@ -1272,44 +1312,21 @@ export default function QuestionnairePage() {
       console.log('Draft response:', response.data);
       
       if (response.data && response.data.answers) {
-        // Merge the loaded draft with default form data to ensure all fields exist
-        const loadedData = {
-          ...defaultFormData,
-          ...response.data.answers,
-          // Ensure arrays are properly restored
-          section1: {
-            ...defaultFormData.section1,
-            ...(response.data.answers.section1 || {}),
-            schemes: response.data.answers.section1?.schemes || [],
-            utilization: response.data.answers.section1?.utilization || [],
-          },
-          section3: {
-            ...defaultFormData.section3,
-            ...(response.data.answers.section3 || {}),
-            widowChallenges: response.data.answers.section3?.widowChallenges || [],
-            widowSchemeBenefits: response.data.answers.section3?.widowSchemeBenefits || [],
-            beneficialPrograms: response.data.answers.section3?.beneficialPrograms || [],
-          },
-          section5: {
-            ...defaultFormData.section5,
-            ...(response.data.answers.section5 || {}),
-            areasForImprovement: response.data.answers.section5?.areasForImprovement || [],
-            experiencedBenefits: response.data.answers.section5?.experiencedBenefits || [],
-            futureSupportExpected: response.data.answers.section5?.futureSupportExpected || [],
-          }
-        };
+        // Deep merge the loaded draft with default form data
+        const loadedData = mergeFormData(defaultFormData, response.data.answers);
         
         setFormData(loadedData);
-        setSuccess('✅ Previous draft loaded successfully! You can continue where you left off.');
-        console.log('Draft loaded successfully:', loadedData);
+        setSuccess('✅ Previous draft loaded successfully! All your answers have been restored.');
+        console.log('Draft loaded and form populated:', loadedData);
         setTimeout(() => setSuccess(''), 5000);
       } else {
-        console.log('No draft data found in response - starting fresh');
+        console.log('No draft data found - starting fresh');
         setSuccess('📝 Welcome! Starting with a fresh questionnaire.');
         setTimeout(() => setSuccess(''), 3000);
       }
     } catch (error: any) {
-      // Handle different error cases
+      console.error('Error loading draft (attempt', retryCount + 1, '):', error);
+      
       if (error.response?.status === 404) {
         console.log('No saved draft found - starting with fresh form');
         setSuccess('📝 Welcome! Starting with a fresh questionnaire.');
@@ -1317,13 +1334,82 @@ export default function QuestionnairePage() {
       } else if (error.response?.status === 401) {
         console.log('Authentication failed - redirecting to login');
         router.push('/signin');
+      } else if (retryCount < 2) {
+        // Retry up to 3 times for network errors
+        console.log('Retrying draft load in 2 seconds...');
+        setTimeout(() => loadDraftWithRetry(retryCount + 1), 2000);
+        return;
       } else {
-        console.error('Error loading draft:', error);
         setError('Failed to load saved draft. Starting with fresh form.');
         setTimeout(() => setError(''), 3000);
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Helper function to deep merge form data
+  const mergeFormData = (defaultData: FormData, loadedData: any): FormData => {
+    return {
+      section1: {
+        ...defaultData.section1,
+        ...(loadedData.section1 || {}),
+        schemes: loadedData.section1?.schemes || [],
+        utilization: loadedData.section1?.utilization || [],
+      },
+      section2: {
+        ...defaultData.section2,
+        ...(loadedData.section2 || {}),
+      },
+      section3: {
+        ...defaultData.section3,
+        ...(loadedData.section3 || {}),
+        widowChallenges: loadedData.section3?.widowChallenges || [],
+        widowSchemeBenefits: loadedData.section3?.widowSchemeBenefits || [],
+        beneficialPrograms: loadedData.section3?.beneficialPrograms || [],
+      },
+      section4: {
+        ...defaultData.section4,
+        ...(loadedData.section4 || {}),
+      },
+      section5: {
+        ...defaultData.section5,
+        ...(loadedData.section5 || {}),
+        areasForImprovement: loadedData.section5?.areasForImprovement || [],
+        experiencedBenefits: loadedData.section5?.experiencedBenefits || [],
+        futureSupportExpected: loadedData.section5?.futureSupportExpected || [],
+      },
+      section6_DevadasiChildren: {
+        ...defaultData.section6_DevadasiChildren,
+        ...(loadedData.section6_DevadasiChildren || {}),
+      },
+    };
+  };
+
+  // Auto-save function (silent, like Google Forms)
+  const autoSaveDraft = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const responseId = user?.id ? `draft_${user.id}` : `draft_${Date.now()}`;
+      
+      await axios.post('/api/responses/draft', 
+        { 
+          answers: formData,
+          responseId: responseId
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      console.log('Auto-saved draft silently');
+    } catch (err) {
+      console.error('Auto-save failed:', err);
+      // Silent failure for auto-save
     }
   };
 
@@ -1359,9 +1445,9 @@ export default function QuestionnairePage() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const responseId = user?.id ? `draft_${user.id}_${Date.now()}` : `draft_${Date.now()}`;
+      const responseId = user?.id ? `draft_${user.id}` : `draft_${Date.now()}`;
       
-      console.log('Saving draft for user:', user?.id);
+      console.log('Manually saving draft for user:', user?.id);
       await axios.post('/api/responses/draft', 
         { 
           answers: formData,
@@ -1373,7 +1459,7 @@ export default function QuestionnairePage() {
           }
         }
       );
-      setSuccess('💾 Draft saved successfully! Your progress has been saved.');
+      setSuccess('💾 Draft saved successfully! Your progress is automatically saved as you type.');
       setTimeout(() => setSuccess(''), 4000);
     } catch (err) {
       console.error('Draft save error:', err);
