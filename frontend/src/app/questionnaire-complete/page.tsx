@@ -126,7 +126,7 @@ const ProgressSteps = styled.div`
   position: relative;
 `;
 
-const ProgressStep = styled.div<{ isActive: boolean; isCompleted: boolean }>`
+const ProgressStep = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -153,21 +153,24 @@ const ProgressStep = styled.div<{ isActive: boolean; isCompleted: boolean }>`
     left: 60%;
     right: -40%;
     height: 2px;
-    background-color: ${props => props.isCompleted ? '#48bb78' : '#e2e8f0'};
+    background-color: ${props => props.$isCompleted ? '#48bb78' : '#e2e8f0'};
     z-index: 1;
   }
 `;
 
-const StepNumber = styled.div<{ isActive: boolean; isCompleted: boolean }>`
+const StepNumber = styled.div<{
+  $isActive: boolean;
+  $isCompleted: boolean;
+}>`
   width: 30px;
   height: 30px;
   border-radius: 50%;
   background-color: ${props => 
-    props.isCompleted ? '#48bb78' : 
-    props.isActive ? '#3182ce' : '#e2e8f0'
+    props.$isCompleted ? '#48bb78' : 
+    props.$isActive ? '#3182ce' : '#e2e8f0'
   };
   color: ${props => 
-    props.isCompleted || props.isActive ? 'white' : '#a0aec0'
+    props.$isCompleted || props.$isActive ? 'white' : '#a0aec0'
   };
   display: flex;
   align-items: center;
@@ -178,23 +181,24 @@ const StepNumber = styled.div<{ isActive: boolean; isCompleted: boolean }>`
   z-index: 2;
   transition: all 0.3s ease;
   box-shadow: ${props => 
-    props.isActive ? '0 0 0 4px rgba(66, 153, 225, 0.2)' : 
-    props.isCompleted ? '0 0 0 4px rgba(72, 187, 120, 0.2)' : 'none'
+    props.$isActive ? '0 0 0 4px rgba(66, 153, 225, 0.2)' : 
+    props.$isCompleted ? '0 0 0 4px rgba(72, 187, 120, 0.2)' : 'none'
   };
-  
+
   ${ProgressStep}:hover & {
     transform: scale(1.1);
-    box-shadow: ${props => 
-      props.isCompleted ? '0 0 0 4px rgba(72, 187, 120, 0.3)' :
-      '0 0 0 4px rgba(66, 153, 225, 0.15)'
-    };
+    box-shadow: ${props =>
+      props.$isCompleted
+        ? '0 0 0 4px rgba(72, 187, 120, 0.3)'
+        : '0 0 0 4px rgba(66, 153, 225, 0.15)'};
   }
 `;
 
-const StepLabel = styled.span<{ isActive: boolean }>`
+
+const StepLabel = styled.span<{ $isActive: boolean }>`
   font-size: 0.75rem;
-  color: ${props => props.isActive ? '#3182ce' : '#666'};
-  font-weight: ${props => props.isActive ? '600' : '400'};
+  color: ${props => props.$isActive ? '#3182ce' : '#666'};
+  font-weight: ${props => props.$isActive ? '600' : '400'};
   margin-top: 8px;
   text-align: center;
   max-width: 80px;
@@ -736,6 +740,67 @@ const ModernSectionDesc = styled.div`
   color: rgba(255,255,255,0.92);
 `;
 
+const SubmissionHistorySection = styled.div`
+  background: linear-gradient(135deg, rgba(103, 58, 183, 0.1), rgba(156, 39, 176, 0.1));
+  border: 1px solid rgba(103, 58, 183, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+`;
+
+const SubmissionCard = styled.div`
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(103, 58, 183, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(103, 58, 183, 0.1);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const SubmissionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
+const SubmissionDate = styled.span`
+  color: #673ab7;
+  font-weight: 600;
+  font-size: 0.9rem;
+`;
+
+const SubmissionStatus = styled.span<{ status: string }>`
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: ${props => props.status === 'submitted' ? '#e8f5e8' : '#fff3e0'};
+  color: ${props => props.status === 'submitted' ? '#2e7d32' : '#f57c00'};
+`;
+
+const ToggleButton = styled.button`
+  background: linear-gradient(135deg, #673ab7, #9c27b0);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(103, 58, 183, 0.3);
+  }
+`;
+
 interface FormData {
   section1: {
     respondentName: string;
@@ -933,6 +998,10 @@ export default function QuestionnairePage() {
   const router = useRouter();
   const [currentSection, setCurrentSection] = useState(1);
   const [validFields, setValidFields] = useState(new Set());
+  const [previousSubmissions, setPreviousSubmissions] = useState<any[]>([]);
+  const [showSubmissionHistory, setShowSubmissionHistory] = useState(false);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timeout | null>(null);
 
   // Helper function to check if a field has a valid value
   const isFieldValid = (value: string | string[] | null | undefined) => {
@@ -1141,39 +1210,206 @@ export default function QuestionnairePage() {
   });
 
   useEffect(() => {
+    // Don't run if we're not authenticated yet
     if (!isLoggedIn) {
       router.push('/signin');
       return;
     }
 
+    // Don't load drafts for admin users
     if (user && user.role === 'admin') {
       router.push('/admin-dashboard');
       return;
     }
 
-    // Load draft if exists
-    loadDraft();
-  }, [isLoggedIn, user, router]);
+    // Load draft when we have authentication (even without full user object)
+    // This ensures draft loads even on page refresh before user object is fully loaded
+    if (isLoggedIn && !draftLoaded) {
+      console.log('Authentication confirmed, loading draft...');
+      loadDraftWithRetry();
+      loadPreviousSubmissions();
+      setDraftLoaded(true);
+    }
+  }, [isLoggedIn, draftLoaded]);
 
-  const loadDraft = async () => {
+  // Separate useEffect for user-specific actions once user is loaded
+  useEffect(() => {
+    if (user && user.id && draftLoaded) {
+      console.log('User data loaded:', user);
+      // Additional user-specific setup can go here
+    }
+  }, [user?.id, draftLoaded]);
+
+  // Auto-save functionality (like Google Forms)
+  useEffect(() => {
+    // Clear existing timer
+    if (autoSaveTimer) {
+      clearTimeout(autoSaveTimer);
+    }
+
+    // Set new timer for auto-save after 3 seconds of inactivity
+    const timer = setTimeout(() => {
+      if (isLoggedIn && user && draftLoaded) {
+        autoSaveDraft();
+      }
+    }, 3000);
+
+    setAutoSaveTimer(timer);
+
+    // Cleanup timer on unmount
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [formData, isLoggedIn, user, draftLoaded]);
+
+  const loadPreviousSubmissions = async () => {
     try {
       const token = localStorage.getItem('token');
+      
+      if (!token) {
+        console.log('No token found, cannot load submissions');
+        return;
+      }
+
+      console.log('Loading previous submissions for user:', user?.id);
+      const response = await axios.get('/api/responses/user', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      console.log('Previous submissions:', response.data);
+      setPreviousSubmissions(response.data || []);
+    } catch (error: any) {
+      console.log('No previous submissions found or error loading:', error);
+      setPreviousSubmissions([]);
+    }
+  };
+
+  const loadDraftWithRetry = async (retryCount = 0) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        console.log('No token found, cannot load draft');
+        if (retryCount < 3) {
+          // Retry after a short delay in case token is still loading
+          setTimeout(() => loadDraftWithRetry(retryCount + 1), 1000);
+        }
+        return;
+      }
+
+      console.log('Attempting to load draft (attempt:', retryCount + 1, ')');
       const response = await axios.get('/api/responses/draft', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      if (response.data) {
-        setFormData({
-          ...defaultFormData,
-          ...response.data.answers,
-        });
-        setSuccess('Draft loaded successfully!');
+      
+      console.log('Draft response:', response.data);
+      
+      if (response.data && response.data.answers) {
+        // Deep merge the loaded draft with default form data
+        const loadedData = mergeFormData(defaultFormData, response.data.answers);
+        
+        setFormData(loadedData);
+        setSuccess('✅ Previous draft loaded successfully! All your answers have been restored.');
+        console.log('Draft loaded and form populated:', loadedData);
+        setTimeout(() => setSuccess(''), 5000);
+      } else {
+        console.log('No draft data found - starting fresh');
+        setSuccess('📝 Welcome! Starting with a fresh questionnaire.');
         setTimeout(() => setSuccess(''), 3000);
       }
-    } catch {
-      // No draft found, continue with empty form
-      console.log('No draft found');
+    } catch (error: any) {
+      console.error('Error loading draft (attempt', retryCount + 1, '):', error);
+      
+      if (error.response?.status === 404) {
+        console.log('No saved draft found - starting with fresh form');
+        setSuccess('📝 Welcome! Starting with a fresh questionnaire.');
+        setTimeout(() => setSuccess(''), 3000);
+      } else if (error.response?.status === 401) {
+        console.log('Authentication failed - redirecting to login');
+        router.push('/signin');
+      } else if (retryCount < 2) {
+        // Retry up to 3 times for network errors
+        console.log('Retrying draft load in 2 seconds...');
+        setTimeout(() => loadDraftWithRetry(retryCount + 1), 2000);
+        return;
+      } else {
+        setError('Failed to load saved draft. Starting with fresh form.');
+        setTimeout(() => setError(''), 3000);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper function to deep merge form data
+  const mergeFormData = (defaultData: FormData, loadedData: any): FormData => {
+    return {
+      section1: {
+        ...defaultData.section1,
+        ...(loadedData.section1 || {}),
+        schemes: loadedData.section1?.schemes || [],
+        utilization: loadedData.section1?.utilization || [],
+      },
+      section2: {
+        ...defaultData.section2,
+        ...(loadedData.section2 || {}),
+      },
+      section3: {
+        ...defaultData.section3,
+        ...(loadedData.section3 || {}),
+        widowChallenges: loadedData.section3?.widowChallenges || [],
+        widowSchemeBenefits: loadedData.section3?.widowSchemeBenefits || [],
+        beneficialPrograms: loadedData.section3?.beneficialPrograms || [],
+      },
+      section4: {
+        ...defaultData.section4,
+        ...(loadedData.section4 || {}),
+      },
+      section5: {
+        ...defaultData.section5,
+        ...(loadedData.section5 || {}),
+        areasForImprovement: loadedData.section5?.areasForImprovement || [],
+        experiencedBenefits: loadedData.section5?.experiencedBenefits || [],
+        futureSupportExpected: loadedData.section5?.futureSupportExpected || [],
+      },
+      section6_DevadasiChildren: {
+        ...defaultData.section6_DevadasiChildren,
+        ...(loadedData.section6_DevadasiChildren || {}),
+      },
+    };
+  };
+
+  // Auto-save function (silent, like Google Forms)
+  const autoSaveDraft = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const responseId = user?.id ? `draft_${user.id}` : `draft_${Date.now()}`;
+      
+      await axios.post('/api/responses/draft', 
+        { 
+          answers: formData,
+          responseId: responseId
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      console.log('Auto-saved draft silently');
+    } catch (err) {
+      console.error('Auto-save failed:', err);
+      // Silent failure for auto-save
     }
   };
 
@@ -1209,8 +1445,9 @@ export default function QuestionnairePage() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const responseId = user?.id ? `draft_${user.id}_${Date.now()}` : `draft_${Date.now()}`;
+      const responseId = user?.id ? `draft_${user.id}` : `draft_${Date.now()}`;
       
+      console.log('Manually saving draft for user:', user?.id);
       await axios.post('/api/responses/draft', 
         { 
           answers: formData,
@@ -1222,8 +1459,8 @@ export default function QuestionnairePage() {
           }
         }
       );
-      setSuccess('Draft saved successfully!');
-      setTimeout(() => setSuccess(''), 3000);
+      setSuccess('💾 Draft saved successfully! Your progress is automatically saved as you type.');
+      setTimeout(() => setSuccess(''), 4000);
     } catch (err) {
       console.error('Draft save error:', err);
       setError('Failed to save draft. Please try again.');
@@ -1251,6 +1488,10 @@ export default function QuestionnairePage() {
         }
       );
       setSuccess(t('Response submitted successfully!'));
+      
+      // Reload submissions to show the new submission
+      loadPreviousSubmissions();
+      
       setTimeout(() => {
         router.push('/');
       }, 2000);
@@ -1293,6 +1534,32 @@ export default function QuestionnairePage() {
     return null;
   }
 
+  // Show loading indicator while loading draft
+  if (loading) {
+    return (
+      <PageContainer>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          minHeight: '50vh',
+          gap: '20px'
+        }}>
+          <div style={{
+            width: '50px',
+            height: '50px',
+            border: '4px solid #f3f4f6',
+            borderTop: '4px solid #667eea',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}></div>
+          <p style={{ color: '#6b7280', fontSize: '16px' }}>Loading your questionnaire...</p>
+        </div>
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer>
       <Header>
@@ -1309,22 +1576,67 @@ export default function QuestionnairePage() {
         <Subtitle>Your responses will help us improve these important social programs</Subtitle>
         <TimeEstimate>Takes less than 8 minutes</TimeEstimate>
         
+        {/* Previous Submissions Section */}
+        {previousSubmissions.length > 0 && (
+          <SubmissionHistorySection>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ margin: 0, color: '#673ab7', fontSize: '1.2rem' }}>
+                📋 Your Previous Submissions ({previousSubmissions.length})
+              </h3>
+              <ToggleButton onClick={() => setShowSubmissionHistory(!showSubmissionHistory)}>
+                {showSubmissionHistory ? 'Hide' : 'Show'} History
+              </ToggleButton>
+            </div>
+            
+            {showSubmissionHistory && (
+              <div>
+                {previousSubmissions.map((submission, index) => (
+                  <SubmissionCard key={submission._id || index}>
+                    <SubmissionHeader>
+                      <SubmissionDate>
+                        📅 {new Date(submission.submittedAt || submission.lastSaved).toLocaleDateString('en-IN', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </SubmissionDate>
+                      <SubmissionStatus status={submission.status}>
+                        {submission.status === 'submitted' ? '✅ Submitted' : '📝 Draft'}
+                      </SubmissionStatus>
+                    </SubmissionHeader>
+                    <div style={{ color: '#666', fontSize: '0.9rem' }}>
+                      Response ID: {submission.responseId}
+                    </div>
+                    {submission.answers?.section1?.respondentName && (
+                      <div style={{ color: '#666', fontSize: '0.9rem' }}>
+                        Name: {submission.answers.section1.respondentName}
+                      </div>
+                    )}
+                  </SubmissionCard>
+                ))}
+              </div>
+            )}
+          </SubmissionHistorySection>
+        )}
+        
         <ProgressSteps>
           {[1, 2, 3, 4, 5, 6].map((step) => (
             <ProgressStep 
               key={step}
-              isActive={currentSection === step}
-              isCompleted={isSectionCompleted(step)}
+              $isActive={currentSection === step}
+              $isCompleted={isSectionCompleted(step)}
               onClick={() => navigateToSection(step)}
               title={`Go to section ${step}`}
             >
               <StepNumber 
-                isActive={currentSection === step}
-                isCompleted={isSectionCompleted(step)}
+                $isActive={currentSection === step}
+                $isCompleted={isSectionCompleted(step)}
               >
                 {isSectionCompleted(step) ? '✓' : step}
               </StepNumber>
-              <StepLabel isActive={currentSection === step}>
+              <StepLabel $isActive={currentSection === step}>
                 {step === 1 && 'Basic Info'}
                 {step === 2 && 'Demographics'}
                 {step === 3 && 'Scheme Details'}
