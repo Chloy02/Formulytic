@@ -88,24 +88,8 @@ export const useDynamicTranslation = () => {
     } catch (error) {
       console.warn('Translation failed for:', text, 'Error:', error);
       
-      // Fallback: Try word-by-word translation for simple phrases
-      const words = text.split(' ');
-      if (words.length <= 3) {
-        const translatedWords = words.map(word => offlineTranslations[word] || word);
-        if (translatedWords.some(word => offlineTranslations[words[translatedWords.indexOf(word)]])) {
-          const fallbackTranslation = translatedWords.join(' ');
-          
-          // Cache the fallback translation
-          setTranslationCache(prev => ({
-            ...prev,
-            [cacheKey]: fallbackTranslation
-          }));
-          
-          return fallbackTranslation;
-        }
-      }
-      
-      // Return original text if no fallback available
+      // Fallback: Return original text for now
+      // Could be enhanced with offline translations in the future
       return text;
     } finally {
       setIsTranslating(false);
