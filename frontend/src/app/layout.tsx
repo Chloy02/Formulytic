@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Home",
   description: "Home page description",
   alternates: {
-    canonical: "https://yourdomain.com/home",
+    canonical: "https://formulytic.vercel.app/",
   },
 };
 
