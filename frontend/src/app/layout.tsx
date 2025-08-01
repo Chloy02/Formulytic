@@ -6,9 +6,14 @@ import { TranslationProvider } from '../contexts/TranslationContext';
 import StyledComponentsRegistry from '../lib/registry';
 import ScriptLoader from "./scripts"; // <— add this
 
+import { env } from "process";
+
 export const metadata: Metadata = {
-  title: "Formulytcs",
-  description: "Advanced form analytics and questionnaire platform",
+  title: "Home",
+  description: "Home page description",
+  alternates: {
+    canonical: "https://yourdomain.com/home",
+  },
 };
 
 export default function RootLayout({
@@ -22,8 +27,13 @@ export default function RootLayout({
         {/* Fonts and icons */}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" />
+        <link rel="canonical" href="https://example.com/page" />
         {/* Font Awesome CDN can fail — optional: use npm instead */}
+
       </head>
+      <script>
+        console.log(env.JWT_SECRET);
+      </script>
       <body suppressHydrationWarning={true}>
         <StyledComponentsRegistry>
           <ThemeProvider>
