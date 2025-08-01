@@ -6,11 +6,25 @@ import { TranslationProvider } from '../contexts/TranslationContext';
 import StyledComponentsRegistry from '../lib/registry';
 import ScriptLoader from "./scripts"; // Correct usage
 
-export const metadata: Metadata = {
+// app/page.tsx or app/home/page.tsx
+export const metadata = {
   title: "Home",
-  description: "Home page description",
+  description: "Welcome to Christ College - Empowering students through education.",
+  keywords: ["Christ College", "Education", "Admissions", "Bangalore", "UG", "PG"],
+  openGraph: {
+    title: "Christ College",
+    description: "Explore courses and opportunities at Christ College, Bangalore.",
+    url: "https://christcollege.edu.in",
+    siteName: "Christ College",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Christ College",
+    description: "Top-ranked college in Bangalore offering UG & PG courses.",
+  },
   alternates: {
-    canonical: "https://formulytic.vercel.app/",
+    canonical: "https://christcollege.edu.in/",
   },
 };
 
