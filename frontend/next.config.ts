@@ -14,6 +14,12 @@ const nextConfig: NextConfig = withBundleAnalyzer({
     ignoreDuringBuilds: true,
   },
   productionBrowserSourceMaps: true,
+
+  experimental: {
+    legacyBrowsers: false,
+    nextScriptWorkers: true, // helps serve modern chunks
+    instrumentationHook: false // disables next-devtools injection
+  },
 });
 
 export default nextConfig;
