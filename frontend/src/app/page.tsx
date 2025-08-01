@@ -185,15 +185,11 @@ const FloatingChristLogo = styled.div`
   }
 `;
 
-const FloatingLogoImage = styled.img.attrs(() => ({
-  width: 60,
-  height: 60,
-  alt: "Christ University Logo",
-}))`
+const FloatingLogoImage = styled.img`
   height: 60px;
-  width: 60px;
+  width: auto;
   object-fit: contain;
-  transition: transform 0.3s ease, filter 0.3s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
 
   &:hover {
@@ -203,12 +199,10 @@ const FloatingLogoImage = styled.img.attrs(() => ({
 
   @media (max-width: 768px) {
     height: 50px;
-    width: 50px;
   }
 
   @media (max-width: 480px) {
     height: 40px;
-    width: 40px;
   }
 `;
 
