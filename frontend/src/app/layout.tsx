@@ -4,9 +4,7 @@ import { AuthProvider } from '../contexts/AuthContext';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import { TranslationProvider } from '../contexts/TranslationContext';
 import StyledComponentsRegistry from '../lib/registry';
-import ScriptLoader from "./scripts"; // <— add this
-
-import { env } from "process";
+import ScriptLoader from "./scripts"; // Correct usage
 
 export const metadata: Metadata = {
   title: "Home",
@@ -25,14 +23,15 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Fonts and icons */}
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" />
-        <link rel="canonical" href="https://example.com/page" />
-        {/* Font Awesome CDN can fail — optional: use npm instead */}
-
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+        />
       </head>
-      <script>
-      </script>
       <body suppressHydrationWarning={true}>
         <StyledComponentsRegistry>
           <ThemeProvider>

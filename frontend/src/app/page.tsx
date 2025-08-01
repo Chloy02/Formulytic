@@ -8,17 +8,17 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { theme } from '@/styles/theme';
-import { 
-  Button, 
-  Heading, 
-  Text, 
-  Container, 
+import {
+  Button,
+  Heading,
+  Text,
+  Container,
   Stack
 } from '@/components/ui';
 import EnhancedNavbar from '@/components/EnhancedNavbar';
 import KarnatakaMap from '@/components/KarnatakaMap';
-import { 
-  ArrowRight, 
+import {
+  ArrowRight,
   Sparkles
 } from 'lucide-react';
 
@@ -185,11 +185,15 @@ const FloatingChristLogo = styled.div`
   }
 `;
 
-const FloatingLogoImage = styled.img`
+const FloatingLogoImage = styled.img.attrs(() => ({
+  width: 60,
+  height: 60,
+  alt: "Christ University Logo",
+}))`
   height: 60px;
-  width: auto;
+  width: 60px;
   object-fit: contain;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
   cursor: pointer;
 
   &:hover {
@@ -199,10 +203,12 @@ const FloatingLogoImage = styled.img`
 
   @media (max-width: 768px) {
     height: 50px;
+    width: 50px;
   }
 
   @media (max-width: 480px) {
     height: 40px;
+    width: 40px;
   }
 `;
 
@@ -223,11 +229,15 @@ const CenteredLogoContainer = styled.div`
   }
 `;
 
-const CenteredLogoImage = styled.img`
-  height: 112px; /* 40% bigger than original 80px */
-  width: auto;
+const CenteredLogoImage = styled.img.attrs(() => ({
+  width: 112,
+  height: 112,
+  alt: "Government of Karnataka Seal",
+}))`
+  height: 112px;
+  width: 112px;
   object-fit: contain;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
   cursor: pointer;
 
   &:hover {
@@ -236,15 +246,18 @@ const CenteredLogoImage = styled.img`
   }
 
   @media (max-width: 768px) {
-    height: 98px; /* 40% bigger than 70px */
+    height: 98px;
+    width: 98px;
   }
 
   @media (max-width: 480px) {
-    height: 84px; /* 40% bigger than 60px */
+    height: 84px;
+    width: 84px;
   }
 
   @media (max-width: 360px) {
-    height: 70px; /* 40% bigger than 50px */
+    height: 70px;
+    width: 70px;
   }
 `;
 
@@ -492,7 +505,7 @@ const HomePage: React.FC = () => {
       </FloatingChristLogo>
 
       <EnhancedNavbar />
-      
+
       <HeroSection>
         <HeroBackground />
         <HeroContainer maxWidth="lg">
@@ -507,15 +520,15 @@ const HomePage: React.FC = () => {
                   <CenteredLogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
                 </a>
               </CenteredLogoContainer>
-              
+
               <MainHeading>
                 {t("Karnataka Social")} <HighlightText>{t("Impact")}</HighlightText> {t("Evaluation Survey")}
               </MainHeading>
-              
+
               <SubText size="lg" color="secondary">
                 {t("Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. Your responses will contribute to improving social equity and integration across beneficiary communities.")}
               </SubText>
-              
+
               <HeroButtons>
                 <PrimaryButton
                   size="lg"
@@ -529,7 +542,7 @@ const HomePage: React.FC = () => {
                     <ArrowRight size={16} />
                   </Stack>
                 </PrimaryButton>
-                
+
                 {!isLoggedIn && (
                   <SecondaryButton
                     onClick={handleSignIn}
@@ -543,7 +556,7 @@ const HomePage: React.FC = () => {
               </HeroButtons>
             </motion.div>
           </HeroContent>
-          
+
           <HeroVisual>
             <motion.div
               initial={{ opacity: 0, x: 30 }}
