@@ -32,7 +32,6 @@ export default function RootLayout({
 
       </head>
       <script>
-        console.log(env.JWT_SECRET);
       </script>
       <body suppressHydrationWarning={true}>
         <StyledComponentsRegistry>
