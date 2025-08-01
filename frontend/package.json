@@ -20,6 +20,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "concurrently": "^9.2.0",
+    "core-js": "^3.44.0",
     "framer-motion": "^12.23.7",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.525.0",

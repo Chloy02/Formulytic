@@ -317,9 +317,9 @@ const Subtitle = styled.p`
   }
 `;
 
-const Grid = styled.div<{ minWidth?: string }>`
+const Grid = styled.div<{ $minWidth?: string }>`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(${props => props.minWidth || '280px'}, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(${props => props.$minWidth || '280px'}, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 
@@ -561,7 +561,7 @@ export default function AdminDashboardPage() {
           </Subtitle>
         </GlassCard>
 
-        <Grid minWidth="280px">
+        <Grid $minWidth="280px">
           <StatCard color={theme.colors.primary.gradient}>
             <StatHeader>
               <div>

@@ -17,114 +17,76 @@ const NavbarContainer = styled(motion.nav)`
   align-items: center;
   padding: 1rem 1.5rem;
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
   z-index: 1000;
   width: 100%;
   box-sizing: border-box;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  min-height: 70px;
 
   .dark & {
     background: rgba(15, 23, 42, 0.95);
-    border-bottom-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: #334155;
   }
 
-  &:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  }
-
-  @media (max-width: 768px) {
+  @media (max-width: ${theme.breakpoints.md}) {
     padding: 1rem;
+    min-height: 60px;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: 0.75rem;
   }
 `;
 
 const NavBrand = styled(Link)`
   font-size: 1.5rem;
   font-weight: 700;
-  color: ${theme.colors.primary[600]};
+  color: #2563eb;
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 
   &:hover {
-    color: ${theme.colors.primary[700]};
-    transform: scale(1.05) rotate(1deg);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -4px;
-    left: 0;
-    background: ${theme.colors.primary.gradient};
-    transition: width 0.3s ease;
-    border-radius: ${theme.borderRadius.full};
-  }
-
-  &:hover::after {
-    width: 100%;
+    color: #1d4ed8;
+    transform: scale(1.05);
   }
 
   .dark & {
-    color: ${theme.colors.primary[400]};
+    color: #3b82f6;
     
     &:hover {
-      color: ${theme.colors.primary[300]};
+      color: #60a5fa;
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${theme.breakpoints.md}) {
     font-size: 1.25rem;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: 1.125rem;
+    gap: 0.375rem;
   }
 `;
 
 const BrandIcon = styled.div`
   width: 32px;
   height: 32px;
-  background: ${theme.colors.primary.gradient};
-  border-radius: ${theme.borderRadius.lg};
+  background: linear-gradient(135deg, ${theme.colors.primary[500]} 0%, ${theme.colors.primary[600]} 100%);
+  border-radius: ${theme.borderRadius.md};
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-weight: ${theme.typography.fontWeight.bold};
   font-size: ${theme.typography.fontSize.sm};
-  position: relative;
-  overflow: hidden;
-  box-shadow: ${theme.shadows.md};
-  transition: all 0.3s ease;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transform: rotate(45deg);
-    transition: all 0.6s ease;
-    opacity: 0;
-  }
-
-  &:hover::before {
-    animation: shimmer 0.6s ease-in-out;
-    opacity: 1;
-  }
-
-  @keyframes shimmer {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-  }
 `;
 
 const DesktopNavLinks = styled.ul`
@@ -177,7 +139,7 @@ const UserSection = styled.div`
   align-items: center;
   gap: 1rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: ${theme.breakpoints.md}) {
     gap: 0.5rem;
   }
 `;
@@ -193,7 +155,7 @@ const UserInfo = styled.div`
     color: #f1f5f9;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: ${theme.breakpoints.md}) {
     display: none;
   }
 `;
@@ -235,12 +197,8 @@ const LogoutButton = styled(motion.button)`
     color: ${theme.colors.error[600]};
   }
 
-  @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.xs};
-    
-    span {
-      display: none;
-    }
+  @media (max-width: ${theme.breakpoints.md}) {
+    display: none;
   }
 `;
 
@@ -248,6 +206,10 @@ const AuthButtonsWrapper = styled.div`
   display: flex;
   gap: ${theme.spacing.sm};
   align-items: center;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    display: none;
+  }
 `;
 
 const SignInButton = styled(motion(Link))`
@@ -353,6 +315,12 @@ const MobileMenu = styled(motion.div)`
   border-bottom: 1px solid ${theme.colors.border.light};
   box-shadow: ${theme.shadows.lg};
   padding: ${theme.spacing.base};
+  z-index: 999;
+
+  .dark & {
+    background: rgba(15, 23, 42, 0.98);
+    border-bottom-color: #334155;
+  }
 `;
 
 const MobileNavLinks = styled.ul`
@@ -372,10 +340,20 @@ const MobileNavLink = styled(Link)`
   border-radius: ${theme.borderRadius.md};
   transition: all 0.2s ease;
   display: block;
+  font-size: ${theme.typography.fontSize.base};
 
   &:hover {
     background-color: ${theme.colors.primary[50]};
     color: ${theme.colors.primary[600]};
+  }
+
+  .dark & {
+    color: ${theme.colors.text.primary};
+    
+    &:hover {
+      background-color: ${theme.colors.primary[900]};
+      color: ${theme.colors.primary[400]};
+    }
   }
 `;
 

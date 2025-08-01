@@ -4,30 +4,27 @@ import { useEffect } from 'react';
 
 export default function ScriptLoader() {
   useEffect(() => {
-    // Bootstrap
-    import('bootstrap');
-
-    // Perfect Scrollbar
-    import('perfect-scrollbar').then(({ default: PerfectScrollbar }) => {
-      const el = document.querySelector('#main-content');
-      if (el) new PerfectScrollbar(el);
-    });
-
-    // Smooth Scrollbar
-    import('smooth-scrollbar').then(({ default: Scrollbar }) => {
-      const el = document.querySelector('#main-content');
-      if (el) Scrollbar.init(el);
-    });
-
-    // Optional: Load Material Dashboard manually if needed
-    // NOTE: You need to add this file to `public/assets/js/material-dashboard.min.js`
+    // Only load material-dashboard.min.js from CDN if needed for admin features
+    // This is optional and gracefully fails if CDN is unavailable
     const script = document.createElement('script');
-    script.src = '/assets/js/material-dashboard.min.js?v=3.1.0';
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/material-dashboard/2.1.2/js/material-dashboard.min.js';
     script.async = true;
-    document.body.appendChild(script);
+    script.onerror = () => {
+      console.warn('Material Dashboard script could not be loaded from CDN (optional)');
+    };
+    
+    // Only append if not already loaded
+    const existingScript = document.querySelector('script[src*="material-dashboard"]');
+    if (!existingScript) {
+      document.body.appendChild(script);
+    }
 
     return () => {
-      document.body.removeChild(script);
+      // Cleanup script if component unmounts
+      const scriptToRemove = document.querySelector('script[src*="material-dashboard"]');
+      if (scriptToRemove) {
+        scriptToRemove.remove();
+      }
     };
   }, []);
 
