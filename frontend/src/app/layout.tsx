@@ -5,6 +5,7 @@ import { ThemeProvider } from '../contexts/ThemeContext';
 import { TranslationProvider } from '../contexts/TranslationContext';
 import StyledComponentsRegistry from '../lib/registry';
 import ScriptLoader from "./scripts"; // Correct usage
+import { Analytics } from '@vercel/analytics/react';
 
 // app/page.tsx or app/home/page.tsx
 export const metadata = {
@@ -53,6 +54,7 @@ export default function RootLayout({
               <AuthProvider>
                 {children}
                 <ScriptLoader /> {/* Load JS libs after page render */}
+                <Analytics />
               </AuthProvider>
             </TranslationProvider>
           </ThemeProvider>
