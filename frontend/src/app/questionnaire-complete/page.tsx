@@ -424,6 +424,16 @@ const Label = styled.label`
   font-size: 1rem;
   line-height: 1.5;
   letter-spacing: 0.025em;
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
 `;
 
 const Input = styled.input<{ isValid?: boolean }>`
@@ -455,6 +465,26 @@ const Input = styled.input<{ isValid?: boolean }>`
   &:hover:not(:focus) {
     border-color: ${props => props.isValid ? '#38a169' : '#cbd5e0'};
   }
+
+  @media (max-width: 768px) {
+    padding: 12px 36px 12px 14px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 32px 10px 12px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px 36px 12px 14px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 32px 10px 12px;
+    border-radius: 6px;
+  }
 `;
 
 const Select = styled.select<{ isValid?: boolean }>`
@@ -479,6 +509,16 @@ const Select = styled.select<{ isValid?: boolean }>`
 
   &:hover:not(:focus) {
     border-color: ${props => props.isValid ? '#38a169' : '#cbd5e0'};
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px 36px 12px 14px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 32px 10px 12px;
+    border-radius: 6px;
   }
 
   option {
@@ -517,6 +557,18 @@ const TextArea = styled.textarea<{ isValid?: boolean }>`
 
   &:hover:not(:focus) {
     border-color: ${props => props.isValid ? '#38a169' : '#cbd5e0'};
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px 36px 12px 14px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 100px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 32px 10px 12px;
+    border-radius: 6px;
+    min-height: 90px;
   }
 `;
 
@@ -560,6 +612,10 @@ const RadioGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  @media (max-width: 480px) {
+    gap: 6px;
+  }
 `;
 
 const RadioItem = styled.label`
@@ -582,6 +638,19 @@ const RadioItem = styled.label`
   &:active {
     background-color: #edf2f7;
   }
+
+  @media (max-width: 768px) {
+    padding: 14px 10px;
+    font-size: 0.95rem;
+    gap: 10px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+    gap: 8px;
+    border-radius: 6px;
+  }
 `;
 
 const Radio = styled.input.attrs({ type: 'radio' })`
@@ -600,6 +669,96 @@ const ButtonGroup = styled.div`
   padding: 20px 30px;
   background-color: #f8f9fa;
   border-top: 1px solid #e2e8f0;
+
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+    gap: 12px;
+    flex-direction: column;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 16px;
+    gap: 10px;
+    margin-top: 20px;
+  }
+`;
+
+const FloatingBackButton = styled.button`
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1001;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 25px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 140px;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3), 0 6px 25px rgba(102, 126, 234, 0.4);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover svg {
+    transform: translateX(-2px);
+  }
+
+  .dark & {
+    background: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%);
+    box-shadow: 0 4px 20px rgba(76, 81, 191, 0.3);
+    
+    &:hover {
+      background: linear-gradient(135deg, #434190 0%, #4c3788 100%);
+      box-shadow: 0 6px 25px rgba(76, 81, 191, 0.4);
+    }
+  }
+
+  @media (max-width: 768px) {
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    min-width: 120px;
+  }
+
+  @media (max-width: 480px) {
+    bottom: 15px;
+    right: 15px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    min-width: 100px;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 `;
 
 const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'success' }>`
@@ -610,6 +769,7 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'success' }>`
   cursor: pointer;
   transition: all 0.2s;
   border: none;
+  min-height: 44px; /* Better touch target */
   
   ${props => {
     switch (props.variant) {
@@ -3637,6 +3797,15 @@ export default function QuestionnairePage() {
         {success && <SuccessMessage>{success}</SuccessMessage>}
       </ModernFormContainer>
       </PageContainer>
+
+      {/* Floating Back to Home Button */}
+      <FloatingBackButton onClick={backToHome} title="Go back to home page">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+        </svg>
+        {t("Back to Home")}
+      </FloatingBackButton>
+
     </PageWrapper>
     );
   }

@@ -15,7 +15,7 @@ interface User {
 interface AuthContextType {
   isLoggedIn: boolean;
   user: User | null;
-  login: (email: string, password: string, project: string) => Promise<{ role: string; project: string }>;
+  login: (email: string, password: string) => Promise<{ role: string; project: string }>;
   adminLogin: (username: string, password: string) => Promise<{ success: boolean; user?: User; error?: string }>;
   logout: () => void;
 }
@@ -67,8 +67,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [token]);
 
-  const login = async (email: string, password: string, project: string) => {
+  const login = async (email: string, password: string) => {
     try {
+      // Get the selected project from localStorage
+      const selectedProjectData = localStorage.getItem('selectedProject');
+      const project = selectedProjectData ? JSON.parse(selectedProjectData).id : 'default';
+      
       // Use the frontend API route with correct parameters
       const response = await axios.post('/api/auth/login', { 
         email: email, 
