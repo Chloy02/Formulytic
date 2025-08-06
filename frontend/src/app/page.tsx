@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -461,110 +461,121 @@ const KarnatakaMapContainer = styled.div`
 `;
 
 const HomePage: React.FC = () => {
-  const { isLoggedIn, user } = useAuth();
   const { t } = useTranslation();
+  const { isLoggedIn, user } = useAuth();
   const router = useRouter();
+  const [selectedProject, setSelectedProject] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
-  // Redirect admin users to admin dashboard
   useEffect(() => {
+    // Check if user is admin and redirect to admin dashboard
     if (isLoggedIn && user && user.role === 'admin') {
       router.push('/admin-dashboard');
+      return;
+    }
+
+    // Check if a project has been selected
+    const storedProject = localStorage.getItem('selectedProject');
+    if (storedProject) {
+      setSelectedProject(JSON.parse(storedProject));
+      // Project is selected, show the main landing page
+      router.push('/landing');
+    } else {
+      // No project selected, redirect to project selection
+      router.push('/project-selection');
     }
   }, [isLoggedIn, user, router]);
 
-  // Don't render content for admin users (they'll be redirected)
-  if (isLoggedIn && user && user.role === 'admin') {
-    return null;
-  }
-
-  const handleGetStarted = () => {
-    if (isLoggedIn) {
-      router.push('/questionnaire');
-    } else {
-      router.push('/signup');
-    }
-  };
-
-  const handleSignIn = () => {
-    router.push('/signin');
-  };
-
+  // Show loading while determining where to redirect
   return (
-    <PageWrapper>
-      {/* Floating Christ University Logo */}
-      <FloatingChristLogo>
-        <a href="https://christuniversity.in" target="_blank" rel="noopener noreferrer">
-          <FloatingLogoImage src="/images/christ.svg" alt="Christ University Logo" />
-        </a>
-      </FloatingChristLogo>
+    <>
+      <PageWrapper>
+        {/* Floating Christ University Logo */}
+        <FloatingChristLogo>
+          <a href="https://christuniversity.in" target="_blank" rel="noopener noreferrer">
+            <FloatingLogoImage src="/images/christ.svg" alt="Christ University Logo" />
+          </a>
+        </FloatingChristLogo>
 
-      <EnhancedNavbar />
+        <EnhancedNavbar />
 
-      <HeroSection>
-        <HeroBackground />
-        <HeroContainer maxWidth="lg">
-          <HeroContent>
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <CenteredLogoContainer>
-                <a href="https://karnataka.gov.in/english" target="_blank" rel="noopener noreferrer">
-                  <CenteredLogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
-                </a>
-              </CenteredLogoContainer>
+        <HeroSection>
+          <HeroBackground />
+          <HeroContainer maxWidth="lg">
+            <HeroContent>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <CenteredLogoContainer>
+                  <a href="https://karnataka.gov.in/english" target="_blank" rel="noopener noreferrer">
+                    <CenteredLogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
+                  </a>
+                </CenteredLogoContainer>
 
-              <MainHeading>
-                {t("Karnataka Social")} <HighlightText>{t("Impact")}</HighlightText> {t("Evaluation Survey")}
-              </MainHeading>
+                <MainHeading>
+                  {t("Karnataka Social")} <HighlightText>{t("Impact")}</HighlightText> {t("Evaluation Survey")}
+                </MainHeading>
 
-              <SubText size="lg" color="secondary">
-                {t("Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. Your responses will contribute to improving social equity and integration across beneficiary communities.")}
-              </SubText>
+                <SubText size="lg" color="secondary">
+                  {t("Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. Your responses will contribute to improving social equity and integration across beneficiary communities.")}
+                </SubText>
 
-              <HeroButtons>
-                <PrimaryButton
-                  size="lg"
-                  onClick={handleGetStarted}
-                  as={motion.button}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Stack direction="row" spacing="sm" align="center">
-                    <span>{t("Start Questionnaire")}</span>
-                    <ArrowRight size={16} />
-                  </Stack>
-                </PrimaryButton>
-
-                {!isLoggedIn && (
-                  <SecondaryButton
-                    onClick={handleSignIn}
+                <HeroButtons>
+                  <PrimaryButton
+                    size="lg"
+                    // onClick={handleGetStarted() =>{}}
                     as={motion.button}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    {t("Already Registered? Sign In")}
-                  </SecondaryButton>
-                )}
-              </HeroButtons>
-            </motion.div>
-          </HeroContent>
+                    <Stack direction="row" spacing="sm" align="center">
+                      <span>{t("Start Questionnaire")}</span>
+                      <ArrowRight size={16} />
+                    </Stack>
+                  </PrimaryButton>
 
-          <HeroVisual>
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <KarnatakaMapContainer>
-                <KarnatakaMap />
-              </KarnatakaMapContainer>
-            </motion.div>
-          </HeroVisual>
-        </HeroContainer>
-      </HeroSection>
-    </PageWrapper>
+                  {!isLoggedIn && (
+                    <SecondaryButton
+                      // onClick={handleSignIn}
+                      as={motion.button}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {t("Already Registered? Sign In")}
+                    </SecondaryButton>
+                  )}
+                </HeroButtons>
+              </motion.div>
+            </HeroContent>
+
+            <HeroVisual>
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <KarnatakaMapContainer>
+                  <KarnatakaMap />
+                </KarnatakaMapContainer>
+              </motion.div>
+            </HeroVisual>
+          </HeroContainer>
+        </HeroSection>
+      </PageWrapper>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        background: 'linear-gradient(135deg, #eff6ff 0%, #f1f5f9 100%)'
+      }}>
+        <div>Loading...</div>
+      </div>
+    </>
   );
 };
 

@@ -107,7 +107,6 @@ const HeroVisual = styled.div`
   }
 `;
 
-// Floating Christ University Logo (top-right)
 const FloatingChristLogo = styled.div`
   position: fixed;
   top: 80px;
@@ -164,7 +163,6 @@ const FloatingLogoImage = styled.img`
   }
 `;
 
-// Centered Karnataka Logo Container
 const CenteredLogoContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -182,7 +180,7 @@ const CenteredLogoContainer = styled.div`
 `;
 
 const CenteredLogoImage = styled.img`
-  height: 112px; /* 40% bigger than original 80px */
+  height: 112px;
   width: auto;
   object-fit: contain;
   transition: all 0.3s ease;
@@ -194,15 +192,15 @@ const CenteredLogoImage = styled.img`
   }
 
   @media (max-width: 768px) {
-    height: 98px; /* 40% bigger than 70px */
+    height: 98px;
   }
 
   @media (max-width: 480px) {
-    height: 84px; /* 40% bigger than 60px */
+    height: 84px;
   }
 
   @media (max-width: 360px) {
-    height: 70px; /* 40% bigger than 50px */
+    height: 70px;
   }
 `;
 
@@ -248,6 +246,18 @@ const ChangeProjectButton = styled(Button)`
   @media (max-width: 768px) {
     font-size: 0.8rem;
     padding: 4px 8px;
+    width: 100%;
+  }
+
+  .dark & {
+    color: #f9fafb;
+    border-color: #4b5563;
+    
+    &:hover {
+      background-color: rgba(55, 65, 81, 0.1);
+      border-color: #6b7280;
+      color: #ffffff;
+    }
   }
 `;
 
@@ -475,7 +485,6 @@ const LandingPage: React.FC = () => {
 
   return (
     <PageWrapper>
-      {/* Floating Christ University Logo */}
       <FloatingChristLogo>
         <a href="https://christuniversity.in" target="_blank" rel="noopener noreferrer">
           <FloatingLogoImage src="/images/christ.svg" alt="Christ University Logo" />
