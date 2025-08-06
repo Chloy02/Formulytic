@@ -31,7 +31,7 @@ import {
 const PageContainer = styled.div`
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f8fafc;
   display: flex;
   flex-direction: column;
 `;
@@ -45,22 +45,18 @@ const ContentWrapper = styled.div`
 `;
 
 const HeaderCard = styled.div`
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   margin-bottom: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #e5e7eb;
 `;
 
 const HeaderTitle = styled.h1`
   font-size: 2.5rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #1f2937;
   margin-bottom: 0.5rem;
 `;
 
@@ -80,16 +76,19 @@ const StatsGrid = styled.div`
 const StatCard = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'color'
 })<{ color?: string }>`
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
-  padding: 2rem;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
 
   &::before {
     content: '';
@@ -98,7 +97,7 @@ const StatCard = styled.div.withConfig({
     left: 0;
     right: 0;
     height: 4px;
-    background: ${props => props.color || theme.colors.primary.gradient};
+    background: ${props => props.color || '#6366f1'};
   }
 `;
 
@@ -113,13 +112,13 @@ const StatIcon = styled.div<{ color?: string }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 15px;
-  background: ${props => props.color || theme.colors.primary.gradient};
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: ${props => props.color || '#6366f1'};
   color: white;
-  font-size: 1.5rem;
-  box-shadow: ${theme.shadows.sm};
+  font-size: 1.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const StatNumber = styled.div`
@@ -152,18 +151,12 @@ const StatChange = styled.div.withConfig({
 
 // Missing styled components
 const GlassCard = styled.div`
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 1);
+  border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-
-  @media (max-width: ${theme.breakpoints.md}) {
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 `;
 
 const Input = styled.input`
@@ -230,7 +223,7 @@ const Table = styled.table`
 `;
 
 const TableHeader = styled.th`
-  background: ${theme.colors.primary.gradient};
+  background: #6366f1;
   color: white;
   padding: 1rem;
   text-align: left;
@@ -295,10 +288,7 @@ interface ResponseData {
 const Title = styled.h1<{ size?: string }>`
   font-size: ${props => props.size === 'lg' ? '2.5rem' : props.size === 'md' ? '1.75rem' : '1.5rem'};
   font-weight: 800;
-  background: ${theme.colors.primary.gradient};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #1f2937;
   margin-bottom: 0.5rem;
 
   @media (max-width: ${theme.breakpoints.md}) {
@@ -370,38 +360,42 @@ const Button = styled.button<{ variant?: string; size?: string }>`
     switch (props.variant) {
       case 'success':
         return `
-          background: ${theme.colors.success.gradient};
+          background: #10b981;
           color: white;
           &:hover {
-            transform: translateY(-2px);
-            box-shadow: ${theme.shadows.lg};
+            background: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           }
         `;
       case 'danger':
         return `
-          background: ${theme.colors.error.gradient};
+          background: #ef4444;
           color: white;
           &:hover {
-            transform: translateY(-2px);
-            box-shadow: ${theme.shadows.lg};
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           }
         `;
       case 'secondary':
         return `
-          background: ${theme.colors.secondary.gradient};
+          background: #6b7280;
           color: white;
           &:hover {
-            transform: translateY(-2px);
-            box-shadow: ${theme.shadows.lg};
+            background: #4b5563;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           }
         `;
       default:
         return `
-          background: ${theme.colors.primary.gradient};
+          background: #6366f1;
           color: white;
           &:hover {
-            transform: translateY(-2px);
-            box-shadow: ${theme.shadows.lg};
+            background: #4f46e5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           }
         `;
     }
@@ -507,9 +501,9 @@ export default function AdminDashboardPage() {
     return null;
   }
 
-  // Colors for charts
-  const GENDER_COLORS = ['#4299e1', '#f5576c', '#38f9d7'];
-  const DISTRICT_COLORS = ['#764ba2', '#43e97b', '#fa709a', '#fee140', '#f093fb', '#4facfe', '#a8edea', '#fed6e3'];
+  // Colors for charts - minimal palette
+  const GENDER_COLORS = ['#6366f1', '#10b981', '#6b7280'];
+  const DISTRICT_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#3b82f6', '#06b6d4', '#84cc16'];
 
   // Helper: Prepare gender data for PieChart
   const genderData = [
@@ -562,7 +556,7 @@ export default function AdminDashboardPage() {
         </GlassCard>
 
         <Grid $minWidth="280px">
-          <StatCard color={theme.colors.primary.gradient}>
+          <StatCard color="#6366f1">
             <StatHeader>
               <div>
                 <StatNumber>{stats.totalResponses}</StatNumber>
@@ -571,13 +565,13 @@ export default function AdminDashboardPage() {
                   <FiTrendingUp /> +12% this month
                 </StatChange>
               </div>
-              <StatIcon color={theme.colors.primary.gradient}>
+              <StatIcon color="#6366f1">
                 <FiUsers />
               </StatIcon>
             </StatHeader>
           </StatCard>
 
-          <StatCard color={theme.colors.secondary.gradient}>
+          <StatCard color="#10b981">
             <StatHeader>
               <div>
                 <StatNumber>{stats.recentSubmissions}</StatNumber>
@@ -586,13 +580,13 @@ export default function AdminDashboardPage() {
                   <FiTrendingUp /> Last 7 days
                 </StatChange>
               </div>
-              <StatIcon color={theme.colors.secondary.gradient}>
+              <StatIcon color="#10b981">
                 <FiClock />
               </StatIcon>
             </StatHeader>
           </StatCard>
 
-          <StatCard color={theme.colors.info.gradient}>
+          <StatCard color="#3b82f6">
             <StatHeader>
               <div>
                 <StatNumber>{stats.completionRate}%</StatNumber>
@@ -601,13 +595,13 @@ export default function AdminDashboardPage() {
                   <FiTrendingUp /> +5% from last month
                 </StatChange>
               </div>
-              <StatIcon color={theme.colors.info.gradient}>
+              <StatIcon color="#3b82f6">
                 <FiBarChart />
               </StatIcon>
             </StatHeader>
           </StatCard>
 
-          <StatCard color={theme.colors.success.gradient}>
+          <StatCard color="#8b5cf6">
             <StatHeader>
               <div>
                 <StatNumber>{stats.totalDistricts}</StatNumber>
@@ -616,13 +610,13 @@ export default function AdminDashboardPage() {
                   <FiMapPin /> Across Karnataka
                 </StatChange>
               </div>
-              <StatIcon color={theme.colors.success.gradient}>
+              <StatIcon color="#8b5cf6">
                 <FiGlobe />
               </StatIcon>
             </StatHeader>
           </StatCard>
 
-          <StatCard color={theme.colors.warning.gradient}>
+          <StatCard color="#f59e0b">
             <StatHeader>
               <div>
                 <StatNumber>{stats.avgAge}</StatNumber>
@@ -631,13 +625,13 @@ export default function AdminDashboardPage() {
                   <FiUserCheck /> Years old
                 </StatChange>
               </div>
-              <StatIcon color={theme.colors.warning.gradient}>
+              <StatIcon color="#f59e0b">
                 <FiUserCheck />
               </StatIcon>
             </StatHeader>
           </StatCard>
 
-          <StatCard color={theme.colors.neutral.gradient}>
+          <StatCard color="#ef4444">
             <StatHeader>
               <div>
                 <StatNumber>
@@ -650,8 +644,38 @@ export default function AdminDashboardPage() {
                   <FiHeart /> Gender diversity
                 </StatChange>
               </div>
-              <StatIcon color={theme.colors.neutral.gradient}>
+              <StatIcon color="#ef4444">
                 <FiHeart />
+              </StatIcon>
+            </StatHeader>
+          </StatCard>
+
+          <StatCard color="#6B7280">
+            <StatHeader>
+              <div>
+                <StatNumber>{stats.totalDrafts}</StatNumber>
+                <StatLabel>Draft Responses</StatLabel>
+                <StatChange positive={false}>
+                  <FiClock /> Incomplete
+                </StatChange>
+              </div>
+              <StatIcon color="#6B7280">
+                <FiClock />
+              </StatIcon>
+            </StatHeader>
+          </StatCard>
+
+          <StatCard color={theme.colors.error.gradient}>
+            <StatHeader>
+              <div>
+                <StatNumber>{stats.totalDrafts}</StatNumber>
+                <StatLabel>Draft Responses</StatLabel>
+                <StatChange positive={false}>
+                  <FiClock /> Incomplete submissions
+                </StatChange>
+              </div>
+              <StatIcon color={theme.colors.error.gradient}>
+                <FiClock />
               </StatIcon>
             </StatHeader>
           </StatCard>
@@ -702,7 +726,7 @@ export default function AdminDashboardPage() {
                 <XAxis dataKey="ageRange" />
                 <YAxis allowDecimals={false} />
                 <RechartsTooltip />
-                <Bar dataKey="count" fill="#43e97b" />
+                <Bar dataKey="count" fill="#6366f1" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -738,9 +762,9 @@ export default function AdminDashboardPage() {
         <GlassCard>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <Title size="md">Questionnaire Responses</Title>
-            <Button variant="success" onClick={() => exportData(filteredResponses)}>
+            <Button variant="success" onClick={() => exportData()}>
               <FiDownload />
-              Export Data
+              Export All Data
             </Button>
           </div>
           
