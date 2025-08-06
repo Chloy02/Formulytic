@@ -27,10 +27,12 @@ export interface Stats {
   completionRate: number;
   avgResponseTime: number;
   totalDistricts: number;
+  totalDrafts: number;
 }
 
 export const useAdminData = () => {
   const [responses, setResponses] = useState<Response[]>([]);
+  const [allResponses, setAllResponses] = useState<Response[]>([]); // Store all responses for export
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<Stats>({
@@ -41,21 +43,30 @@ export const useAdminData = () => {
     genderDistribution: { male: 0, female: 0, other: 0 },
     completionRate: 0,
     avgResponseTime: 0,
-    totalDistricts: 0
+    totalDistricts: 0,
+    totalDrafts: 0
   });
 
-  const calculateStats = useCallback((responses: Response[]) => {
+  const calculateStats = useCallback((allResponses: Response[]) => {
+    // Separate completed responses from drafts
+    const completedResponses = allResponses.filter(r => 
+      r.status === 'submitted' || r.status === 'completed'
+    );
+    const draftResponses = allResponses.filter(r => 
+      r.status === 'draft' || r.status === 'pending'
+    );
+    
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     
-    const recentSubmissions = responses.filter(r => 
+    const recentSubmissions = completedResponses.filter(r => 
       new Date(r.submittedAt) >= sevenDaysAgo
     ).length;
 
-    const totalAge = responses.reduce((sum, r) => sum + (r.age || 0), 0);
-    const avgAge = responses.length > 0 ? Math.round(totalAge / responses.length) : 0;
+    const totalAge = completedResponses.reduce((sum, r) => sum + (r.age || 0), 0);
+    const avgAge = completedResponses.length > 0 ? Math.round(totalAge / completedResponses.length) : 0;
 
-    const genderDistribution = responses.reduce((acc, r) => {
+    const genderDistribution = completedResponses.reduce((acc, r) => {
       const gender = r.gender.toLowerCase();
       if (gender === 'male') acc.male++;
       else if (gender === 'female') acc.female++;
@@ -63,7 +74,7 @@ export const useAdminData = () => {
       return acc;
     }, { male: 0, female: 0, other: 0 });
 
-    const locationCounts = responses.reduce((acc: Record<string, number>, r) => {
+    const locationCounts = completedResponses.reduce((acc: Record<string, number>, r) => {
       const location = r.district || r.location;
       acc[location] = (acc[location] || 0) + 1;
       return acc;
@@ -72,17 +83,18 @@ export const useAdminData = () => {
     const topLocation = Object.entries(locationCounts)
       .sort(([,a], [,b]) => b - a)[0]?.[0] || 'N/A';
 
-    const uniqueDistricts = new Set(responses.map(r => r.district || r.location)).size;
+    const uniqueDistricts = new Set(completedResponses.map(r => r.district || r.location)).size;
 
     setStats({
-      totalResponses: responses.length,
+      totalResponses: completedResponses.length,
       recentSubmissions,
       avgAge,
       topLocation,
       genderDistribution,
-      completionRate: responses.length > 0 ? 95 : 0,
+      completionRate: allResponses.length > 0 ? Math.round((completedResponses.length / allResponses.length) * 100) : 0,
       avgResponseTime: 12,
-      totalDistricts: uniqueDistricts
+      totalDistricts: uniqueDistricts,
+      totalDrafts: draftResponses.length
     });
   }, []);
 
@@ -148,7 +160,16 @@ export const useAdminData = () => {
         }
         
         console.log('Transformed responses:', transformedResponses);
-        setResponses(transformedResponses);
+        
+        // Store all responses for export
+        setAllResponses(transformedResponses);
+        
+        // Filter only completed responses for display
+        const completedResponses = transformedResponses.filter(r => 
+          r.status === 'submitted' || r.status === 'completed'
+        );
+        
+        setResponses(completedResponses);
         calculateStats(transformedResponses);
       } else {
         const errorText = await response.text();
@@ -177,9 +198,24 @@ export const useAdminData = () => {
           id: '3', name: 'Raj Kumar', age: 42, gender: 'Male',
           location: 'Hassan', district: 'Hassan',
           rating: 'N/A', submittedAt: '2025-01-18', status: 'submitted', answers: {}
+        },
+        {
+          id: '4', name: 'Priya Singh', age: 25, gender: 'Female',
+          location: 'Mangalore', district: 'Dakshina Kannada',
+          rating: 'N/A', submittedAt: '2025-01-17', status: 'draft', answers: {}
+        },
+        {
+          id: '5', name: 'Draft User', age: 30, gender: 'Male',
+          location: 'Hubli', district: 'Dharwad',
+          rating: 'N/A', submittedAt: '2025-01-16', status: 'draft', answers: {}
         }
       ];
-      setResponses(sampleData);
+      
+      setAllResponses(sampleData);
+      const completedSampleData = sampleData.filter(r => 
+        r.status === 'submitted' || r.status === 'completed'
+      );
+      setResponses(completedSampleData);
       calculateStats(sampleData);
     } finally {
       setLoading(false);
@@ -204,26 +240,84 @@ export const useAdminData = () => {
     }
   };
 
-  const exportData = (filteredResponses: Response[]) => {
-    const headers = ['Name', 'Age', 'Gender', 'District', 'Location', 'Submitted At', 'Status'];
+  const exportData = () => {
+    // Export all responses with comprehensive questionnaire data
+    const headers = [
+      'Name', 'Age', 'Gender', 'District', 'Location', 'Submitted At', 'Status',
+      'Education Level', 'Caste Category', 'Previous Occupation', 'Current Occupation',
+      'Income Before Scheme', 'Current Income', 'Employment Status Before', 'Current Employment Status',
+      'Schemes Benefited', 'Date of Benefit', 'Utilization of Benefits', 'Spouse Employment',
+      'Socio-Economic Status Before', 'Current Socio-Economic Status', 'Financial Security Rating',
+      'Social Life Impact', 'Decision Making', 'Marriage Opposition', 'Relocation After Marriage',
+      'Aadhaar Provided', 'Additional Comments'
+    ];
+    
     const csvContent = [
       headers.join(','),
-      ...filteredResponses.map(r => [
-        r.name, r.age, r.gender, r.district, r.location, r.submittedAt, r.status
-      ].join(','))
+      ...allResponses.map(r => {
+        const answers = r.answers || {};
+        const section1 = (answers.section1 as any) || {};
+        const section2 = (answers.section2 as any) || {};
+        const section3 = (answers.section3 as any) || {};
+        const section4 = (answers.section4 as any) || {};
+        const section5 = (answers.section5 as any) || {};
+        
+        // Helper function to handle arrays and objects
+        const formatField = (field: any): string => {
+          if (Array.isArray(field)) {
+            return field.join('; ');
+          }
+          if (typeof field === 'object' && field !== null) {
+            return JSON.stringify(field).replace(/"/g, '""');
+          }
+          return String(field || '').replace(/"/g, '""');
+        };
+        
+        return [
+          formatField(r.name),
+          formatField(r.age),
+          formatField(r.gender),
+          formatField(r.district),
+          formatField(r.location),
+          formatField(r.submittedAt),
+          formatField(r.status),
+          formatField(section1.educationLevel),
+          formatField(section1.casteCategory),
+          formatField(section2.previousOccupation),
+          formatField(section2.currentOccupation),
+          formatField(section2.incomeBefore),
+          formatField(section2.currentIncome),
+          formatField(section2.employmentBefore),
+          formatField(section2.currentEmployment),
+          formatField(section2.schemesBenefited),
+          formatField(section2.benefitDate),
+          formatField(section2.utilizationOfBenefits),
+          formatField(section2.spouseEmployment),
+          formatField(section3.socioEconomicStatusBefore),
+          formatField(section3.currentSocioEconomicStatus),
+          formatField(section3.financialSecurityRating),
+          formatField(section4.socialLifeImpact),
+          formatField(section4.decisionMaking),
+          formatField(section5.marriageOpposition),
+          formatField(section5.relocationAfterMarriage),
+          formatField(section5.aadhaarProvided),
+          formatField(section5.additionalComments)
+        ].map(field => `"${field}"`).join(',');
+      })
     ].join('\n');
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `questionnaire_responses_${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `questionnaire_responses_detailed_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
 
   return {
     responses,
+    allResponses,
     stats,
     loading,
     error,
