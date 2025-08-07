@@ -497,6 +497,10 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleView = (responseId: string) => {
+    router.push(`/admin-dashboard/view-response/${responseId}`);
+  };
+
   if (!isLoggedIn) {
     return null;
   }
@@ -812,7 +816,11 @@ export default function AdminDashboardPage() {
                         </span>
                       </TableCell>
                       <TableCell>
-                        <Button size="sm" style={{ marginRight: '0.5rem' }}>
+                        <Button 
+                          size="sm" 
+                          style={{ marginRight: '0.5rem' }}
+                          onClick={() => handleView(response.id)}
+                        >
                           <FiEye />
                           View
                         </Button>

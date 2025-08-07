@@ -12,9 +12,10 @@ async function createResponse(data) {
 
 async function getResponse() {
     try {
-        console.log('Attempting to fetch all responses...');
-        const data = await Response.find({});
-        console.log('Found responses count:', data.length);
+        console.log('Attempting to fetch all submitted responses...');
+        // Only fetch submitted responses for admin dashboard
+        const data = await Response.find({ status: 'submitted' });
+        console.log('Found submitted responses count:', data.length);
         console.log('Sample response:', data.length > 0 ? data[0] : 'No data found');
         return data;
     } catch (err) {
@@ -25,6 +26,8 @@ async function getResponse() {
 
 async function getSavedDraft(userID, responseID) {
     try {
+        // If responseID is provided, find by specific responseID
+        // Otherwise, find any draft for the user (should be only one)
         let data = responseID ? await Response.find({
             responseId: responseID,
             submittedBy: userID,
@@ -35,16 +38,15 @@ async function getSavedDraft(userID, responseID) {
         });
         return data;
     } catch (err) {
-
         throw new Error("Error to get the Draft data." + err);
     }
 }
 
-
 async function updateUserDraft(userID, data) {
     try {
+        // Update the user's draft (there should be only one)
         const result = await Response.updateOne(
-            { submittedBy: userID },
+            { submittedBy: userID, status: 'draft' },
             { $set: data }
         );
         return result;

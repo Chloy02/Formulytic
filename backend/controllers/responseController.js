@@ -1,5 +1,6 @@
 const Response = require('../models/responseModel');
 const responseSchema = require('../routes/responseSchema');
+const { preventDuplicateDrafts } = require('../cleanupDrafts');
 
 const {
   createResponse,
@@ -60,7 +61,6 @@ const submitResponse = async (req, res) => {
  */
 const saveDraft = async (req, res) => {
   try {
-
     const userID = req.user.id;
     const userLatestResponse = req.body.answers;
     let responseID = req.body.responseId;
@@ -71,39 +71,49 @@ const saveDraft = async (req, res) => {
       return res.status(400).json({ message: 'User response not provided.' });
     }
 
-    // Generate responseID if not provided
-    if (!responseID) {
-      responseID = `draft_${userID}_${Date.now()}`;
-    }
+    // Use the prevention utility to ensure only one draft exists
+    const existingDraft = await preventDuplicateDrafts(userID);
 
-    let draft = await getSavedDraft(userID, responseID);
-
-    let newResponse;
-
-    console.log("Draft is: ", draft);
-
-    if (draft && draft.length > 0) {
+    if (existingDraft) {
       // Update existing draft
-      newResponse = {
+      const updateData = {
         answers: userLatestResponse,
         lastSaved: new Date(),
+        responseId: responseID || existingDraft.responseId // Preserve or update responseId
       };
-      await updateUserDraft(userID, newResponse);
-      console.log("Old Draft Updated");
+      
+      await updateUserDraft(userID, updateData);
+      console.log("Existing draft updated for user:", userID);
+      
+      // Return the updated draft
+      const updatedDraft = await getSavedDraft(userID);
+      return res.status(201).json({ 
+        message: 'Draft updated successfully', 
+        response: updatedDraft[0] 
+      });
 
     } else {
-      // Create new draft
-      newResponse = {
+      // Create new draft (only if user has no existing draft)
+      if (!responseID) {
+        responseID = `draft_${userID}_${Date.now()}`;
+      }
+
+      const newDraftData = {
         responseId: responseID,
         submittedBy: userID,
         answers: userLatestResponse,
         status: 'draft',
+        lastSaved: new Date()
       };
-      draft = await saveDraftToDB(newResponse);
-      console.log("New Draft Created");
+      
+      const draft = await saveDraftToDB(newDraftData);
+      console.log("New draft created for user:", userID);
+      
+      return res.status(201).json({ 
+        message: 'Draft saved successfully', 
+        response: draft 
+      });
     }
-
-    return res.status(201).json({ message: 'Draft saved', response: draft });
   } catch (err) {
     console.error('Error saving draft:', err.message);
     return res.status(500).json({ message: err.message });
@@ -159,8 +169,8 @@ const getAllResponses = async (req, res) => {
  * ================================================================
  * GET RESPONSE BY ID
  * @route   GET /api/responses/:id
- * @desc    Admin-only: Get full details of a specific response
- * @access  Private (admin)
+ * @desc    Get full details of a specific response (Admin can view any, users can view their own)
+ * @access  Private
  * ================================================================
  */
 const getResponseById = async (req, res) => {
@@ -172,13 +182,28 @@ const getResponseById = async (req, res) => {
       return res.status(400).json({ message: 'Missing user or response ID' });
     }
 
-    const response = await getUserResponseWithID(responseID, userID);
+    // Check if user is admin or the owner of the response
+    let response;
+    if (req.user.role === 'admin') {
+      // Admin can view any response by MongoDB _id
+      response = await Response.findById(responseID).populate('submittedBy', 'username email');
+    } else {
+      // Regular user can only view their own responses by MongoDB _id
+      response = await Response.findOne({ 
+        _id: responseID, 
+        submittedBy: userID 
+      }).populate('submittedBy', 'username email');
+    }
 
-    console.log("Response Is: ", response);
+    if (!response) {
+      return res.status(404).json({ 
+        message: 'Response not found or you do not have permission to view it' 
+      });
+    }
 
-    return res.status(response ? 200 : 404).json({
-      flag: !response,
-      data: response || 'Response Not Found',
+    return res.status(200).json({
+      success: true,
+      data: response
     });
   } catch (err) {
     console.error('Server Error:', err);

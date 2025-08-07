@@ -132,7 +132,12 @@ export const useAdminData = () => {
         let transformedResponses: Response[] = [];
         
         if (Array.isArray(data)) {
-          transformedResponses = data.map((item: any, index: number) => {
+          // Filter out drafts at the API level (backend should do this, but extra safety)
+          const submittedResponsesOnly = data.filter((item: any) => 
+            item.status === 'submitted' || item.status === 'completed'
+          );
+          
+          transformedResponses = submittedResponsesOnly.map((item: any, index: number) => {
             console.log(`Processing item ${index}:`, item);
             
             // Handle different possible data structures
@@ -151,7 +156,7 @@ export const useAdminData = () => {
                           item.submittedAt ? new Date(item.submittedAt).toLocaleDateString() : 
                           item.createdAt ? new Date(item.createdAt).toLocaleDateString() :
                           new Date().toLocaleDateString(),
-              status: item.status || 'submitted',
+              status: 'submitted', // Ensure all displayed responses show as submitted
               answers: answers
             };
           });
@@ -164,13 +169,12 @@ export const useAdminData = () => {
         // Store all responses for export
         setAllResponses(transformedResponses);
         
-        // Filter only completed responses for display
-        const completedResponses = transformedResponses.filter(r => 
-          r.status === 'submitted' || r.status === 'completed'
-        );
+        // All responses are already filtered to be submitted only
+        setResponses(transformedResponses);
         
-        setResponses(completedResponses);
+        // Calculate stats using the submitted responses
         calculateStats(transformedResponses);
+        
       } else {
         const errorText = await response.text();
         console.error('API Error Response:', errorText);
@@ -231,12 +235,33 @@ export const useAdminData = () => {
       });
 
       if (response.ok) {
+        // Remove from both responses and allResponses
         setResponses(prev => prev.filter(r => r.id !== id));
+        setAllResponses(prev => prev.filter(r => r.id !== id));
         return true;
       }
       return false;
     } catch {
       return false;
+    }
+  };
+
+  const viewResponse = async (id: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/responses/${id}`, {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.data || data; // Handle both response formats
+      }
+      return null;
+    } catch (error) {
+      console.error('Error viewing response:', error);
+      return null;
     }
   };
 
@@ -323,6 +348,7 @@ export const useAdminData = () => {
     error,
     loadResponses,
     deleteResponse,
+    viewResponse,
     exportData
   };
 };
