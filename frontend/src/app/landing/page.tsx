@@ -23,24 +23,67 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
-const PageWrapper = styled.div`
+const PageWrapper = styled(motion.div)`
   min-height: 100vh;
-  background: linear-gradient(135deg, #eff6ff 0%, #f1f5f9 100%);
+  background: linear-gradient(135deg, #eff6ff 0%, #f1f5f9 50%, #e0f2fe 100%);
+  background-attachment: fixed;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
   .dark & {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0c4a6e 100%);
+    
+    &::before {
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
+    }
   }
 `;
 
-const HeroSection = styled.section`
+const HeroSection = styled(motion.section)`
   padding: 6rem 0;
   position: relative;
   overflow: hidden;
+  z-index: 1;
 
   @media (max-width: 768px) {
     padding: 4rem 0;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+      linear-gradient(45deg, transparent 40%, rgba(59, 130, 246, 0.03) 50%, transparent 60%),
+      linear-gradient(-45deg, transparent 40%, rgba(139, 92, 246, 0.03) 50%, transparent 60%);
+    animation: float 20s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    50% { transform: rotate(180deg) translateY(-20px); }
   }
 `;
 
@@ -107,6 +150,7 @@ const HeroVisual = styled.div`
   }
 `;
 
+// Floating Christ University Logo (top-right)
 const FloatingChristLogo = styled.div`
   position: fixed;
   top: 80px;
@@ -163,6 +207,7 @@ const FloatingLogoImage = styled.img`
   }
 `;
 
+// Centered Karnataka Logo Container
 const CenteredLogoContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -179,11 +224,15 @@ const CenteredLogoContainer = styled.div`
   }
 `;
 
-const CenteredLogoImage = styled.img`
+const CenteredLogoImage = styled.img.attrs(() => ({
+  width: 112,
+  height: 112,
+  alt: "Government of Karnataka Seal",
+}))`
   height: 112px;
-  width: auto;
+  width: 112px;
   object-fit: contain;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
   cursor: pointer;
 
   &:hover {
@@ -193,71 +242,17 @@ const CenteredLogoImage = styled.img`
 
   @media (max-width: 768px) {
     height: 98px;
+    width: 98px;
   }
 
   @media (max-width: 480px) {
     height: 84px;
+    width: 84px;
   }
 
   @media (max-width: 360px) {
     height: 70px;
-  }
-`;
-
-const ProjectInfo = styled.div`
-  background: rgba(255, 255, 255, 0.9);
-  padding: 16px 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  border-left: 4px solid #2563eb;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-
-  @media (max-width: 768px) {
-    margin-bottom: 15px;
-    padding: 12px 16px;
-  }
-`;
-
-const ProjectName = styled.div`
-  font-weight: 700;
-  color: #1e40af;
-  font-size: 1.1rem;
-  margin-bottom: 4px;
-
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-`;
-
-const ChangeProjectButton = styled(Button)`
-  background-color: transparent;
-  color: #6b7280;
-  border: 1px solid #d1d5db;
-  font-size: 0.875rem;
-  padding: 6px 12px;
-  
-  &:hover {
-    background-color: #f9fafb;
-    border-color: #9ca3af;
-    color: #374151;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 0.8rem;
-    padding: 4px 8px;
-    width: 100%;
-  }
-
-  .dark & {
-    color: #f9fafb;
-    border-color: #4b5563;
-    
-    &:hover {
-      background-color: rgba(55, 65, 81, 0.1);
-      border-color: #6b7280;
-      color: #ffffff;
-    }
+    width: 70px;
   }
 `;
 
@@ -398,6 +393,54 @@ const SecondaryButton = styled(Button)`
   }
 `;
 
+const FeatureList = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  @media (max-width: 480px) {
+    gap: 15px;
+  }
+`;
+
+const FeatureItem = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #555;
+  font-weight: 500;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+    font-size: 15px;
+    padding: 8px 0;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    padding: 6px 0;
+  }
+
+  svg {
+    color: #28a745;
+    margin-right: 8px;
+    font-size: 20px;
+    flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      font-size: 18px;
+      margin-right: 6px;
+    }
+  }
+`;
+
 const KarnatakaMapContainer = styled.div`
   width: 100%;
   max-width: 400px;
@@ -419,19 +462,16 @@ const KarnatakaMapContainer = styled.div`
 `;
 
 const LandingPage: React.FC = () => {
-  const { isLoggedIn, user } = useAuth();
   const { t } = useTranslation();
+  const { isLoggedIn, user } = useAuth();
   const router = useRouter();
   const [selectedProject, setSelectedProject] = useState<{
     id: string;
     name: string;
-    description?: string;
-    category?: string;
-    estimatedTime?: string;
   } | null>(null);
 
   useEffect(() => {
-    // Redirect admin users to admin dashboard
+    // Check if user is admin and redirect to admin dashboard
     if (isLoggedIn && user && user.role === 'admin') {
       router.push('/admin-dashboard');
       return;
@@ -439,21 +479,94 @@ const LandingPage: React.FC = () => {
 
     // Check if a project has been selected
     const storedProject = localStorage.getItem('selectedProject');
-    if (!storedProject) {
+    if (storedProject) {
+      setSelectedProject(JSON.parse(storedProject));
+      // Project is selected, show the main landing page
+      router.push('/landing');
+    } else {
       // No project selected, redirect to project selection
       router.push('/project-selection');
-    } else {
-      setSelectedProject(JSON.parse(storedProject));
     }
   }, [isLoggedIn, user, router]);
 
-  // Don't render content for admin users (they'll be redirected)
-  if (isLoggedIn && user && user.role === 'admin') {
-    return null;
-  }
+  // Show loading while determining where to redirect
+  return (
+    <>
+      <PageWrapper>
+        {/* Floating Christ University Logo */}
+        <FloatingChristLogo>
+          <a href="https://christuniversity.in" target="_blank" rel="noopener noreferrer">
+            <FloatingLogoImage src="/images/christ.svg" alt="Christ University Logo" />
+          </a>
+        </FloatingChristLogo>
 
-  if (!selectedProject) {
-    return (
+        <EnhancedNavbar />
+
+        <HeroSection>
+          <HeroBackground />
+          <HeroContainer maxWidth="lg">
+            <HeroContent>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <CenteredLogoContainer>
+                  <a href="https://karnataka.gov.in/english" target="_blank" rel="noopener noreferrer">
+                    <CenteredLogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
+                  </a>
+                </CenteredLogoContainer>
+
+                <MainHeading>
+                  {t("Karnataka Social")} <HighlightText>{t("Impact")}</HighlightText> {t("Evaluation Survey")}
+                </MainHeading>
+
+                <SubText size="lg" color="secondary">
+                  {t("Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. Your responses will contribute to improving social equity and integration across beneficiary communities.")}
+                </SubText>
+
+                <HeroButtons>
+                  <PrimaryButton
+                    size="lg"
+                    // onClick={handleGetStarted() =>{}}
+                    as={motion.button}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Stack direction="row" spacing="sm" align="center">
+                      <span>{t("Start Questionnaire")}</span>
+                      <ArrowRight size={16} />
+                    </Stack>
+                  </PrimaryButton>
+
+                  {!isLoggedIn && (
+                    <SecondaryButton
+                      // onClick={handleSignIn}
+                      as={motion.button}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {t("Already Registered? Sign In")}
+                    </SecondaryButton>
+                  )}
+                </HeroButtons>
+              </motion.div>
+            </HeroContent>
+
+            <HeroVisual>
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <KarnatakaMapContainer>
+                  <KarnatakaMap />
+                </KarnatakaMapContainer>
+              </motion.div>
+            </HeroVisual>
+          </HeroContainer>
+        </HeroSection>
+      </PageWrapper>
       <div style={{
         display: 'flex',
         justifyContent: 'center',
@@ -463,116 +576,7 @@ const LandingPage: React.FC = () => {
       }}>
         <div>Loading...</div>
       </div>
-    );
-  }
-
-  const handleGetStarted = () => {
-    if (isLoggedIn) {
-      router.push('/questionnaire');
-    } else {
-      router.push('/signup');
-    }
-  };
-
-  const handleSignIn = () => {
-    router.push('/signin');
-  };
-
-  const handleChangeProject = () => {
-    localStorage.removeItem('selectedProject');
-    router.push('/project-selection');
-  };
-
-  return (
-    <PageWrapper>
-      <FloatingChristLogo>
-        <a href="https://christuniversity.in" target="_blank" rel="noopener noreferrer">
-          <FloatingLogoImage src="/images/christ.svg" alt="Christ University Logo" />
-        </a>
-      </FloatingChristLogo>
-
-      <EnhancedNavbar />
-      
-      <HeroSection>
-        <HeroBackground />
-        <HeroContainer maxWidth="lg">
-          <HeroContent>
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <CenteredLogoContainer>
-                <a href="https://karnataka.gov.in/english" target="_blank" rel="noopener noreferrer">
-                  <CenteredLogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
-                </a>
-              </CenteredLogoContainer>
-
-              <ProjectInfo>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <ProjectName>{selectedProject.name}</ProjectName>
-                    <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                      {selectedProject.category} • {selectedProject.estimatedTime}
-                    </div>
-                  </div>
-                  <ChangeProjectButton onClick={handleChangeProject}>
-                    <ArrowLeft size={14} style={{ marginRight: '4px' }} />
-                    Change
-                  </ChangeProjectButton>
-                </div>
-              </ProjectInfo>
-              
-              <MainHeading>
-                {t("Karnataka Social")} <HighlightText>{t("Impact")}</HighlightText> {t("Evaluation Survey")}
-              </MainHeading>
-              
-              <SubText size="lg" color="secondary">
-                {selectedProject.description || t("Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. Your responses will contribute to improving social equity and integration across beneficiary communities.")}
-              </SubText>
-              
-              <HeroButtons>
-                <PrimaryButton
-                  size="lg"
-                  onClick={handleGetStarted}
-                  as={motion.button}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Stack direction="row" spacing="sm" align="center">
-                    <span>{t("Start Questionnaire")}</span>
-                    <ArrowRight size={16} />
-                  </Stack>
-                </PrimaryButton>
-                
-                {!isLoggedIn && (
-                  <SecondaryButton
-                    onClick={handleSignIn}
-                    as={motion.button}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {t("Already Registered? Sign In")}
-                  </SecondaryButton>
-                )}
-              </HeroButtons>
-            </motion.div>
-          </HeroContent>
-          
-          <HeroVisual>
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <KarnatakaMapContainer>
-                <KarnatakaMap />
-              </KarnatakaMapContainer>
-            </motion.div>
-          </HeroVisual>
-        </HeroContainer>
-      </HeroSection>
-    </PageWrapper>
+    </>
   );
 };
 

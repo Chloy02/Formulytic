@@ -11,12 +11,12 @@ const MapContainer = styled.div`
 `;
 
 const MapImage = styled(Image)`
-  aspect-ratio: 16 / 9;
-  max-width: 400px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
   filter: drop-shadow(0 10px 25px rgba(0, 123, 255, 0.15));
   
   @media (max-width: 768px) {
-    max-width: 300px;
     filter: none;
   }
 `;

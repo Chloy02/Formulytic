@@ -7,8 +7,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useTranslation } from '@/contexts/TranslationContext';
-import { API_CONFIG } from '../../config/api';
-import ServerLink from '../../lib/api/serverURL';
 import { 
   PageContainer, 
   GlassCard, 
@@ -72,7 +70,7 @@ export default function AdminSignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { t } = useTranslation(); // Translation hook
+  const { t } = useTranslation();
   const router = useRouter();
 
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,8 +93,7 @@ export default function AdminSignupPage() {
         username: formData.username,
         email: formData.email,
         password: formData.password,
-        role: 'admin',
-        project: 'admin'
+        role: 'admin'
       });
       
       setSuccess('Admin account created successfully! You can now sign in.');
