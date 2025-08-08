@@ -2,16 +2,49 @@ import { useState, useCallback } from 'react';
 import ServerLink from '../lib/api/serverURL';
 
 export interface Response {
-  id: string;
-  name: string;
-  age: number;
-  gender: string;
-  location: string;
-  district: string;
-  rating: string;
-  submittedAt: string;
+  _id: string;
+  responseId: string;
   status: string;
-  answers: Record<string, unknown>;
+  submissionDate: string;
+  lastSaved: string;
+  submittedBy: {
+    _id: string;
+    username: string;
+    email: string;
+  } | string;
+  answers: {
+    section1?: {
+      spouseName?: string;
+      applicantGender?: string;
+      applicantAge?: string;
+      spouseAge?: string;
+      district?: string;
+      residentialAddress?: string;
+      [key: string]: any;
+    };
+    section2?: {
+      [key: string]: any;
+    };
+    section3?: {
+      [key: string]: any;
+    };
+    section4?: {
+      [key: string]: any;
+    };
+    section5?: {
+      [key: string]: any;
+    };
+    section6_Devadasi?: {
+      [key: string]: any;
+    };
+    section6_Widow?: {
+      [key: string]: any;
+    };
+    section6_NonBeneficiary?: {
+      [key: string]: any;
+    };
+    [key: string]: any;
+  };
 }
 
 export interface Stats {
@@ -60,22 +93,30 @@ export const useAdminData = () => {
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     
     const recentSubmissions = completedResponses.filter(r => 
-      new Date(r.submittedAt) >= sevenDaysAgo
+      new Date(r.submissionDate) >= sevenDaysAgo
     ).length;
 
-    const totalAge = completedResponses.reduce((sum, r) => sum + (r.age || 0), 0);
+    // Extract age from section1.applicantAge
+    const totalAge = completedResponses.reduce((sum, r) => {
+      const age = parseInt(r.answers?.section1?.applicantAge || '0');
+      return sum + age;
+    }, 0);
     const avgAge = completedResponses.length > 0 ? Math.round(totalAge / completedResponses.length) : 0;
 
+    // Extract gender from section1.applicantGender
     const genderDistribution = completedResponses.reduce((acc, r) => {
-      const gender = r.gender.toLowerCase();
+      const gender = (r.answers?.section1?.applicantGender || '').toLowerCase();
       if (gender === 'male') acc.male++;
       else if (gender === 'female') acc.female++;
       else acc.other++;
       return acc;
     }, { male: 0, female: 0, other: 0 });
 
+    // Extract location from section1.district or residentialAddress
     const locationCounts = completedResponses.reduce((acc: Record<string, number>, r) => {
-      const location = r.district || r.location;
+      const location = r.answers?.section1?.district || 
+                      r.answers?.section1?.residentialAddress || 
+                      'Unknown';
       acc[location] = (acc[location] || 0) + 1;
       return acc;
     }, {});
@@ -83,7 +124,9 @@ export const useAdminData = () => {
     const topLocation = Object.entries(locationCounts)
       .sort(([,a], [,b]) => b - a)[0]?.[0] || 'N/A';
 
-    const uniqueDistricts = new Set(completedResponses.map(r => r.district || r.location)).size;
+    const uniqueDistricts = new Set(
+      completedResponses.map(r => r.answers?.section1?.district || r.answers?.section1?.residentialAddress || 'Unknown')
+    ).size;
 
     setStats({
       totalResponses: completedResponses.length,
@@ -114,11 +157,11 @@ export const useAdminData = () => {
       console.log('Attempting to fetch from:', '/api/responses/admin');
       
       // Call the admin endpoint with proper authentication
-      const response = await fetch('/api/responses/admin', {
+      const response = await fetch(`${ServerLink}/responses`, {
         method: 'GET',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // 💥 Add authentication header
+          'Authorization': `Bearer ${token}` // Backend server authentication
         }
       });
 
@@ -145,18 +188,12 @@ export const useAdminData = () => {
             const section1 = answers.section1 || {};
             
             return {
-              id: item._id || item.id || `temp-${index}`,
-              name: section1.respondentName || section1.uname || item.name || 'N/A',
-              age: Number(section1.age || item.age || 0),
-              gender: section1.gender || item.gender || 'N/A',
-              location: section1.district || section1.location || item.location || 'N/A',
-              district: section1.district || item.district || item.location || 'N/A',
-              rating: item.rating || 'N/A',
-              submittedAt: item.submissionDate ? new Date(item.submissionDate).toLocaleDateString() : 
-                          item.submittedAt ? new Date(item.submittedAt).toLocaleDateString() : 
-                          item.createdAt ? new Date(item.createdAt).toLocaleDateString() :
-                          new Date().toLocaleDateString(),
-              status: 'submitted', // Ensure all displayed responses show as submitted
+              _id: item._id || `temp-${index}`,
+              responseId: item.responseId || '',
+              status: item.status || 'submitted',
+              submissionDate: item.submissionDate || new Date().toISOString(),
+              lastSaved: item.lastSaved || new Date().toISOString(),
+              submittedBy: item.submittedBy || 'Unknown User',
               answers: answers
             };
           });
@@ -187,33 +224,7 @@ export const useAdminData = () => {
       
       // Fallback to sample data for development
       console.log('Using fallback sample data due to error');
-      const sampleData: Response[] = [
-        {
-          id: '1', name: 'John Doe', age: 28, gender: 'Male',
-          location: 'Bangalore Urban', district: 'Bangalore Urban',
-          rating: 'N/A', submittedAt: '2025-01-20', status: 'submitted', answers: {}
-        },
-        {
-          id: '2', name: 'Jane Smith', age: 34, gender: 'Female',
-          location: 'Mysore', district: 'Mysore',
-          rating: 'N/A', submittedAt: '2025-01-19', status: 'submitted', answers: {}
-        },
-        {
-          id: '3', name: 'Raj Kumar', age: 42, gender: 'Male',
-          location: 'Hassan', district: 'Hassan',
-          rating: 'N/A', submittedAt: '2025-01-18', status: 'submitted', answers: {}
-        },
-        {
-          id: '4', name: 'Priya Singh', age: 25, gender: 'Female',
-          location: 'Mangalore', district: 'Dakshina Kannada',
-          rating: 'N/A', submittedAt: '2025-01-17', status: 'draft', answers: {}
-        },
-        {
-          id: '5', name: 'Draft User', age: 30, gender: 'Male',
-          location: 'Hubli', district: 'Dharwad',
-          rating: 'N/A', submittedAt: '2025-01-16', status: 'draft', answers: {}
-        }
-      ];
+      const sampleData: Response[] = [];
       
       setAllResponses(sampleData);
       const completedSampleData = sampleData.filter(r => 
@@ -226,30 +237,10 @@ export const useAdminData = () => {
     }
   }, [calculateStats]);
 
-  const deleteResponse = async (id: string) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/responses/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        // Remove from both responses and allResponses
-        setResponses(prev => prev.filter(r => r.id !== id));
-        setAllResponses(prev => prev.filter(r => r.id !== id));
-        return true;
-      }
-      return false;
-    } catch {
-      return false;
-    }
-  };
-
   const viewResponse = async (id: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/responses/${id}`, {
+      const response = await fetch(`${ServerLink}/responses/${id}`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -299,12 +290,12 @@ export const useAdminData = () => {
         };
         
         return [
-          formatField(r.name),
-          formatField(r.age),
-          formatField(r.gender),
-          formatField(r.district),
-          formatField(r.location),
-          formatField(r.submittedAt),
+          formatField(r.answers?.section1?.spouseName || 'N/A'),
+          formatField(r.answers?.section1?.applicantAge || 'N/A'),
+          formatField(r.answers?.section1?.applicantGender || 'N/A'),
+          formatField(r.answers?.section1?.district || 'N/A'),
+          formatField(r.answers?.section1?.residentialAddress || 'N/A'),
+          formatField(new Date(r.submissionDate).toLocaleDateString()),
           formatField(r.status),
           formatField(section1.educationLevel),
           formatField(section1.casteCategory),
@@ -347,7 +338,6 @@ export const useAdminData = () => {
     loading,
     error,
     loadResponses,
-    deleteResponse,
     viewResponse,
     exportData
   };

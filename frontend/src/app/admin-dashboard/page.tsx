@@ -7,13 +7,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { useRouter } from 'next/navigation';
 import { theme } from '../../styles/theme';
-import { useAdminData } from '../../hooks/useAdminData';
+import { useAdminData, Response } from '../../hooks/useAdminData';
 import { useResponseFilters } from '../../hooks/useResponseFilters';
 import { 
   FiSearch, 
   FiDownload, 
   FiEye, 
-  FiTrash2, 
   FiUsers, 
   FiUserCheck,
   FiTrendingUp,
@@ -469,7 +468,7 @@ export default function AdminDashboardPage() {
   const { isLoggedIn } = useAuth();
   const { t } = useTranslation(); // Translation hook
   const router = useRouter();
-  const { responses, stats, loading, error, loadResponses, deleteResponse, exportData } = useAdminData();
+  const { responses, stats, loading, error, loadResponses, viewResponse, exportData } = useAdminData();
   const {
     filteredResponses,
     paginatedResponses,
@@ -487,15 +486,6 @@ export default function AdminDashboardPage() {
     }
     loadResponses();
   }, [isLoggedIn, router, loadResponses]);
-
-  const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this response?')) {
-      const success = await deleteResponse(id);
-      if (!success) {
-        alert('Failed to delete response');
-      }
-    }
-  };
 
   const handleView = (responseId: string) => {
     router.push(`/admin-dashboard/view-response/${responseId}`);
@@ -796,13 +786,13 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedResponses.map((response: ResponseData) => (
-                    <TableRow key={response.id}>
-                      <TableCell>{response.name}</TableCell>
-                      <TableCell>{response.age}</TableCell>
-                      <TableCell>{response.gender}</TableCell>
-                      <TableCell>{response.district}</TableCell>
-                      <TableCell>{response.submittedAt}</TableCell>
+                  {paginatedResponses.map((response: Response) => (
+                    <TableRow key={response._id}>
+                      <TableCell>{response.answers?.section1?.spouseName || 'N/A'}</TableCell>
+                      <TableCell>{response.answers?.section1?.applicantAge || 'N/A'}</TableCell>
+                      <TableCell>{response.answers?.section1?.applicantGender || 'N/A'}</TableCell>
+                      <TableCell>{response.answers?.section1?.district || 'N/A'}</TableCell>
+                      <TableCell>{new Date(response.submissionDate).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <span style={{ 
                           padding: '0.25rem 0.5rem', 
@@ -818,19 +808,10 @@ export default function AdminDashboardPage() {
                       <TableCell>
                         <Button 
                           size="sm" 
-                          style={{ marginRight: '0.5rem' }}
-                          onClick={() => handleView(response.id)}
+                          onClick={() => handleView(response._id)}
                         >
                           <FiEye />
                           View
-                        </Button>
-                        <Button 
-                          variant="danger"
-                          size="sm"
-                          onClick={() => handleDelete(response.id)}
-                        >
-                          <FiTrash2 />
-                          Delete
                         </Button>
                       </TableCell>
                     </TableRow>
