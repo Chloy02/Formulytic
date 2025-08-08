@@ -100,26 +100,44 @@ async function login(req, res) {
   try {
     const { email, password } = req.body; // Changed to expect email instead of username
 
-    // Hardcoded admin check - allow both admin username and admin email
-    if ((email === 'admin' || email === 'admin@formulytic.com') && password === 'admin123') {
-      const token = generateToken('admin_hardcoded', 'admin');
-      const userData = {
-        id: 'admin_hardcoded',
+    // First try to find admin user in database
+    let user = await User.findOne({ 
+      $or: [
+        { email: email },
+        { username: email } // Allow login with username for admin
+      ],
+      role: 'admin'
+    });
+
+    // Fallback to hardcoded admin check if no admin user found in DB
+    if (!user && (email === 'admin' || email === 'admin@formulytic.com') && password === 'admin123') {
+      // Create admin user if it doesn't exist
+      const hashedPassword = await bcrypt.hash('admin123', 10);
+      user = new User({
         username: 'admin',
         email: 'admin@formulytic.com',
+        password: hashedPassword,
         role: 'admin'
-      };
-      return res.status(200).json({ token, user: userData });
+      });
+      await user.save();
     }
 
-    // Find user by email
-    const user = await User.findOne({ email });
+    // If still no user found, try regular user lookup
+    if (!user) {
+      user = await User.findOne({ email });
+    }
 
     if (!user) {
       return res.status(404).json({ message: 'User not found with provided credentials' });
     }
 
-    const valid = await bcrypt.compare(password, user.password);
+    // Check password
+    let valid = false;
+    if (user.role === 'admin' && (email === 'admin' || email === 'admin@formulytic.com') && password === 'admin123') {
+      valid = true; // Allow hardcoded admin password
+    } else {
+      valid = await bcrypt.compare(password, user.password);
+    }
 
     if (!valid) {
       return res.status(401).json({ message: 'Invalid credentials' });

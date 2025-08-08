@@ -39,8 +39,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserData = async () => {
     try {
-      // Use the frontend API route instead of direct backend call
-      const response = await axios.get('/api/auth/me');
+      // Use the backend server directly instead of frontend API route
+      const response = await axios.get(`${ServerLink}/auth/me`);
       setUser(response.data.user);
     } catch (error) {
       console.error('Failed to fetch user data:', error);
