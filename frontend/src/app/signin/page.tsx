@@ -39,10 +39,10 @@ const ContentArea = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${theme.spacing['4xl']} ${theme.spacing.base};
+  padding: ${theme.spacing['6xl']} ${theme.spacing.base} ${theme.spacing['4xl']};
 
   @media (max-width: ${theme.breakpoints.md}) {
-    padding: ${theme.spacing['2xl']} ${theme.spacing.base};
+    padding: ${theme.spacing['4xl']} ${theme.spacing.base} ${theme.spacing['2xl']};
   }
 `;
 
@@ -270,7 +270,7 @@ const SignInPage: React.FC = () => {
                 >
                   <Sparkles size={28} color="white" />
                 </IconWrapper>
-                <Heading>{t('Good Morning Friend')}</Heading>
+                <Heading>{t('Sign In')}</Heading>
                 <SubTitle size="lg" color="secondary">
                   {t('Sign in to your account to continue')}
                 </SubTitle>

@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { buildApiUrl } from '@/config/api';
 // --- FIX: Import the ServerLink ---
 import ServerLink from '../lib/api/serverURL'; 
 
@@ -73,11 +74,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const selectedProjectData = localStorage.getItem('selectedProject');
       const project = selectedProjectData ? JSON.parse(selectedProjectData).id : 'default';
       
-      // Use the frontend API route with correct parameters
-      const response = await axios.post('/api/auth/login', { 
-        email: email, 
-        password: password,
-        project: project 
+      // Use the backend API with correct parameters
+      const response = await axios.post(buildApiUrl('/auth/login'), { 
+        email: email, // Backend now expects email
+        password: password
       });
       const { token, user: userData } = response.data;
       localStorage.setItem('token', token);
@@ -97,11 +97,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const adminLogin = async (username: string, password: string) => {
     try {
-      // Use the frontend API route with correct parameters
-      const response = await axios.post('/api/auth/login', { 
+      // Use the backend API for admin login
+      const response = await axios.post(buildApiUrl('/auth/login'), { 
         email: username, 
-        password: password,
-        project: 'admin'
+        password: password
       });
       
       const { token, user: userData } = response.data;

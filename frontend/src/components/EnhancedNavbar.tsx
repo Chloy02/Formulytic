@@ -19,7 +19,7 @@ const NavbarContainer = styled(motion.nav)`
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid #e2e8f0;
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 1000;
   width: 100%;
@@ -87,6 +87,28 @@ const BrandIcon = styled.div`
   color: white;
   font-weight: ${theme.typography.fontWeight.bold};
   font-size: ${theme.typography.fontSize.sm};
+`;
+
+const KarnatakaLogo = styled.img`
+  height: 60px;
+  width: 60px;
+  object-fit: contain;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 10px rgba(0, 123, 255, 0.4));
+  }
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    height: 50px;
+    width: 50px;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    height: 45px;
+    width: 45px;
+  }
 `;
 
 const DesktopNavLinks = styled.ul`
@@ -383,8 +405,10 @@ const Navbar: React.FC = () => {
       transition={{ duration: 0.5 }}
     >
       <NavBrand href="/">
-        <BrandIcon>F</BrandIcon>
-        Formulytic
+        <KarnatakaLogo 
+          src="/images/Seal_of_Karnataka.svg" 
+          alt="Government of Karnataka" 
+        />
       </NavBrand>
 
       {/* <DesktopNavLinks>

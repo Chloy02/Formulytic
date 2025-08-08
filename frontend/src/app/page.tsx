@@ -8,18 +8,19 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { theme } from '@/styles/theme';
-import {
-  Button,
-  Heading,
-  Text,
-  Container,
+import { 
+  Button, 
+  Heading, 
+  Text, 
+  Container, 
   Stack
 } from '@/components/ui';
 import EnhancedNavbar from '@/components/EnhancedNavbar';
 import KarnatakaMap from '@/components/KarnatakaMap';
-import {
-  ArrowRight,
-  Sparkles
+import { 
+  ArrowRight, 
+  Sparkles,
+  ArrowLeft
 } from 'lucide-react';
 
 const PageWrapper = styled(motion.div)`
@@ -30,6 +31,11 @@ const PageWrapper = styled(motion.div)`
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
+  padding-top: 70px; /* Account for fixed navbar */
+
+  @media (max-width: 768px) {
+    padding-top: 60px;
+  }
 
   &::before {
     content: '';
@@ -152,7 +158,7 @@ const HeroVisual = styled.div`
 // Floating Christ University Logo (top-right)
 const FloatingChristLogo = styled.div`
   position: fixed;
-  top: 80px;
+  top: 110px;
   right: 20px;
   z-index: 1000;
   background: rgba(255, 255, 255, 0.95);
@@ -173,13 +179,13 @@ const FloatingChristLogo = styled.div`
   }
 
   @media (max-width: 768px) {
-    top: 75px;
+    top: 95px;
     right: 15px;
     padding: 6px;
   }
 
   @media (max-width: 480px) {
-    top: 70px;
+    top: 85px;
     right: 10px;
     padding: 4px;
   }
@@ -392,59 +398,11 @@ const SecondaryButton = styled(Button)`
   }
 `;
 
-const FeatureList = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  flex-wrap: wrap;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-  }
-
-  @media (max-width: 480px) {
-    gap: 15px;
-  }
-`;
-
-const FeatureItem = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  color: #555;
-  font-weight: 500;
-
-  @media (max-width: 768px) {
-    justify-content: center;
-    font-size: 15px;
-    padding: 8px 0;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 14px;
-    padding: 6px 0;
-  }
-
-  svg {
-    color: #28a745;
-    margin-right: 8px;
-    font-size: 20px;
-    flex-shrink: 0;
-
-    @media (max-width: 480px) {
-      font-size: 18px;
-      margin-right: 6px;
-    }
-  }
-`;
-
 const KarnatakaMapContainer = styled.div`
   width: 100%;
-  max-width: 400px;
+  max-width: 500px; 
   height: auto;
-  
+
   svg {
     width: 100%;
     height: auto;
@@ -452,22 +410,19 @@ const KarnatakaMapContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    max-width: 300px;
-    
+    max-width: 350px;
+
     svg {
       filter: none;
     }
   }
 `;
 
+
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
   const { isLoggedIn, user } = useAuth();
   const router = useRouter();
-  const [selectedProject, setSelectedProject] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
 
   useEffect(() => {
     // Check if user is admin and redirect to admin dashboard
@@ -475,107 +430,101 @@ const HomePage: React.FC = () => {
       router.push('/admin-dashboard');
       return;
     }
-
-    // Check if a project has been selected
-    const storedProject = localStorage.getItem('selectedProject');
-    if (storedProject) {
-      setSelectedProject(JSON.parse(storedProject));
-      // Project is selected, show the main landing page
-      router.push('/landing');
-    } else {
-      // No project selected, redirect to project selection
-      router.push('/project-selection');
-    }
   }, [isLoggedIn, user, router]);
 
-  // Show loading while determining where to redirect
+  const handleGetStarted = () => {
+    // Check if a project has been selected
+    const storedProject = localStorage.getItem('selectedProject');
+    if (!storedProject) {
+      // No project selected, redirect to project selection
+      router.push('/project-selection');
+    } else if (isLoggedIn) {
+      router.push('/questionnaire');
+    } else {
+      router.push('/signup');
+    }
+  };
+
+  const handleSignIn = () => {
+    router.push('/signin');
+  };
+
   return (
-    <>
-      <PageWrapper>
-        {/* Floating Christ University Logo */}
-        <FloatingChristLogo>
-          <a href="https://christuniversity.in" target="_blank" rel="noopener noreferrer">
-            <FloatingLogoImage src="/images/christ.svg" alt="Christ University Logo" />
-          </a>
-        </FloatingChristLogo>
+    <PageWrapper>
+      {/* Floating Christ University Logo */}
+      <FloatingChristLogo>
+        <a href="https://christuniversity.in" target="_blank" rel="noopener noreferrer">
+          <FloatingLogoImage src="/images/christ.svg" alt="Christ University Logo" />
+        </a>
+      </FloatingChristLogo>
 
-        <EnhancedNavbar />
+      <EnhancedNavbar />
 
-        <HeroSection>
-          <HeroBackground />
-          <HeroContainer maxWidth="lg">
-            <HeroContent>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <CenteredLogoContainer>
-                  <a href="https://karnataka.gov.in/english" target="_blank" rel="noopener noreferrer">
-                    <CenteredLogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
-                  </a>
-                </CenteredLogoContainer>
+      <HeroSection>
+        <HeroBackground />
+        <HeroContainer maxWidth="lg">
+          <HeroContent>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <CenteredLogoContainer>
+                <a href="https://karnataka.gov.in/english" target="_blank" rel="noopener noreferrer">
+                  <CenteredLogoImage src="/images/Seal_of_Karnataka.svg" alt="Government of Karnataka Seal" />
+                </a>
+              </CenteredLogoContainer>
 
-                <MainHeading>
-                  {t("Karnataka Social")} <HighlightText>{t("Impact")}</HighlightText> {t("Evaluation Survey")}
-                </MainHeading>
+              <MainHeading>
+                {t("Karnataka Social")} <HighlightText>{t("Impact")}</HighlightText> {t("Evaluation Survey")}
+              </MainHeading>
 
-                <SubText size="lg" color="secondary">
-                  {t("Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. Your responses will contribute to improving social equity and integration across beneficiary communities.")}
-                </SubText>
+              <SubText size="lg" color="secondary">
+                {t("Help us evaluate the effectiveness of government welfare schemes for inter-caste marriages and community development programs in Karnataka. Your responses will contribute to improving social equity and integration across beneficiary communities.")}
+              </SubText>
 
-                <HeroButtons>
-                  <PrimaryButton
-                    size="lg"
-                    // onClick={handleGetStarted() =>{}}
+              <HeroButtons>
+                <PrimaryButton
+                  size="lg"
+                  onClick={handleGetStarted}
+                  as={motion.button}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Stack direction="row" spacing="sm" align="center">
+                    <span>{t("Start Questionnaire")}</span>
+                    <ArrowRight size={16} />
+                  </Stack>
+                </PrimaryButton>
+
+                {!isLoggedIn && (
+                  <SecondaryButton
+                    onClick={handleSignIn}
                     as={motion.button}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <Stack direction="row" spacing="sm" align="center">
-                      <span>{t("Start Questionnaire")}</span>
-                      <ArrowRight size={16} />
-                    </Stack>
-                  </PrimaryButton>
+                    {t("Already Registered? Sign In")}
+                  </SecondaryButton>
+                )}
+              </HeroButtons>
+            </motion.div>
+          </HeroContent>
 
-                  {!isLoggedIn && (
-                    <SecondaryButton
-                      // onClick={handleSignIn}
-                      as={motion.button}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      {t("Already Registered? Sign In")}
-                    </SecondaryButton>
-                  )}
-                </HeroButtons>
-              </motion.div>
-            </HeroContent>
-
-            <HeroVisual>
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <KarnatakaMapContainer>
-                  <KarnatakaMap />
-                </KarnatakaMapContainer>
-              </motion.div>
-            </HeroVisual>
-          </HeroContainer>
-        </HeroSection>
-      </PageWrapper>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        background: 'linear-gradient(135deg, #eff6ff 0%, #f1f5f9 100%)'
-      }}>
-        <div>Loading...</div>
-      </div>
-    </>
+          <HeroVisual>
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <KarnatakaMapContainer>
+                <KarnatakaMap />
+              </KarnatakaMapContainer>
+            </motion.div>
+          </HeroVisual>
+        </HeroContainer>
+      </HeroSection>
+    </PageWrapper>
   );
 };
 
