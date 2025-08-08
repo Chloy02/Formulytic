@@ -11,8 +11,8 @@ const userSchema = new mongoose.Schema({
   },
   project: {
     type: String,
-    enum: ['project1', 'project2', 'admin'], // Added admin as valid project
-    required: true
+    default: 'default',
+    required: false // Make project optional since it's no longer needed
   }
 }, {
   timestamps: true

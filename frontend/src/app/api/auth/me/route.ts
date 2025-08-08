@@ -18,7 +18,20 @@ export async function GET(request: NextRequest) {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
     
-    const user = await User.findById(decoded.id).select('-password');
+    let user;
+    // Handle hardcoded admin ID case
+    if (decoded.id === 'admin_hardcoded') {
+      user = await User.findOne({ 
+        role: 'admin',
+        $or: [
+          { email: 'admin@formulytic.com' },
+          { username: 'admin' }
+        ]
+      }).select('-password');
+    } else {
+      user = await User.findById(decoded.id).select('-password');
+    }
+    
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }

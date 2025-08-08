@@ -22,12 +22,60 @@ async function register(req, res) {
   try {
     const { username, password, email, role } = req.body;
 
+    // Validation
+    const errors = {};
+
+    // Name (username) validation
+    if (!username || username.trim().length === 0) {
+      errors.name = 'Name is required.';
+    } else if (username.trim().length < 2) {
+      errors.name = 'Name must be at least 2 characters.';
+    }
+
+    // Email validation
+    if (!email) {
+      errors.email = 'Email is required.';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = 'Invalid email format.';
+    } else if (!email.toLowerCase().endsWith('@gmail.com')) {
+      errors.email = 'Please use a Gmail address (@gmail.com).';
+    }
+
+    // Password validation
+    if (!password) {
+      errors.password = 'Password is required.';
+    } else if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters.';
+    }
+
+    // Return validation errors if any
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({ 
+        message: 'Validation failed', 
+        errors 
+      });
+    }
+
     const existing = await getUserInfo(username);
-    if (existing) return res.status(400).json({ message: 'User already exists' });
+    const existingByEmail = await User.findOne({ email });
+    
+    if (existing) {
+      return res.status(400).json({ 
+        message: 'User already exists',
+        errors: { name: 'A user with this name already exists.' }
+      });
+    }
+
+    if (existingByEmail) {
+      return res.status(400).json({ 
+        message: 'User already exists',
+        errors: { email: 'An account with this email already exists.' }
+      });
+    }
 
     const hashed = await bcrypt.hash(password, 10);
     const newUser = new User({ 
-      username, 
+      username: username.trim(), 
       password: hashed, 
       email,
       role: role || 'user' // Default to 'user' if no role specified
@@ -37,38 +85,59 @@ async function register(req, res) {
 
     const token = generateToken(data._id, data.role);
 
-    res.status(data ? 201 : 400).json(data ? { message: 'Registered successfully', token } : { message: 'Registered unsuccessfully' });
+    res.status(data ? 201 : 400).json(data ? { message: 'Account created successfully!', token } : { message: 'Registration failed' });
 
   } catch (err) {
     console.error('Register error:', err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ 
+      message: 'Server error occurred. Please try again.',
+      error: 'Server error' 
+    });
   }
 };
 
 async function login(req, res) {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body; // Changed to expect email instead of username
 
-    // Hardcoded admin check
-    if (username === 'admin' && password === 'admin123') {
-      const token = generateToken('admin_hardcoded', 'admin');
-      const userData = {
-        id: 'admin_hardcoded',
+    // First try to find admin user in database
+    let user = await User.findOne({ 
+      $or: [
+        { email: email },
+        { username: email } // Allow login with username for admin
+      ],
+      role: 'admin'
+    });
+
+    // Fallback to hardcoded admin check if no admin user found in DB
+    if (!user && (email === 'admin' || email === 'admin@formulytic.com') && password === 'admin123') {
+      // Create admin user if it doesn't exist
+      const hashedPassword = await bcrypt.hash('admin123', 10);
+      user = new User({
         username: 'admin',
         email: 'admin@formulytic.com',
+        password: hashedPassword,
         role: 'admin'
-      };
-      return res.status(200).json({ token, user: userData });
+      });
+      await user.save();
     }
 
-    // Allow login with either username or email
-    const user = await getUserInfo(username, 1);
+    // If still no user found, try regular user lookup
+    if (!user) {
+      user = await User.findOne({ email });
+    }
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found with provided credentials' });
     }
 
-    const valid = await bcrypt.compare(password, user.password);
+    // Check password
+    let valid = false;
+    if (user.role === 'admin' && (email === 'admin' || email === 'admin@formulytic.com') && password === 'admin123') {
+      valid = true; // Allow hardcoded admin password
+    } else {
+      valid = await bcrypt.compare(password, user.password);
+    }
 
     if (!valid) {
       return res.status(401).json({ message: 'Invalid credentials' });
