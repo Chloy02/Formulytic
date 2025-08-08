@@ -100,8 +100,8 @@ async function login(req, res) {
   try {
     const { email, password } = req.body; // Changed to expect email instead of username
 
-    // Hardcoded admin check
-    if (email === 'admin@formulytic.com' && password === 'admin123') {
+    // Hardcoded admin check - allow both admin username and admin email
+    if ((email === 'admin' || email === 'admin@formulytic.com') && password === 'admin123') {
       const token = generateToken('admin_hardcoded', 'admin');
       const userData = {
         id: 'admin_hardcoded',
