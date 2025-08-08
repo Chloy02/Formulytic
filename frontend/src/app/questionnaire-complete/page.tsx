@@ -961,181 +961,388 @@ const ToggleButton = styled.button`
   }
 `;
 
+// --- Section 4 Types ---
+type AwarenessSource = '' | 'government_official' | 'community_leader' | 'panchayat' | 'friends_family' | 'media' | 'social_media' | 'online_portal' | 'other';
+type OfficialsSupportiveness = '' | 'not_at_all' | 'slightly' | 'moderately' | 'very' | 'extremely';
+type ApplicationProcessDifficulty = '' | 'very_easy' | 'easy' | 'moderate' | 'difficult' | 'very_difficult';
+type ApplicationHelpSource = '' | 'department_staff' | 'friend_or_family' | 'on_my_own' | 'other';
+type TimeToReceiveBenefit = '' | 'less_than_3_months' | '3_6_months' | '6_12_months' | '1_2_years' | 'still_not_received' | 'cant_remember';
+type OverallProcessRating = '' | 'very_easy' | 'easy' | 'moderate' | 'difficult' | 'very_difficult';
+type YesNo = '' | 'yes' | 'no';
+type InvitedToSpeak = '' | 'yes' | 'no';
+type SpeakingPlatform = 'community_meetings' | 'school_college' | 'ngo_events' | 'government_programs' | 'religious_gatherings' | 'media_interviews' | 'other';
+
+interface Section4FormData {
+  awarenessSource: AwarenessSource;
+  awarenessSourceOther: string;
+  officialsSupportiveness: OfficialsSupportiveness;
+  applicationProcessDifficulty: ApplicationProcessDifficulty;
+  applicationHelpSource: ApplicationHelpSource;
+  applicationHelpSourceOther: string;
+  timeToReceiveBenefit: TimeToReceiveBenefit;
+  overallProcessRating: OverallProcessRating;
+  participatedInAwarenessPrograms: YesNo;
+  invitedToSpeak: InvitedToSpeak;
+  speakingPlatforms: SpeakingPlatform[];
+  speakingPlatformsOther: string;
+}
+
 interface FormData {
-  section1: {
-    respondentName: string;
-    district: string;
-    age: string;
-    gender: string;
-    education: string;
-    employmentBefore: string;
-    occupationBefore: string;
-    incomeBefore: string;
-    receivedBenefit: string;
+section1: {
+    // Q1
+    receivedIncentives: string;
+    // Q2
     schemes: string[];
-    otherBenefits: string;
-    dateOfBenefit: string;
-    utilization: string[];
-    casteCategory: string;
-    subCaste: string;
-    tribeIdentity: string;
-    marriageOpposed: string;
-    relocated: string;
-    aadhaarProvided: string;
-  };
-  section2: {
-    occupationAfter: string;
-    incomeAfter: string;
-    socioEconomicStatusBefore: string;
-    financialSecurityScale: string;
-    spouseEmploymentAfter: string;
-    socioEconomicStatusAfter: string;
-    socialLifeImpact: string;
-    fundDecisionMaker: string;
-    financialDependencyReduced: string;
-    startedNewLivelihood: string;
-  };
-  section3: {
-    progressiveChangeScale: string;
-    feltSociallyAccepted: string;
-    discriminationReduction: string;
-    feltMoreSecure: string;
-    livingWithInLaws: string;
-    inLawDiscrimination: string;
-    inLawDiscriminationDetails: string;
-    filedPoliceComplaint: string;
-    supportFromNgosOrOfficials: string;
-    // Widow remarriage specific fields
-    widowDuration?: string;
-    widowChallenges?: string[];
-    widowSchemeBenefits?: string[];
-    recommendWidowScheme?: string;
-    // SC/ST specific fields
-    casteDiscriminationExperience?: string;
-    beneficialPrograms?: string[];
-    communityImpact?: string;
-  };
-  section4: {
-    schemeAwarenessSource: string;
-    officialsSupportive: string;
-    applicationDifficulty: string;
-    timeToReceiveBenefit: string;
-    disbursementEffectiveness: string;
-    awareOfSchemeDetails: string;
-    applicationStatus: string;
-    pendingDuration: string;
-    rejectionReasonCommunicated: string;
-    rejectionReason: string;
-    qualityOfInformation: string;
-  };
-  section5: {
-    schemeSuccessCasteDiscrimination: string;
-    schemeSuccessSecurity: string;
-    areasForImprovement: string[];
-    shouldReviseIncentive: string;
-    experiencedBenefits: string[];
-    shouldContinueScheme: string;
-    encourageIntercasteMarriage: string;
-    schemeHelpedReduceDiscriminationInArea: string;
-    futureSupportExpected: string[];
-  };
-  section6_DevadasiChildren: {
-    childAgeAtMarriage: string;
-    schemeImprovedDignity: string;
-    treatmentDifference: string;
+    // Q3-6
+    applicantName: string;
+    spouseName: string;
+    applicantGender: string;
+    spouseGender: string;
+    // Q7-11
+    applicantCasteCategory: string;
+    scCaste: string;
+    scNomadic: string;
+    stCaste: string;
+    stGroup: string;
+    stNomadicTribe: string;
     spouseCaste: string;
-    ownsPropertyNow: string;
-    inLawAcceptabilityScale: string;
-    facedStigma: string;
+    spouseSubCaste: string;
+    // Q12-15
+    age: string;
+    mobileNumber: string;
+    marriageDate: string;
+    registrationDate: string;
+    // Q16
+    organizingOrganization: string;
+    // Q17-22
+    applicationDate: string;
+    grantDate: string;
+    benefitAmount: string;
+    fdCertificateReceived: string;
+    jointBankAccount: string;
+    creditMonthYear: string;
+    // Q23-24
+    applicantEducation: string;
+    spouseEducation: string;
+    // Q25-26
+    applicantEmploymentBefore: string;
+    applicantOccupationBefore: string;
+    spouseEmploymentBefore: string;
+    spouseOccupationBefore: string;
+    // Q27-30
+    residentialAddress: string;
+    bothKarnatakaResidents: string;
+    otherState?: string; // Add this field for the conditional question in Q28
+    homeDescription: string;
+    maritalStatus: string;
+    // Q31-34
+    familyAnnualIncome: string;
+    otherSchemeBenefits: string;
+    otherSchemeNames: string;
+    utilization: string[];
+  };
+    section2: {
+    // Q1: Applicant's occupation after scheme
+    applicantOccupationAfter: string;
+    applicantOccupationAfterOther?: string; // For the 'Other' option
+    // Q2: Spouse's occupation after scheme
+    spouseOccupationAfter: string;
+    spouseOccupationAfterOther?: string; // For the 'Other' option
+    // Q3: Household's combined annual income
+    householdAnnualIncomeAfter: string;
+    // Q4: Standard of living
+    standardOfLivingImproved: string;
+    // Q5 (New Q5): Access to basic needs
+    accessToBasicNeeds: string;
+    // Q6 (New Q6): Social life impact
+    socialLifeImpact: string;
+  };
+   section3: {
+    // Q1: Did your family...
+    familyOpposedMarriage: string;
+    whoOpposed?: string;
+    whoOpposedOther?: string;
+    // Q2: How did your extended family react?
+    extendedFamilyReaction: string;
+    // Q3: How did your neighbours...
+    neighboursReaction: string;
+    // Q4: Have there been any inter-caste marriages...
+    interCasteMarriagesInCommunity: string;
+    // Q5: Did you and your husband/wife face any challenges...
+    challengesAfterMarriage: string;
+    challengesList?: string[];
+    challengesOther?: string;
+    // Q6: Have there been any instances of domestic violence...
+    domesticViolence: string;
+    // Q7: Did you relocate...
+    relocatedAfterMarriage: string;
+    relocationReason?: string;
+    relocationReasonOther?: string;
+    // Q8: Has any police complaint...
+    policeComplaint: string;
+    policeComplaintDetails?: string;
+    // Q9: Who mainly caused the caste-based harassment...
+    harassmentCausedBy: string;
+    harassmentCausedByOther?: string;
+    // Q10: In what ways did you experience discrimination...
+    discriminationWays: string[];
+    discriminationWaysOther?: string;
+    // Q11: Do you feel that you have gained recognition...
+    gainedRecognition: string;
+    recognitionWays?: string[];
+    recognitionWaysOther?: string;
+    // Q12: Has receiving the benefit enabled you to have a cordial relationship...
+    cordialRelationshipInLaws: string;
+    cordialRelationshipWays?: string[];
+    cordialRelationshipWaysOther?: string;
+    // Q13: This scheme has helped bring about a positive...
+    progressiveChangePublicOpinion: string;
+    // Q14: Who supported you...
+    supportSource: string[];
+    supportSourceOther?: string;
+    // Q15: Has your marriage influenced others...
+    marriageInfluence: string;
+    // Q16: Would you suggest or recommend this scheme...
+    recommendScheme: string;
+    // Q17: Do you feel safe...
+    safetyInCommunity: string;
+    // Q18: Have you faced any opposition...
+    oppositionAfterBenefit: string;
+    oppositionDetails?: string;
+  };
+  section4: Section4FormData;
+
+  section5: {
+    // Q1: Scheme success in reducing discrimination
+    successInReducingDiscrimination: string;
+    // Q2: Scheme success in providing a safe attitude/security
+    successInProvidingSecurity: string;
+    // Q3: Which aspects need improvement?
+    improvementAreas: string[];
+    improvementAreasOther?: string;
+    // Q4: Should the financial incentive be increased?
+    increaseIncentive: string;
+    increasedIncentiveAmount?: string;
+    // Q5: How has the scheme helped you?
+    schemeBenefits: string[];
+    // Q6: Should this scheme continue?
+    continueScheme: string;
+    // Q7: Will marriages become more accepted?
+    marriagesMoreAccepted: string;
+    // Q8: Would you openly support inter-caste marriages?
+    advocateForIntercaste: string;
+    // Q9: Would you encourage your children to marry inter-caste?
+    encourageChildrenIntercaste: string;
+    // Q10: What kind of future support would you like?
+    futureSupport: string[];
+    futureSupportOther?: string;
+    // Q11: Improvements or suggestions
+    improvementSuggestions?: string;
+  };
+ section6_Devadasi: {
+    devadasiAgeAtMarriage: string;
+    dignityImproved: string;
+    familyProblemsWithMarriage: string;
+    spouseCaste: string;
+    disclosedBackground: string;
+    spouseFamilyAcceptance: string;
+    problemsAfterMarriage: string;
+  };
+  section6_NonBeneficiary: {
+    awareOfScheme: string;
+    applicationStatus?: string;
+    pendingDuration?: string;
+    rejectionReasonCommunicated?: string;
+    rejectionReason?: string;
+    informationQuality?: string;
+  };
+  section6_Widow: { // New object for widow remarriage questions
+    remarriageAge: string;
+    childrenFromPreviousMarriage: string;
+    childrenCount?: string;
+    childrenGender?: string;
+    husbandChildrenFromPreviousMarriage: string;
+    husbandChildrenCount?: string;
+    husbandChildrenGender?: string;
+    husbandMaritalStatus: string;
+    husbandCaste: string;
+    husbandCasteOther?: string;
+    ownedPropertyBeforeRemarriage: string;
+    previousPropertyDetails?: string;
+    ownedPropertyAfterRemarriage: string;
+    newPropertyDetails?: string;
+    familyAcceptanceScale: string;
+    facedStigmaAfterRemarriage: string;
+    stigmaDetails?: string;
   };
 }
 
 const defaultFormData: FormData = {
-  section1: {
-    respondentName: '',
-    district: '',
-    age: '',
-    gender: '',
-    education: '',
-    employmentBefore: '',
-    occupationBefore: '',
-    incomeBefore: '',
-    receivedBenefit: '',
+ section1: {
+    // Q1
+    receivedIncentives: '',
+    // Q2
     schemes: [],
-    otherBenefits: '',
-    dateOfBenefit: '',
+    // Q3-6
+    applicantName: '',
+    spouseName: '',
+    applicantGender: '',
+    spouseGender: '',
+    // Q7-11
+    applicantCasteCategory: '',
+    scCaste: '',
+    scNomadic: '',
+    stCaste: '',
+    stGroup: '',
+    stNomadicTribe: '',
+    spouseCaste: '',
+    spouseSubCaste: '',
+    // Q12-15
+    age: '',
+    mobileNumber: '',
+    marriageDate: '',
+    registrationDate: '',
+    // Q16
+    organizingOrganization: '',
+    // Q17-22
+    applicationDate: '',
+    grantDate: '',
+    benefitAmount: '',
+    fdCertificateReceived: '',
+    jointBankAccount: '',
+    creditMonthYear: '',
+    // Q23-24
+    applicantEducation: '',
+    spouseEducation: '',
+    // Q25-26
+    applicantEmploymentBefore: '',
+    applicantOccupationBefore: '',
+    spouseEmploymentBefore: '',
+    spouseOccupationBefore: '',
+    // Q27-30
+    residentialAddress: '',
+    bothKarnatakaResidents: '',
+    otherState: '',
+    homeDescription: '',
+    maritalStatus: '',
+    // Q31-34
+    familyAnnualIncome: '',
+    otherSchemeBenefits: '',
+    otherSchemeNames: '',
     utilization: [],
-    casteCategory: '',
-    subCaste: '',
-    tribeIdentity: '',
-    marriageOpposed: '',
-    relocated: '',
-    aadhaarProvided: '',
   },
   section2: {
-    occupationAfter: '',
-    incomeAfter: '',
-    socioEconomicStatusBefore: '',
-    financialSecurityScale: '',
-    spouseEmploymentAfter: '',
-    socioEconomicStatusAfter: '',
+    applicantOccupationAfter: '',
+    applicantOccupationAfterOther: '',
+    spouseOccupationAfter: '',
+    spouseOccupationAfterOther: '',
+    householdAnnualIncomeAfter: '',
+    standardOfLivingImproved: '',
+    accessToBasicNeeds: '',
     socialLifeImpact: '',
-    fundDecisionMaker: '',
-    financialDependencyReduced: '',
-    startedNewLivelihood: '',
   },
   section3: {
-    progressiveChangeScale: '',
-    feltSociallyAccepted: '',
-    discriminationReduction: '',
-    feltMoreSecure: '',
-    livingWithInLaws: '',
-    inLawDiscrimination: '',
-    inLawDiscriminationDetails: '',
-    filedPoliceComplaint: '',
-    supportFromNgosOrOfficials: '',
-    // Widow remarriage specific fields
-    widowDuration: '',
-    widowChallenges: [],
-    widowSchemeBenefits: [],
-    recommendWidowScheme: '',
-    // SC/ST specific fields
-    casteDiscriminationExperience: '',
-    beneficialPrograms: [],
-    communityImpact: '',
+    familyOpposedMarriage: '',
+    whoOpposed: '',
+    whoOpposedOther: '',
+    extendedFamilyReaction: '',
+    neighboursReaction: '',
+    interCasteMarriagesInCommunity: '',
+    challengesAfterMarriage: '',
+    challengesList: [],
+    challengesOther: '',
+    domesticViolence: '',
+    relocatedAfterMarriage: '',
+    relocationReason: '',
+    relocationReasonOther: '',
+    policeComplaint: '',
+    policeComplaintDetails: '',
+    harassmentCausedBy: '',
+    harassmentCausedByOther: '',
+    discriminationWays: [],
+    discriminationWaysOther: '',
+    gainedRecognition: '',
+    recognitionWays: [],
+    recognitionWaysOther: '',
+    cordialRelationshipInLaws: '',
+    cordialRelationshipWays: [],
+    cordialRelationshipWaysOther: '',
+    progressiveChangePublicOpinion: '',
+    supportSource: [],
+    supportSourceOther: '',
+    marriageInfluence: '',
+    recommendScheme: '',
+    safetyInCommunity: '',
+    oppositionAfterBenefit: '',
+    oppositionDetails: '',
   },
+
   section4: {
-    schemeAwarenessSource: '',
-    officialsSupportive: '',
-    applicationDifficulty: '',
+    awarenessSource: '',
+    awarenessSourceOther: '',
+    officialsSupportiveness: '',
+    applicationProcessDifficulty: '',
+    applicationHelpSource: '',
+    applicationHelpSourceOther: '',
     timeToReceiveBenefit: '',
-    disbursementEffectiveness: '',
-    awareOfSchemeDetails: '',
+    overallProcessRating: '',
+    participatedInAwarenessPrograms: '',
+    invitedToSpeak: '',
+    speakingPlatforms: [],
+    speakingPlatformsOther: '',
+  },
+
+  section5: {
+    successInReducingDiscrimination: '',
+    successInProvidingSecurity: '',
+    improvementAreas: [],
+    improvementAreasOther: '',
+    increaseIncentive: '',
+    increasedIncentiveAmount: '',
+    schemeBenefits: [],
+    continueScheme: '',
+    marriagesMoreAccepted: '',
+    advocateForIntercaste: '',
+    encourageChildrenIntercaste: '',
+    futureSupport: [],
+    futureSupportOther: '',
+    improvementSuggestions: '',
+  },
+   section6_Devadasi: {
+    devadasiAgeAtMarriage: '',
+    dignityImproved: '',
+    familyProblemsWithMarriage: '',
+    spouseCaste: '',
+    disclosedBackground: '',
+    spouseFamilyAcceptance: '',
+    problemsAfterMarriage: '',
+  },
+  section6_NonBeneficiary: {
+    awareOfScheme: '',
     applicationStatus: '',
     pendingDuration: '',
     rejectionReasonCommunicated: '',
     rejectionReason: '',
-    qualityOfInformation: '',
+    informationQuality: '',
   },
-  section5: {
-    schemeSuccessCasteDiscrimination: '',
-    schemeSuccessSecurity: '',
-    areasForImprovement: [],
-    shouldReviseIncentive: '',
-    experiencedBenefits: [],
-    shouldContinueScheme: '',
-    encourageIntercasteMarriage: '',
-    schemeHelpedReduceDiscriminationInArea: '',
-    futureSupportExpected: [],
-  },
-  section6_DevadasiChildren: {
-    childAgeAtMarriage: '',
-    schemeImprovedDignity: '',
-    treatmentDifference: '',
-    spouseCaste: '',
-    ownsPropertyNow: '',
-    inLawAcceptabilityScale: '',
-    facedStigma: '',
+  section6_Widow: {
+    remarriageAge: '',
+    childrenFromPreviousMarriage: '',
+    childrenCount: '',
+    childrenGender: '',
+    husbandChildrenFromPreviousMarriage: '',
+    husbandChildrenCount: '',
+    husbandChildrenGender: '',
+    husbandMaritalStatus: '',
+    husbandCaste: '',
+    husbandCasteOther: '',
+    ownedPropertyBeforeRemarriage: '',
+    previousPropertyDetails: '',
+    ownedPropertyAfterRemarriage: '',
+    newPropertyDetails: '',
+    familyAcceptanceScale: '',
+    facedStigmaAfterRemarriage: '',
+    stigmaDetails: '',
   },
 };
 
@@ -1145,13 +1352,13 @@ const SECTION_ICONS = [
 
 // Move SECTIONS inside component to access t() function
 const getSections = (t: any) => [
-  { title: t('Basic Information'), description: t('Demographics and background') },
-  { title: t('Socio-Economic Impact'), description: t('Changes after scheme') },
-  { title: t('Social Impact'), description: t('Social acceptance and challenges') },
-  { title: t('Scheme Experience'), description: t('Experience with the process') },
-  { title: t('Feedback'), description: t('Suggestions and improvements') },
-  { title: t('Devadasi Children'), description: t('Special section for Devadasi children') },
-];
+  { title: t('Respondent Information & Scheme Details'), description: t('Demographics and background') },
+  { title: t('Socio-Economic & Livelihood Impact'), description: t('Changes after scheme') },
+  { title: t('Social Inclusion & Security'), description: t('Social acceptance and challenges') },
+  { title: t('Awareness, Access & Quality of Service'), description: t('Experience with the process') },
+  { title: t('Overall Satisfaction, Challenges & Recommendations'), description: t('Suggestions and improvements') },
+  { title: t('A: Specific questions about the marriage of children of Ex Devadasis  B: Questions related to widow remarriage incentive'), description: t('Special section for Devadasi children') },
+ ];
 
 export default function QuestionnairePage() {
   const { isLoggedIn, user } = useAuth();
@@ -1193,79 +1400,262 @@ export default function QuestionnairePage() {
   };
 
   // Section validation functions
-  const validateSection1 = (data: FormData['section1']) => {
+// A simple validation function for the new Section 1 questions
+const validateSection1 = (data: FormData['section1']) => {
+    // Define a list of core, non-conditional fields that must always be filled.
     const requiredFields = [
-      'respondentName', 'district', 'age', 'gender', 'education',
-      'employmentBefore', 'occupationBefore', 'incomeBefore', 
-      'receivedBenefit', 'casteCategory', 'aadhaarProvided'
+        'receivedIncentives',
+        'spouseName',
+        'applicantGender',
+        'spouseGender',
+        'applicantCasteCategory',
+        'spouseCaste',
+        'age',
+        'mobileNumber',
+        'marriageDate',
+        'registrationDate',
+        'applicationDate',
+        'grantDate',
+        'benefitAmount',
+        'jointBankAccount',
+        'creditMonthYear',
+        'applicantEducation',
+        'spouseEducation',
+        'applicantEmploymentBefore',
+        'spouseEmploymentBefore',
+        'residentialAddress',
+        'bothKarnatakaResidents',
+        'homeDescription',
+        'maritalStatus',
+        'familyAnnualIncome',
+        'otherSchemeBenefits',
+        'utilization', // Changed from requiredArrayFields to be simple
     ];
-    
-    const requiredArrayFields = ['schemes'];
-    
-    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data])) &&
-           requiredArrayFields.every(field => isFieldValid(data[field as keyof typeof data]));
-  };
 
-  const validateSection2 = (data: FormData['section2']) => {
+
+    // Check if every field in the list is valid.
+    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
+};
+
+  // Section validation function for the new Section 2 questions
+const validateSection2 = (data: FormData['section2']): boolean => {
+    // A. Define all required fields for this section based on the new questions.
     const requiredFields = [
-      'occupationAfter', 'incomeAfter', 'socioEconomicStatusBefore',
-      'financialSecurityScale', 'spouseEmploymentAfter', 'socioEconomicStatusAfter',
-      'socialLifeImpact', 'fundDecisionMaker', 'financialDependencyReduced',
-      'startedNewLivelihood'
+        'applicantOccupationAfter',
+        'spouseOccupationAfter',
+        'householdAnnualIncomeAfter',
+        'standardOfLivingImproved',
+        'accessToBasicNeeds',
+        'socialLifeImpact',
     ];
     
+    // Check if every field in the list is valid using the global isFieldValid helper.
+    // The type assertion 'as keyof typeof data' is necessary and correct here.
+    const allRequiredPresent = requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
+    if (!allRequiredPresent) {
+        return false;
+    }
+
+    // B. Perform conditional validation for fields that depend on other answers.
+
+    // Q1: 'applicantOccupationAfterOther' is required if 'applicantOccupationAfter' is 'other'.
+    if (data.applicantOccupationAfter === 'other' && !isFieldValid(data.applicantOccupationAfterOther)) {
+        return false;
+    }
+
+    // Q2: 'spouseOccupationAfterOther' is required if 'spouseOccupationAfter' is 'other'.
+    if (data.spouseOccupationAfter === 'other' && !isFieldValid(data.spouseOccupationAfterOther)) {
+        return false;
+    }
+    
+    // If all checks pass, the section is valid.
+    return true;
+};
+
+  const validateSection3 = (data: FormData['section3']): boolean => {
+    // A. Define all primary required fields for this section.
+    const requiredFields = [
+        'familyOpposedMarriage',
+        'extendedFamilyReaction',
+        'neighboursReaction',
+        'interCasteMarriagesInCommunity',
+        'challengesAfterMarriage',
+        'domesticViolence',
+        'relocatedAfterMarriage',
+        'policeComplaint',
+        'harassmentCausedBy',
+        'gainedRecognition',
+        'cordialRelationshipInLaws',
+        'progressiveChangePublicOpinion',
+        'marriageInfluence',
+        'recommendScheme',
+        'safetyInCommunity',
+        'oppositionAfterBenefit',
+    ];
     return requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
   };
 
-  const validateSection3 = (data: FormData['section3']) => {
+ const validateSection4 = (data: FormData['section4']): boolean => {
+    // A. Define all primary required fields for this section.
     const requiredFields = [
-      'progressiveChangeScale', 'feltSociallyAccepted', 'discriminationReduction',
-      'feltMoreSecure', 'livingWithInLaws', 'filedPoliceComplaint',
-      'supportFromNgosOrOfficials'
+        'awarenessSource',
+        'officialsSupportiveness',
+        'applicationProcessDifficulty',
+        'applicationHelpSource',
+        'timeToReceiveBenefit',
+        'overallProcessRating',
+        'participatedInAwarenessPrograms',
+        'invitedToSpeak',
     ];
     
+   const allRequiredPresent = requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
+    if (!allRequiredPresent) return false;
+    
+    // B. Conditional Validation
+    
+    // Q1: Awareness source 'other'
+    if (data.awarenessSource === 'other' && !isFieldValid(data.awarenessSourceOther)) {
+        return false;
+    }
+
+    // Q4: Application help 'other'
+    if (data.applicationHelpSource === 'other' && !isFieldValid(data.applicationHelpSourceOther)) {
+        return false;
+    }
+
+    // Q8: Speaking platforms (checkbox) is required if invitedToSpeak is 'yes'
+    if (data.invitedToSpeak === 'yes') {
+      if ((data.speakingPlatforms || []).length === 0) {
+        return false;
+      }
+      // Check for 'other' platform details
+      if ((data.speakingPlatforms || []).includes('other') && !isFieldValid(data.speakingPlatformsOther)) {
+        return false;
+      }
+    }
+    
+    return true;
+
+  };
+
+const validateSection5 = (data: FormData['section5']): boolean => {
+  const requiredFields = [
+    'successInReducingDiscrimination',
+    'successInProvidingSecurity',
+    'increaseIncentive',
+    'continueScheme',
+    'marriagesMoreAccepted',
+    'advocateForIntercaste',
+    'encourageChildrenIntercaste',
+  ];
+    
+      const allRequiredPresent = requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
+  if (!allRequiredPresent) return false;
+
+  // Q3: `improvementAreas` is a required checkbox field.
+  if (data.improvementAreas.length === 0) return false;
+  // Q3: Conditional `other` field.
+  if (data.improvementAreas.includes('other') && !isFieldValid(data.improvementAreasOther)) {
+    return false;
+  }
+
+  // Q4: Conditional `increasedIncentiveAmount` field.
+  if (data.increaseIncentive === 'yes' && !isFieldValid(data.increasedIncentiveAmount)) {
+    return false;
+  }
+  
+  // Q5: `schemeBenefits` is a required checkbox field.
+  if (data.schemeBenefits.length === 0) return false;
+
+  // Q10: `futureSupport` is a required checkbox field.
+  if (data.futureSupport.length === 0) return false;
+  // Q10: Conditional `other` field.
+  if (data.futureSupport.includes('other') && !isFieldValid(data.futureSupportOther)) {
+    return false;
+  }
+  
+  // Q11: Improvement suggestions is optional, but if filled, should be valid.
+  if (isFieldValid(data.improvementSuggestions)) {
+    return true;
+  }
+  
+  return true;
+
+  };
+
+ // New validation function for Devadasi Children subsection
+const validateSection6Devadasi = (data: FormData['section6_Devadasi']): boolean => {
+    const requiredFields = [
+      'devadasiAgeAtMarriage', 'dignityImproved', 'familyProblemsWithMarriage',
+      'spouseCaste', 'disclosedBackground', 'spouseFamilyAcceptance', 'problemsAfterMarriage'
+    ];
     return requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
-  };
+};
 
-  const validateSection4 = (data: FormData['section4']) => {
+// New validation function for Widow Remarriage subsection
+const validateSection6Widow = (data: FormData['section6_Widow']): boolean => {
     const requiredFields = [
-      'schemeAwarenessSource', 'officialsSupportive', 'applicationDifficulty',
-      'timeToReceiveBenefit', 'disbursementEffectiveness', 'awareOfSchemeDetails',
-      'applicationStatus', 'qualityOfInformation'
+      'remarriageAge', 'childrenFromPreviousMarriage', 'husbandChildrenFromPreviousMarriage',
+      'husbandMaritalStatus', 'husbandCaste', 'ownedPropertyBeforeRemarriage',
+      'ownedPropertyAfterRemarriage', 'familyAcceptanceScale', 'facedStigmaAfterRemarriage'
     ];
-    
-    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
-  };
+    const allRequiredPresent = requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
+    if (!allRequiredPresent) return false;
 
-  const validateSection5 = (data: FormData['section5']) => {
+    if (data.childrenFromPreviousMarriage === 'yes' && !isFieldValid(data.childrenCount)) return false;
+    if (data.childrenFromPreviousMarriage === 'yes' && !isFieldValid(data.childrenGender)) return false;
+
+    if (data.husbandChildrenFromPreviousMarriage === 'yes' && !isFieldValid(data.husbandChildrenCount)) return false;
+    if (data.husbandChildrenFromPreviousMarriage === 'yes' && !isFieldValid(data.husbandChildrenGender)) return false;
+
+    if (data.husbandCaste === 'Different' && !isFieldValid(data.husbandCasteOther)) return false;
+    
+    if (data.ownedPropertyBeforeRemarriage === 'yes' && !isFieldValid(data.previousPropertyDetails)) return false;
+    if (data.ownedPropertyAfterRemarriage === 'yes' && !isFieldValid(data.newPropertyDetails)) return false;
+
+    if (data.facedStigmaAfterRemarriage === 'yes' && !isFieldValid(data.stigmaDetails)) return false;
+
+    return true;
+};
+
+// New validation function for Non-Beneficiary subsection
+const validateSection6NonBeneficiary = (data: FormData['section6_NonBeneficiary']): boolean => {
     const requiredFields = [
-      'schemeSuccessCasteDiscrimination', 'schemeSuccessSecurity',
-      'shouldReviseIncentive', 'shouldContinueScheme', 'encourageIntercasteMarriage',
-      'schemeHelpedReduceDiscriminationInArea'
+        'awareOfScheme',
     ];
+    const allRequiredPresent = requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
+    if (!allRequiredPresent) return false;
     
-    const requiredArrayFields = ['areasForImprovement', 'experiencedBenefits', 'futureSupportExpected'];
+    if (data.awareOfScheme === 'yes' && !isFieldValid(data.applicationStatus)) return false;
+    if (data.awareOfScheme === 'yes' && !isFieldValid(data.informationQuality)) return false;
     
-    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data])) &&
-           requiredArrayFields.every(field => isFieldValid(data[field as keyof typeof data]));
-  };
+    if (data.applicationStatus === 'pending' && !isFieldValid(data.pendingDuration)) return false;
 
-  const validateSection6 = (data: FormData['section6_DevadasiChildren']) => {
-    // Section 6 is optional - check if user has started filling it
-    const hasAnyData = Object.values(data).some(value => isFieldValid(value));
-    
-    // If no data entered, section is valid (optional)
-    if (!hasAnyData) return true;
-    
-    // If some data entered, validate required fields
-    const requiredFields = [
-      'childAgeAtMarriage', 'schemeImprovedDignity', 'treatmentDifference',
-      'spouseCaste', 'ownsPropertyNow', 'inLawAcceptabilityScale', 'facedStigma'
-    ];
-    
-    return requiredFields.every(field => isFieldValid(data[field as keyof typeof data]));
-  };
+    if (data.applicationStatus === 'rejected') {
+        if (!isFieldValid(data.rejectionReasonCommunicated)) return false;
+        if (data.rejectionReasonCommunicated === 'yes' && !isFieldValid(data.rejectionReason)) return false;
+    }
+    return true;
+};
 
+// The main validation function for Section 6, acts as a dispatcher
+const validateSection6 = (formData: FormData): boolean => {
+    const hasDevadasiScheme = formData.section1.schemes.includes('devadasi_children_marriage');
+    const hasWidowScheme = formData.section1.schemes.includes('widow_remarriage');
+    const receivedBenefit = formData.section1.receivedIncentives === 'yes';
+    
+    if (receivedBenefit) {
+        if (hasDevadasiScheme) {
+            return validateSection6Devadasi(formData.section6_Devadasi);
+        } else if (hasWidowScheme) {
+            return validateSection6Widow(formData.section6_Widow);
+        }
+    } else {
+        return validateSection6NonBeneficiary(formData.section6_NonBeneficiary);
+    }
+    
+    return true; // Valid if they are a beneficiary of other schemes
+};
   // Check if a section is completed
   const isSectionCompleted = (sectionNumber: number) => {
     switch (sectionNumber) {
@@ -1274,7 +1664,7 @@ export default function QuestionnairePage() {
       case 3: return validateSection3(formData.section3);
       case 4: return validateSection4(formData.section4);
       case 5: return validateSection5(formData.section5);
-      case 6: return validateSection6(formData.section6_DevadasiChildren);
+      case 6: return validateSection6(formData);
       default: return false;
     }
   };
@@ -1283,92 +1673,159 @@ export default function QuestionnairePage() {
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
-    section1: {
-      respondentName: '',
-      district: '',
-      age: '',
-      gender: '',
-      education: '',
-      employmentBefore: '',
-      occupationBefore: '',
-      incomeBefore: '',
-      receivedBenefit: '',
-      schemes: [],
-      otherBenefits: '',
-      dateOfBenefit: '',
-      utilization: [],
-      casteCategory: '',
-      subCaste: '',
-      tribeIdentity: '',
-      marriageOpposed: '',
-      relocated: '',
-      aadhaarProvided: '',
-    },
-    section2: {
-      occupationAfter: '',
-      incomeAfter: '',
-      socioEconomicStatusBefore: '',
-      financialSecurityScale: '',
-      spouseEmploymentAfter: '',
-      socioEconomicStatusAfter: '',
-      socialLifeImpact: '',
-      fundDecisionMaker: '',
-      financialDependencyReduced: '',
-      startedNewLivelihood: '',
-    },
-    section3: {
-      progressiveChangeScale: '',
-      feltSociallyAccepted: '',
-      discriminationReduction: '',
-      feltMoreSecure: '',
-      livingWithInLaws: '',
-      inLawDiscrimination: '',
-      inLawDiscriminationDetails: '',
-      filedPoliceComplaint: '',
-      supportFromNgosOrOfficials: '',
-      // Widow remarriage specific fields
-      widowDuration: '',
-      widowChallenges: [],
-      widowSchemeBenefits: [],
-      recommendWidowScheme: '',
-      // SC/ST specific fields
-      casteDiscriminationExperience: '',
-      beneficialPrograms: [],
-      communityImpact: '',
-    },
+   section1: {
+    receivedIncentives: '', // Q1
+    schemes: [], // Q2
+    applicantName: '', // Q3
+    spouseName: '', // Q4
+    applicantGender: '', // Q5
+    spouseGender: '', // Q6
+    applicantCasteCategory: '', // Q7
+    scCaste: '', // Q8
+    scNomadic: '', // Q8
+    stCaste: '', // Q9
+    stGroup: '', // Q9
+    stNomadicTribe: '', // Q9
+    spouseCaste: '', // Q10
+    spouseSubCaste: '', // Q11
+    age: '', // Q12
+    mobileNumber: '', // Q13
+    marriageDate: '', // Q14
+    registrationDate: '', // Q15
+    organizingOrganization: '', // Q16
+    applicationDate: '', // Q17
+    grantDate: '', // Q18
+    benefitAmount: '', // Q19
+    fdCertificateReceived: '', // Q20
+    jointBankAccount: '', // Q21
+    creditMonthYear: '', // Q22
+    applicantEducation: '', // Q23
+    spouseEducation: '', // Q24
+    applicantEmploymentBefore: '', // Q25
+    applicantOccupationBefore: '', // Q25
+    spouseEmploymentBefore: '', // Q26
+    spouseOccupationBefore: '', // Q26
+    residentialAddress: '', // Q27
+    bothKarnatakaResidents: '', // Q28
+    homeDescription: '', // Q29
+    maritalStatus: '', // Q30
+    familyAnnualIncome: '', // Q31
+    otherSchemeBenefits: '', // Q32
+    otherSchemeNames: '', // Q33
+    utilization: [], // Q34
+  },
+
+   section2: {
+    applicantOccupationAfter: '',
+    applicantOccupationAfterOther: '',
+    spouseOccupationAfter: '',
+    spouseOccupationAfterOther: '',
+    householdAnnualIncomeAfter: '',
+    standardOfLivingImproved: '',
+    accessToBasicNeeds: '',
+    socialLifeImpact: '',
+  },
+   section3: {
+    familyOpposedMarriage: '',
+    whoOpposed: '',
+    whoOpposedOther: '',
+    extendedFamilyReaction: '',
+    neighboursReaction: '',
+    interCasteMarriagesInCommunity: '',
+    challengesAfterMarriage: '',
+    challengesList: [],
+    challengesOther: '',
+    domesticViolence: '',
+    relocatedAfterMarriage: '',
+    relocationReason: '',
+    relocationReasonOther: '',
+    policeComplaint: '',
+    policeComplaintDetails: '',
+    harassmentCausedBy: '',
+    harassmentCausedByOther: '',
+    discriminationWays: [],
+    discriminationWaysOther: '',
+    gainedRecognition: '',
+    recognitionWays: [],
+    recognitionWaysOther: '',
+    cordialRelationshipInLaws: '',
+    cordialRelationshipWays: [],
+    cordialRelationshipWaysOther: '',
+    progressiveChangePublicOpinion: '',
+    supportSource: [],
+    supportSourceOther: '',
+    marriageInfluence: '',
+    recommendScheme: '',
+    safetyInCommunity: '',
+    oppositionAfterBenefit: '',
+    oppositionDetails: '',
+  },
     section4: {
-      schemeAwarenessSource: '',
-      officialsSupportive: '',
-      applicationDifficulty: '',
+      awarenessSource: '',
+      awarenessSourceOther: '',
+      officialsSupportiveness: '',
+      applicationProcessDifficulty: '',
+      applicationHelpSource: '',
+      applicationHelpSourceOther: '',
       timeToReceiveBenefit: '',
-      disbursementEffectiveness: '',
-      awareOfSchemeDetails: '',
-      applicationStatus: '',
-      pendingDuration: '',
-      rejectionReasonCommunicated: '',
-      rejectionReason: '',
-      qualityOfInformation: '',
+      overallProcessRating: '',
+      participatedInAwarenessPrograms: '',
+      invitedToSpeak: '',
+      speakingPlatforms: [],
+      speakingPlatformsOther: '',
     },
-    section5: {
-      schemeSuccessCasteDiscrimination: '',
-      schemeSuccessSecurity: '',
-      areasForImprovement: [],
-      shouldReviseIncentive: '',
-      experiencedBenefits: [],
-      shouldContinueScheme: '',
-      encourageIntercasteMarriage: '',
-      schemeHelpedReduceDiscriminationInArea: '',
-      futureSupportExpected: [],
-    },
-    section6_DevadasiChildren: {
-      childAgeAtMarriage: '',
-      schemeImprovedDignity: '',
-      treatmentDifference: '',
-      spouseCaste: '',
-      ownsPropertyNow: '',
-      inLawAcceptabilityScale: '',
-      facedStigma: '',
-    },
+      section5: {
+    successInReducingDiscrimination: '',
+    successInProvidingSecurity: '',
+    improvementAreas: [],
+    improvementAreasOther: '',
+    increaseIncentive: '',
+    increasedIncentiveAmount: '',
+    schemeBenefits: [],
+    continueScheme: '',
+    marriagesMoreAccepted: '',
+    advocateForIntercaste: '',
+    encourageChildrenIntercaste: '',
+    futureSupport: [],
+    futureSupportOther: '',
+    improvementSuggestions: '',
+  },
+     section6_Devadasi: {
+    devadasiAgeAtMarriage: '',
+    dignityImproved: '',
+    familyProblemsWithMarriage: '',
+    spouseCaste: '',
+    disclosedBackground: '',
+    spouseFamilyAcceptance: '',
+    problemsAfterMarriage: '',
+  },
+  section6_NonBeneficiary: {
+    awareOfScheme: '',
+    applicationStatus: '',
+    pendingDuration: '',
+    rejectionReasonCommunicated: '',
+    rejectionReason: '',
+    informationQuality: '',
+  },
+  section6_Widow: {
+    remarriageAge: '',
+    childrenFromPreviousMarriage: '',
+    childrenCount: '',
+    childrenGender: '',
+    husbandChildrenFromPreviousMarriage: '',
+    husbandChildrenCount: '',
+    husbandChildrenGender: '',
+    husbandMaritalStatus: '',
+    husbandCaste: '',
+    husbandCasteOther: '',
+    ownedPropertyBeforeRemarriage: '',
+    previousPropertyDetails: '',
+    ownedPropertyAfterRemarriage: '',
+    newPropertyDetails: '',
+    familyAcceptanceScale: '',
+    facedStigmaAfterRemarriage: '',
+    stigmaDetails: '',
+  },
   });
 
   useEffect(() => {
@@ -1541,10 +1998,18 @@ export default function QuestionnairePage() {
         experiencedBenefits: loadedData.section5?.experiencedBenefits || [],
         futureSupportExpected: loadedData.section5?.futureSupportExpected || [],
       },
-      section6_DevadasiChildren: {
-        ...defaultData.section6_DevadasiChildren,
-        ...(loadedData.section6_DevadasiChildren || {}),
-      },
+       section6_Devadasi: { // Corrected field name
+            ...defaultData.section6_Devadasi,
+            ...(loadedData.section6_Devadasi || {}),
+        },
+        section6_NonBeneficiary: { // New field
+            ...defaultData.section6_NonBeneficiary,
+            ...(loadedData.section6_NonBeneficiary || {}),
+        },
+        section6_Widow: { // New field
+            ...defaultData.section6_Widow,
+            ...(loadedData.section6_Widow || {}),
+        },
     };
   };
 
@@ -1575,7 +2040,12 @@ export default function QuestionnairePage() {
     }
   };
 
-  const handleInputChange = (section: keyof FormData, field: string, value: string | string[]) => {
+  // Overload for Section 4 to allow correct types
+  const handleInputChange = (
+    section: keyof FormData,
+    field: string,
+    value: string | string[]
+  ) => {
     setFormData(prev => ({
       ...prev,
       [section]: {
@@ -1585,7 +2055,13 @@ export default function QuestionnairePage() {
     }));
   };
 
-  const handleCheckboxChange = (section: keyof FormData, field: string, value: string, checked: boolean) => {
+  // Overload for Section 4 to allow correct types
+  const handleCheckboxChange = (
+    section: keyof FormData,
+    field: string,
+    value: string,
+    checked: boolean
+  ) => {
     setFormData(prev => {
       const sectionData = prev[section] as Record<string, unknown>;
       const currentArray = (sectionData[field] as string[]) || [];
@@ -1806,7 +2282,7 @@ export default function QuestionnairePage() {
                 {step === 3 && t('Scheme Details')}
                 {step === 4 && t('Benefits')}
                 {step === 5 && t('Impact')}
-                {step === 6 && t('Feedback')}
+                {step === 6 && t('Specific Questions')}
               </StepLabel>
             </ProgressStep>
           ))}
@@ -1835,1675 +2311,1966 @@ export default function QuestionnairePage() {
       </Header>
 
       <ModernFormContainer>
-        {/* Section 1: Basic Information */}
+
+      {/* Section 2: Socio-Economic Impact */}
         {currentSection === 1 && (
-          <>
-            <ModernSectionHeader>
-              <ModernSectionTitle>{t('Section 1: Basic Information & Demographics')}</ModernSectionTitle>
-              <ModernSectionDesc>{t('Demographics and background')}</ModernSectionDesc>
-            </ModernSectionHeader>
-            <SectionContent>
-              <div style={{
-                background: '#f0f7ff',
-                border: '1px solid #bfdbfe',
-                borderRadius: '8px',
-                padding: '20px',
-                marginBottom: '30px',
-                fontSize: '0.95rem',
-                lineHeight: '1.6'
-              }}>
-                <h3 style={{ margin: '0 0 15px 0', color: '#1e40af', fontSize: '1.1rem' }}>
-                  {t('About This Survey')}
-                </h3>
-                <p style={{ margin: '0 0 10px 0', color: '#000000' }}>
-                  {t('This survey evaluates the effectiveness of government welfare schemes in Karnataka:')}
-                </p>
-                <ul style={{ margin: '0', paddingLeft: '20px', color: '#000000' }}>
-                  <li><strong>{t('SCSP (Scheduled Caste Sub Plan)')}</strong> - {t('Programs for Scheduled Caste communities')}</li>
-                  <li><strong>{t('TSP (Tribal Sub Plan)')}</strong> - {t('Programs for Scheduled Tribe communities')}</li>
-                </ul>
-                <p style={{ margin: '15px 0 0 0', fontSize: '0.9rem', color: '#000000' }}>
-                  {t('Your responses will help improve these welfare programs and their impact on community development.')}
-                </p>
-              </div>
+  <>
+    <ModernSectionHeader>
+      <ModernSectionTitle>{t('Section 1: Respondent Information & Scheme Details')}</ModernSectionTitle>
+      <ModernSectionDesc>{t('Please provide your details and information about the scheme you received.')}</ModernSectionDesc>
+    </ModernSectionHeader>
+    <SectionContent>
+      <QuestionGroup>
 
-              <QuestionGroup>
-                <QuestionCard>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {t('Personal Information')}
-                  </h4>
-                  <FormGroup>
-                    <Label>{t('Full Name')}</Label>
-                    <Input
-                      type="text"
-                      value={formData.section1.respondentName}
-                      onChange={(e) => handleInputChange('section1', 'respondentName', e.target.value)}
-                      placeholder={t('Enter your full name')}
-                    />
-                  </FormGroup>
+        {/* Q1: Have you received any incentives? */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Have you received any incentives from the Social Welfare/Scheduled Classes Welfare Departments for marriages held in 2020-21 / 2023-24 / 2024-25?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio
+                  name="receivedIncentives"
+                  value="yes"
+                  checked={formData.section1.receivedIncentives === 'yes'}
+                  onChange={(e) => handleInputChange('section1', 'receivedIncentives', e.target.value)}
+                />
+                <TranslatedText>Yes</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio
+                  name="receivedIncentives"
+                  value="no"
+                  checked={formData.section1.receivedIncentives === 'no'}
+                  onChange={(e) => handleInputChange('section1', 'receivedIncentives', e.target.value)}
+                />
+                <TranslatedText>No</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
 
-                  <FormGroup>
-                    <Label>{t('Age')}</Label>
-                    <Input
-                      type="number"
-                      value={formData.section1.age}
-                      onChange={(e) => handleInputChange('section1', 'age', e.target.value)}
-                      placeholder={t('Enter your age')}
-                    />
-                  </FormGroup>
-                </QuestionCard>
-
-                <QuestionCard>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {t('Location & Demographics')}
-                  </h4>
-                  <FormGroup>
-                    <Label>{t('District/Taluk')}</Label>
-                    <Input
-                      type="text"
-                      value={formData.section1.district}
-                      onChange={(e) => handleInputChange('section1', 'district', e.target.value)}
-                      placeholder={t('Enter your district and taluk')}
-                    />
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label>{t('Gender')}</Label>
-                    <RadioGroup>
-                      <RadioItem>
-                        <Radio
-                          name="gender"
-                          value="male"
-                          checked={formData.section1.gender === 'male'}
-                          onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
-                        />
-                        {t('Male')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="gender"
-                          value="female"
-                          checked={formData.section1.gender === 'female'}
-                          onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
-                        />
-                        {t('Female')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="gender"
-                          value="other"
-                          checked={formData.section1.gender === 'other'}
-                          onChange={(e) => handleInputChange('section1', 'gender', e.target.value)}
-                        />
-                        {t('Other')}
-                      </RadioItem>
-                    </RadioGroup>
-                  </FormGroup>
-                </QuestionCard>
-
-                <QuestionCard>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {t('Background Information')}
-                  </h4>
-                  <FormGroup>
-                    <Label>{t('Caste')}</Label>
-                    <Select
-                      value={formData.section1.subCaste}
-                      onChange={(e) => handleInputChange('section1', 'subCaste', e.target.value)}
-                    >
-                      <option value="">{t('Select caste')}</option>
-                      <option value="sc">{t('Scheduled Caste (SC)')}</option>
-                      <option value="st">{t('Scheduled Tribe (ST)')}</option>
-                      <option value="obc">{t('Other Backward Classes (OBC)')}</option>
-                      <option value="general">{t('General')}</option>
-                      <option value="others">{t('Others')}</option>
-                    </Select>
-                  </FormGroup>
-
-                <FormGroup>
-                  <TranslatedLabel text="Education Level" required />
-                  <Select
-                    value={formData.section1.education}
-                    onChange={(e) => handleInputChange('section1', 'education', e.target.value)}
-                  >
-                    <TranslatedOption value="">Select education level</TranslatedOption>
-                    <TranslatedOption value="below_8th">Below 8th Standard</TranslatedOption>
-                    <TranslatedOption value="up_to_12th">Up to 12th Standard</TranslatedOption>
-                    <TranslatedOption value="graduation">Graduation</TranslatedOption>
-                    <TranslatedOption value="post_graduation">Post Graduation</TranslatedOption>
-                    <TranslatedOption value="others">Others</TranslatedOption>
-                  </Select>
-                </FormGroup>
-                </QuestionCard>
-
-                <QuestionCard>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {t('Employment & Income')}
-                  </h4>
-                <FormGroup>
-                  <TranslatedLabel text="Were you employed before receiving the scheme benefits?" />
-                  <RadioGroup>
-                    <RadioItem>
-                      <Radio
-                        name="employmentBefore"
-                        value="yes"
-                        checked={formData.section1.employmentBefore === 'yes'}
-                        onChange={(e) => handleInputChange('section1', 'employmentBefore', e.target.value)}
-                      />
-                      <TranslatedText>Yes</TranslatedText>
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="employmentBefore"
-                        value="no"
-                        checked={formData.section1.employmentBefore === 'no'}
-                        onChange={(e) => handleInputChange('section1', 'employmentBefore', e.target.value)}
-                      />
-                      <TranslatedText>No</TranslatedText>
-                    </RadioItem>
-                  </RadioGroup>
-                </FormGroup>
-
-                {formData.section1.employmentBefore === 'yes' && (
-                  <FormGroup>
-                    <TranslatedLabel text="What was your occupation before?" />
-                    <Input
-                      type="text"
-                      value={formData.section1.occupationBefore}
-                      onChange={(e) => handleInputChange('section1', 'occupationBefore', e.target.value)}
-                      placeholder={dtSync('Enter your previous occupation')}
-                    />
-                  </FormGroup>
-                )}
-
-                <FormGroup>
-                  <TranslatedLabel text="Income Level Before Scheme" />
-                  <Select
-                    value={formData.section1.incomeBefore}
-                    onChange={(e) => handleInputChange('section1', 'incomeBefore', e.target.value)}
-                  >
-                    <TranslatedOption value="">Select income level</TranslatedOption>
-                    <TranslatedOption value="below_50k">Below ₹50,000</TranslatedOption>
-                    <TranslatedOption value="50k_1l">₹50,000 - ₹1,00,000</TranslatedOption>
-                    <TranslatedOption value="1l_2l">₹1,00,000 - ₹2,00,000</TranslatedOption>
-                    <TranslatedOption value="2l_3l">₹2,00,000 - ₹3,00,000</TranslatedOption>
-                    <TranslatedOption value="3l_5l">₹3,00,000 - ₹5,00,000</TranslatedOption>
-                    <TranslatedOption value="above_5l">Above ₹5,00,000</TranslatedOption>
-                  </Select>
-                </FormGroup>
-
-                <FormGroup>
-                  <TranslatedLabel text="Have you received benefits from any scheme?" />
-                  <RadioGroup>
-                    <RadioItem>
-                      <Radio
-                        name="receivedBenefit"
-                        value="yes"
-                        checked={formData.section1.receivedBenefit === 'yes'}
-                        onChange={(e) => handleInputChange('section1', 'receivedBenefit', e.target.value)}
-                      />
-                      <TranslatedText>Yes</TranslatedText>
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="receivedBenefit"
-                        value="no"
-                        checked={formData.section1.receivedBenefit === 'no'}
-                        onChange={(e) => handleInputChange('section1', 'receivedBenefit', e.target.value)}
-                      />
-                      <TranslatedText>No</TranslatedText>
-                    </RadioItem>
-                  </RadioGroup>
-                </FormGroup>
-
-                {formData.section1.receivedBenefit === 'yes' && (
-                  <>
-                <FormGroup>
-                  <TranslatedLabel text="Which schemes have you benefited from? (Select all that apply)" />
-                  <CheckboxGroup>
-                    {['inter_caste_marriage', 'widow_remarriage', 'devadasi_children_marriage', 'sc_development', 'st_development', 'others_scheme'].map((scheme) => (
-                      <CheckboxItem key={scheme}>
-                        <Checkbox
-                          checked={formData.section1.schemes.includes(scheme)}
-                          onChange={(e) => handleCheckboxChange('section1', 'schemes', scheme, e.target.checked)}
-                        />
-                        {scheme === 'inter_caste_marriage' && <TranslatedText>Inter-caste Marriage Incentive Scheme</TranslatedText>}
-                        {scheme === 'widow_remarriage' && <TranslatedText>Widow Remarriage Scheme (₹1 lakh incentive)</TranslatedText>}
-                        {scheme === 'devadasi_children_marriage' && <TranslatedText>Marriage Scheme for Devadasi Children</TranslatedText>}
-                        {scheme === 'sc_development' && <TranslatedText>Scheduled Caste Development Programs</TranslatedText>}
-                        {scheme === 'st_development' && <TranslatedText>Scheduled Tribe Development Programs</TranslatedText>}
-                        {scheme === 'others_scheme' && <TranslatedText>Other Government Welfare Schemes</TranslatedText>}
-                      </CheckboxItem>
-                    ))}
-                  </CheckboxGroup>
-                </FormGroup>                    <FormGroup>
-                      <TranslatedLabel text="Date of Benefit Received" />
-                      <Input
-                        type="date"
-                        value={formData.section1.dateOfBenefit}
-                        onChange={(e) => handleInputChange('section1', 'dateOfBenefit', e.target.value)}
-                      />
-                    </FormGroup>
-
-                    <FormGroup>
-                      <TranslatedLabel text="How did you utilize the scheme benefits? (Select all that apply)" />
-                      <CheckboxGroup>
-                        {['housing', 'business', 'savings', 'daily_needs', 'education'].map((utilization) => (
-                          <CheckboxItem key={utilization}>
-                            <Checkbox
-                              checked={formData.section1.utilization.includes(utilization)}
-                              onChange={(e) => handleCheckboxChange('section1', 'utilization', utilization, e.target.checked)}
-                            />
-                            <TranslatedText>{utilization.charAt(0).toUpperCase() + utilization.slice(1).replace('_', ' ')}</TranslatedText>
-                          </CheckboxItem>
-                        ))}
-                      </CheckboxGroup>
-                    </FormGroup>
-                  </>
-                )}
-
-                <FormGroup>
-                  <TranslatedLabel text="Caste Category" />
-                  <Select
-                    value={formData.section1.casteCategory}
-                    onChange={(e) => handleInputChange('section1', 'casteCategory', e.target.value)}
-                  >
-                    <TranslatedOption value="">Select caste category</TranslatedOption>
-                    <TranslatedOption value="sc">Scheduled Caste (SC)</TranslatedOption>
-                    <TranslatedOption value="st">Scheduled Tribe (ST)</TranslatedOption>
-                    <TranslatedOption value="obc">Other Backward Class (OBC)</TranslatedOption>
-                    <TranslatedOption value="general">General</TranslatedOption>
-                  </Select>
-                </FormGroup>
-
-                <FormGroup>
-                  <TranslatedLabel text="Was your marriage opposed by family/community?" />
-                  <RadioGroup>
-                    <RadioItem>
-                      <Radio
-                        name="marriageOpposed"
-                        value="yes"
-                        checked={formData.section1.marriageOpposed === 'yes'}
-                        onChange={(e) => handleInputChange('section1', 'marriageOpposed', e.target.value)}
-                      />
-                      <TranslatedText>Yes</TranslatedText>
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="marriageOpposed"
-                        value="no"
-                        checked={formData.section1.marriageOpposed === 'no'}
-                        onChange={(e) => handleInputChange('section1', 'marriageOpposed', e.target.value)}
-                      />
-                      <TranslatedText>No</TranslatedText>
-                    </RadioItem>
-                  </RadioGroup>
-                </FormGroup>
-
-                <FormGroup>
-                  <TranslatedLabel text="Did you have to relocate after marriage?" />
-                  <RadioGroup>
-                    <RadioItem>
-                      <Radio
-                        name="relocated"
-                        value="yes"
-                        checked={formData.section1.relocated === 'yes'}
-                        onChange={(e) => handleInputChange('section1', 'relocated', e.target.value)}
-                      />
-                      <TranslatedText>Yes</TranslatedText>
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="relocated"
-                        value="no"
-                        checked={formData.section1.relocated === 'no'}
-                        onChange={(e) => handleInputChange('section1', 'relocated', e.target.value)}
-                      />
-                      <TranslatedText>No</TranslatedText>
-                    </RadioItem>
-                  </RadioGroup>
-                </FormGroup>
-
-                <FormGroup>
-                  <TranslatedLabel text="Did you provide Aadhaar details for the scheme?" />
-                  <RadioGroup>
-                    <RadioItem>
-                      <Radio
-                        name="aadhaarProvided"
-                        value="yes"
-                        checked={formData.section1.aadhaarProvided === 'yes'}
-                        onChange={(e) => handleInputChange('section1', 'aadhaarProvided', e.target.value)}
-                      />
-                      <TranslatedText>Yes</TranslatedText>
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="aadhaarProvided"
-                        value="no"
-                        checked={formData.section1.aadhaarProvided === 'no'}
-                        onChange={(e) => handleInputChange('section1', 'aadhaarProvided', e.target.value)}
-                      />
-                      <TranslatedText>No</TranslatedText>
-                    </RadioItem>
-                  </RadioGroup>
-                </FormGroup>
-                </QuestionCard>
-              </QuestionGroup>
-            </SectionContent>
-          </>
+        {/* Q2: Which schemes have you benefited from? (Conditional) */}
+        {formData.section1.receivedIncentives === 'yes' && (
+          <QuestionCard>
+            <FormGroup>
+              <TranslatedLabel text="If yes, please select the appropriate schemes? (check box with provision of multiple choice)" />
+              <CheckboxGroup>
+                <CheckboxItem>
+                  <Checkbox
+                    checked={formData.section1.schemes.includes('inter_caste_marriage')}
+                    onChange={(e) => handleCheckboxChange('section1', 'schemes', 'inter_caste_marriage', e.target.checked)}
+                  />
+                  <TranslatedText>Incentives to Inter-Caste Marriage</TranslatedText>
+                </CheckboxItem>
+                <CheckboxItem>
+                  <Checkbox
+                    checked={formData.section1.schemes.includes('inter_sub_caste_marriage')}
+                    onChange={(e) => handleCheckboxChange('section1', 'schemes', 'inter_sub_caste_marriage', e.target.checked)}
+                  />
+                  <TranslatedText>Incentives to Inter-Sub Caste Marriage</TranslatedText>
+                </CheckboxItem>
+                <CheckboxItem>
+                  <Checkbox
+                    checked={formData.section1.schemes.includes('widow_remarriage')}
+                    onChange={(e) => handleCheckboxChange('section1', 'schemes', 'widow_remarriage', e.target.checked)}
+                  />
+                  <TranslatedText>Incentives to Widow Re-marriage</TranslatedText>
+                </CheckboxItem>
+                <CheckboxItem>
+                  <Checkbox
+                    checked={formData.section1.schemes.includes('simple_mass_marriage')}
+                    onChange={(e) => handleCheckboxChange('section1', 'schemes', 'simple_mass_marriage', e.target.checked)}
+                  />
+                  <TranslatedText>Incentives to Simple Mass Marriage</TranslatedText>
+                </CheckboxItem>
+                <CheckboxItem>
+                  <Checkbox
+                    checked={formData.section1.schemes.includes('devadasi_children_marriage')}
+                    onChange={(e) => handleCheckboxChange('section1', 'schemes', 'devadasi_children_marriage', e.target.checked)}
+                  />
+                  <TranslatedText>Incentives to Marriage of Ex-Devadasi Children</TranslatedText>
+                </CheckboxItem>
+              </CheckboxGroup>
+            </FormGroup>
+          </QuestionCard>
         )}
+
+        {/* Q3-6: Names and Gender */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Name of the applicant (Optional):" />
+            <Input
+              type="text"
+              value={formData.section1.applicantName}
+              onChange={(e) => handleInputChange('section1', 'applicantName', e.target.value)}
+              placeholder={t('Enter applicant name')}
+            />
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Husband/Wife's Name:" />
+            <Input
+              type="text"
+              value={formData.section1.spouseName}
+              onChange={(e) => handleInputChange('section1', 'spouseName', e.target.value)}
+              placeholder={t("Enter spouse's name")}
+            />
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Gender of the applicant:" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="applicantGender" value="male" checked={formData.section1.applicantGender === 'male'} onChange={(e) => handleInputChange('section1', 'applicantGender', e.target.value)} />
+                <TranslatedText>Male</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="applicantGender" value="female" checked={formData.section1.applicantGender === 'female'} onChange={(e) => handleInputChange('section1', 'applicantGender', e.target.value)} />
+                <TranslatedText>Female</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Gender of the Husband/Wife's:" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="spouseGender" value="male" checked={formData.section1.spouseGender === 'male'} onChange={(e) => handleInputChange('section1', 'spouseGender', e.target.value)} />
+                <TranslatedText>Male</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="spouseGender" value="female" checked={formData.section1.spouseGender === 'female'} onChange={(e) => handleInputChange('section1', 'spouseGender', e.target.value)} />
+                <TranslatedText>Female</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q7-11: Caste Details */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Which category does the applicant belong to?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="applicantCasteCategory" value="sc" checked={formData.section1.applicantCasteCategory === 'sc'} onChange={(e) => handleInputChange('section1', 'applicantCasteCategory', e.target.value)} />
+                <TranslatedText>SC</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="applicantCasteCategory" value="st" checked={formData.section1.applicantCasteCategory === 'st'} onChange={(e) => handleInputChange('section1', 'applicantCasteCategory', e.target.value)} />
+                <TranslatedText>ST</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+
+          {formData.section1.applicantCasteCategory === 'sc' && (
+            <>
+              <FormGroup>
+                <TranslatedLabel text="If SC, enter the SC caste (from the list of 101 castes)" />
+                <Input type="text" value={formData.section1.scCaste} onChange={(e) => handleInputChange('section1', 'scCaste', e.target.value)} placeholder={t('Enter SC caste')} />
+              </FormGroup>
+              <FormGroup>
+                <TranslatedLabel text="Do you belong to nomadic/semi-nomadic communities?" />
+                <RadioGroup>
+                  <RadioItem>
+                    <Radio name="scNomadic" value="yes" checked={formData.section1.scNomadic === 'yes'} onChange={(e) => handleInputChange('section1', 'scNomadic', e.target.value)} />
+                    <TranslatedText>Yes</TranslatedText>
+                  </RadioItem>
+                  <RadioItem>
+                    <Radio name="scNomadic" value="no" checked={formData.section1.scNomadic === 'no'} onChange={(e) => handleInputChange('section1', 'scNomadic', e.target.value)} />
+                    <TranslatedText>No</TranslatedText>
+                  </RadioItem>
+                </RadioGroup>
+              </FormGroup>
+            </>
+          )}
+
+          {formData.section1.applicantCasteCategory === 'st' && (
+            <>
+              <FormGroup>
+                <TranslatedLabel text="If ST: Enter the caste (from the list of 50 castes)" />
+                <Input type="text" value={formData.section1.stCaste} onChange={(e) => handleInputChange('section1', 'stCaste', e.target.value)} placeholder={t('Enter ST caste')} />
+              </FormGroup>
+              <FormGroup>
+                <TranslatedLabel text="Do you belong to the following group among STs?" />
+                <RadioGroup>
+                  <RadioItem>
+                    <Radio name="stGroup" value="pvtg" checked={formData.section1.stGroup === 'pvtg'} onChange={(e) => handleInputChange('section1', 'stGroup', e.target.value)} />
+                    <TranslatedText>Specified Particularly Vulnerable Tribal Group (PVTG)</TranslatedText>
+                  </RadioItem>
+                  <RadioItem>
+                    <Radio name="stGroup" value="nomadic" checked={formData.section1.stGroup === 'nomadic'} onChange={(e) => handleInputChange('section1', 'stGroup', e.target.value)} />
+                    <TranslatedText>Nomadic/semi-nomadic tribe</TranslatedText>
+                  </RadioItem>
+                  <RadioItem>
+                    <Radio name="stGroup" value="none" checked={formData.section1.stGroup === 'none'} onChange={(e) => handleInputChange('section1', 'stGroup', e.target.value)} />
+                    <TranslatedText>None</TranslatedText>
+                  </RadioItem>
+                </RadioGroup>
+              </FormGroup>
+            </>
+          )}
+
+          <FormGroup>
+            <TranslatedLabel text="Which caste does the husband/wife belong to?" />
+            <Input type="text" value={formData.section1.spouseCaste} onChange={(e) => handleInputChange('section1', 'spouseCaste', e.target.value)} placeholder={t("Enter spouse's caste")} />
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Which sub-caste does the husband/wife belong to?" />
+            <Input type="text" value={formData.section1.spouseSubCaste} onChange={(e) => handleInputChange('section1', 'spouseSubCaste', e.target.value)} placeholder={t("Enter spouse's sub-caste")} />
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q12-15: Dates and Contact */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Age/ Date of Birth (at time of interview):" />
+            <Input type="text" value={formData.section1.age} onChange={(e) => handleInputChange('section1', 'age', e.target.value)} placeholder={t('Enter age or DOB')} />
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Mobile Number" />
+            <Input type="tel" value={formData.section1.mobileNumber} onChange={(e) => handleInputChange('section1', 'mobileNumber', e.target.value)} placeholder={t('Enter mobile number')} />
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Date of Marriage:" />
+            <Input type="date" value={formData.section1.marriageDate} onChange={(e) => handleInputChange('section1', 'marriageDate', e.target.value)} />
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Registration Date/Month and year:" />
+            <Input type="month" value={formData.section1.registrationDate} onChange={(e) => handleInputChange('section1', 'registrationDate', e.target.value)} />
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q16: Mass Marriage Organization (Conditional) */}
+        {formData.section1.schemes.includes('simple_mass_marriage') && (
+          <QuestionCard>
+            <FormGroup>
+              <TranslatedLabel text="Name the organization that organized the wedding. (For simple/ mass marriage only)" />
+              <Input type="text" value={formData.section1.organizingOrganization} onChange={(e) => handleInputChange('section1', 'organizingOrganization', e.target.value)} placeholder={t('Enter organization name')} />
+            </FormGroup>
+          </QuestionCard>
+        )}
+
+        {/* Q17-22: Application & Benefit Details */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Specify the date/Month & Year of application filing" />
+            <Input type="month" value={formData.section1.applicationDate} onChange={(e) => handleInputChange('section1', 'applicationDate', e.target.value)} />
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Enter the date/month and year of grant of facility." />
+            <Input type="month" value={formData.section1.grantDate} onChange={(e) => handleInputChange('section1', 'grantDate', e.target.value)} />
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Specify the amount of benefit received" />
+            <Input type="number" value={formData.section1.benefitAmount} onChange={(e) => handleInputChange('section1', 'benefitAmount', e.target.value)} placeholder={t('Enter amount in ₹')} />
+          </FormGroup>
+
+          {formData.section1.schemes.includes('inter_caste_marriage') && (
+            <FormGroup>
+              <TranslatedLabel text="If the benefit was received from ICM, 50% of the amount is kept as a Fixed Deposit. Have you received the Deposit Certificate?" />
+              <RadioGroup>
+                <RadioItem>
+                  <Radio name="fdCertificateReceived" value="yes" checked={formData.section1.fdCertificateReceived === 'yes'} onChange={(e) => handleInputChange('section1', 'fdCertificateReceived', e.target.value)} />
+                  <TranslatedText>Yes</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                  <Radio name="fdCertificateReceived" value="no" checked={formData.section1.fdCertificateReceived === 'no'} onChange={(e) => handleInputChange('section1', 'fdCertificateReceived', e.target.value)} />
+                  <TranslatedText>No</TranslatedText>
+                </RadioItem>
+              </RadioGroup>
+            </FormGroup>
+          )}
+
+          <FormGroup>
+            <TranslatedLabel text="Do you and your husband/wife have a joint bank account?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="jointBankAccount" value="yes" checked={formData.section1.jointBankAccount === 'yes'} onChange={(e) => handleInputChange('section1', 'jointBankAccount', e.target.value)} />
+                <TranslatedText>Yes</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="jointBankAccount" value="no" checked={formData.section1.jointBankAccount === 'no'} onChange={(e) => handleInputChange('section1', 'jointBankAccount', e.target.value)} />
+                <TranslatedText>No</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Specify the month and year when the amount was credited to the applicant's bank account." />
+            <Input type="month" value={formData.section1.creditMonthYear} onChange={(e) => handleInputChange('section1', 'creditMonthYear', e.target.value)} />
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q23-24: Educational Qualification */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Educational Qualification of the Applicant:" />
+            <Select value={formData.section1.applicantEducation} onChange={(e) => handleInputChange('section1', 'applicantEducation', e.target.value)}>
+              <TranslatedOption value="">{t('Select education level')}</TranslatedOption>
+              <TranslatedOption value="no_schooling">{t('No formal Schooling')}</TranslatedOption>
+              <TranslatedOption value="below_5">{t('Below 5th Standard')}</TranslatedOption>
+              <TranslatedOption value="below_8">{t('Below 8th Standard')}</TranslatedOption>
+              <TranslatedOption value="up_to_12">{t('Below or up to 12th Standard')}</TranslatedOption>
+              <TranslatedOption value="graduation">{t('Graduation/ Diploma')}</TranslatedOption>
+              <TranslatedOption value="post_graduation">{t('Post Graduation and above')}</TranslatedOption>
+            </Select>
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Educational Qualification of the husband/wife:" />
+            <Select value={formData.section1.spouseEducation} onChange={(e) => handleInputChange('section1', 'spouseEducation', e.target.value)}>
+              <TranslatedOption value="">{t('Select education level')}</TranslatedOption>
+              <TranslatedOption value="no_schooling">{t('No formal Schooling')}</TranslatedOption>
+              <TranslatedOption value="below_5">{t('Below 5th Standard')}</TranslatedOption>
+              <TranslatedOption value="below_8">{t('Below 8th Standard')}</TranslatedOption>
+              <TranslatedOption value="up_to_12">{t('Below or up to 12th Standard')}</TranslatedOption>
+              <TranslatedOption value="graduation">{t('Graduation/ Diploma')}</TranslatedOption>
+              <TranslatedOption value="post_graduation">{t('Post Graduation and above')}</TranslatedOption>
+            </Select>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q25-26: Employment Before */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Were you employed before receiving the scheme benefit?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="applicantEmploymentBefore" value="yes" checked={formData.section1.applicantEmploymentBefore === 'yes'} onChange={(e) => handleInputChange('section1', 'applicantEmploymentBefore', e.target.value)} />
+                <TranslatedText>Yes</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="applicantEmploymentBefore" value="no" checked={formData.section1.applicantEmploymentBefore === 'no'} onChange={(e) => handleInputChange('section1', 'applicantEmploymentBefore', e.target.value)} />
+                <TranslatedText>No</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+          {formData.section1.applicantEmploymentBefore === 'yes' && (
+            <FormGroup>
+              <TranslatedLabel text="If yes, please specify your occupation prior to receiving the scheme benefit:" />
+              <Input type="text" value={formData.section1.applicantOccupationBefore} onChange={(e) => handleInputChange('section1', 'applicantOccupationBefore', e.target.value)} placeholder={t('Enter your occupation')} />
+            </FormGroup>
+          )}
+
+          <FormGroup>
+            <TranslatedLabel text="Was your husband/wife employed before receiving the scheme benefit?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="spouseEmploymentBefore" value="yes" checked={formData.section1.spouseEmploymentBefore === 'yes'} onChange={(e) => handleInputChange('section1', 'spouseEmploymentBefore', e.target.value)} />
+                <TranslatedText>Yes</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="spouseEmploymentBefore" value="no" checked={formData.section1.spouseEmploymentBefore === 'no'} onChange={(e) => handleInputChange('section1', 'spouseEmploymentBefore', e.target.value)} />
+                <TranslatedText>No</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+          {formData.section1.spouseEmploymentBefore === 'yes' && (
+            <FormGroup>
+              <TranslatedLabel text="If yes, please specify the husband/wife occupation prior to receiving the scheme benefit:" />
+              <Input type="text" value={formData.section1.spouseOccupationBefore} onChange={(e) => handleInputChange('section1', 'spouseOccupationBefore', e.target.value)} placeholder={t("Enter spouse's occupation")} />
+            </FormGroup>
+          )}
+        </QuestionCard>
+        
+        {/* Q27-30: Home & Marital Status */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Current residential address—" />
+            <TextArea value={formData.section1.residentialAddress} onChange={(e) => handleInputChange('section1', 'residentialAddress', e.target.value)} placeholder={t('Enter your full residential address')} />
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="Are both applicants residents of Karnataka?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="bothKarnatakaResidents" value="yes" checked={formData.section1.bothKarnatakaResidents === 'yes'} onChange={(e) => handleInputChange('section1', 'bothKarnatakaResidents', e.target.value)} />
+                <TranslatedText>Yes</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="bothKarnatakaResidents" value="no" checked={formData.section1.bothKarnatakaResidents === 'no'} onChange={(e) => handleInputChange('section1', 'bothKarnatakaResidents', e.target.value)} />
+                <TranslatedText>No</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+          {formData.section1.bothKarnatakaResidents === 'no' && (
+            <FormGroup>
+              <TranslatedLabel text="If no, from which state? please specify" />
+              <Input type="text" value={formData.section1.otherState} onChange={(e) => handleInputChange('section1', 'otherState', e.target.value)} placeholder={t('Enter state name')} />
+            </FormGroup>
+          )}
+          <FormGroup>
+            <TranslatedLabel text="Describe your home?" />
+            <Select value={formData.section1.homeDescription} onChange={(e) => handleInputChange('section1', 'homeDescription', e.target.value)}>
+              <TranslatedOption value="">{t('Select home type')}</TranslatedOption>
+              <TranslatedOption value="own">{t('Own house')}</TranslatedOption>
+              <TranslatedOption value="rented">{t('Rented house')}</TranslatedOption>
+              <TranslatedOption value="leasehold">{t('Leasehold house')}</TranslatedOption>
+              <TranslatedOption value="government_quarters">{t('Government Quarters')}</TranslatedOption>
+              <TranslatedOption value="parents_house">{t("Parent's house")}</TranslatedOption>
+              <TranslatedOption value="other">{t('Other – Please specify')}</TranslatedOption>
+            </Select>
+          </FormGroup>
+          <FormGroup>
+            <TranslatedLabel text="What is your current marital status?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="maritalStatus" value="living_together" checked={formData.section1.maritalStatus === 'living_together'} onChange={(e) => handleInputChange('section1', 'maritalStatus', e.target.value)} />
+                <TranslatedText>Living together</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="maritalStatus" value="divorced" checked={formData.section1.maritalStatus === 'divorced'} onChange={(e) => handleInputChange('section1', 'maritalStatus', e.target.value)} />
+                <TranslatedText>Divorced</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="maritalStatus" value="separated" checked={formData.section1.maritalStatus === 'separated'} onChange={(e) => handleInputChange('section1', 'maritalStatus', e.target.value)} />
+                <TranslatedText>Separated</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="maritalStatus" value="death" checked={formData.section1.maritalStatus === 'death'} onChange={(e) => handleInputChange('section1', 'maritalStatus', e.target.value)} />
+                <TranslatedText>Death of husband/wife</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="maritalStatus" value="remarried" checked={formData.section1.maritalStatus === 'remarried'} onChange={(e) => handleInputChange('section1', 'remarried', e.target.value)} />
+                <TranslatedText>Remarried</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q31-34: Financial & Utilization */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="What is your family's annual income before receiving this benefit?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="familyAnnualIncome" value="below_50k" checked={formData.section1.familyAnnualIncome === 'below_50k'} onChange={(e) => handleInputChange('section1', 'familyAnnualIncome', e.target.value)} />
+                <TranslatedText>Below ₹50,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="familyAnnualIncome" value="50k_1l" checked={formData.section1.familyAnnualIncome === '50k_1l'} onChange={(e) => handleInputChange('section1', 'familyAnnualIncome', e.target.value)} />
+                <TranslatedText>₹50,001 – ₹1,00,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="familyAnnualIncome" value="1l_2l" checked={formData.section1.familyAnnualIncome === '1l_2l'} onChange={(e) => handleInputChange('section1', 'familyAnnualIncome', e.target.value)} />
+                <TranslatedText>₹1,00,001 – ₹2,00,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="familyAnnualIncome" value="2l_3l" checked={formData.section1.familyAnnualIncome === '2l_3l'} onChange={(e) => handleInputChange('section1', 'familyAnnualIncome', e.target.value)} />
+                <TranslatedText>₹2,00,001 – ₹3,00,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="familyAnnualIncome" value="3l_5l" checked={formData.section1.familyAnnualIncome === '3l_5l'} onChange={(e) => handleInputChange('section1', 'familyAnnualIncome', e.target.value)} />
+                <TranslatedText>₹3,00,001 – ₹5,00,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="familyAnnualIncome" value="above_5l" checked={formData.section1.familyAnnualIncome === 'above_5l'} onChange={(e) => handleInputChange('section1', 'familyAnnualIncome', e.target.value)} />
+                <TranslatedText>Above ₹5,00,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="familyAnnualIncome" value="prefer_not_to_say" checked={formData.section1.familyAnnualIncome === 'prefer_not_to_say'} onChange={(e) => handleInputChange('section1', 'familyAnnualIncome', e.target.value)} />
+                <TranslatedText>Prefer not to say</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+
+          <FormGroup>
+            <TranslatedLabel text="Have you received benefits from any other economic development schemes (such as those offered by SWD Corporations) other than various marriage incentives?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="otherSchemeBenefits" value="yes" checked={formData.section1.otherSchemeBenefits === 'yes'} onChange={(e) => handleInputChange('section1', 'otherSchemeBenefits', e.target.value)} />
+                <TranslatedText>Yes</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="otherSchemeBenefits" value="no" checked={formData.section1.otherSchemeBenefits === 'no'} onChange={(e) => handleInputChange('section1', 'otherSchemeBenefits', e.target.value)} />
+                <TranslatedText>No</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+          {formData.section1.otherSchemeBenefits === 'yes' && (
+            <FormGroup>
+              <TranslatedLabel text="If Yes, please specify the name(s) of the scheme(s):" />
+              <Input type="text" value={formData.section1.otherSchemeNames} onChange={(e) => handleInputChange('section1', 'otherSchemeNames', e.target.value)} placeholder={t('Enter scheme names')} />
+            </FormGroup>
+          )}
+
+          <FormGroup>
+            <TranslatedLabel text="How have you utilized the benefits received under various marriage incentive schemes?" />
+            <CheckboxGroup>
+              <CheckboxItem>
+                <Checkbox checked={formData.section1.utilization.includes('housing')} onChange={(e) => handleCheckboxChange('section1', 'utilization', 'housing', e.target.checked)} />
+                <TranslatedText>Housing</TranslatedText>
+              </CheckboxItem>
+              <CheckboxItem>
+                <Checkbox checked={formData.section1.utilization.includes('business')} onChange={(e) => handleCheckboxChange('section1', 'utilization', 'business', e.target.checked)} />
+                <TranslatedText>Starting or expanding a business</TranslatedText>
+              </CheckboxItem>
+              <CheckboxItem>
+                <Checkbox checked={formData.section1.utilization.includes('education_expenses')} onChange={(e) => handleCheckboxChange('section1', 'utilization', 'education_expenses', e.target.checked)} />
+                <TranslatedText>Education expenses</TranslatedText>
+              </CheckboxItem>
+              <CheckboxItem>
+                <Checkbox checked={formData.section1.utilization.includes('medical_needs')} onChange={(e) => handleCheckboxChange('section1', 'utilization', 'medical_needs', e.target.checked)} />
+                <TranslatedText>Medical needs</TranslatedText>
+              </CheckboxItem>
+              <CheckboxItem>
+                <Checkbox checked={formData.section1.utilization.includes('daily_expenses')} onChange={(e) => handleCheckboxChange('section1', 'utilization', 'daily_expenses', e.target.checked)} />
+                <TranslatedText>Daily household expenses</TranslatedText>
+              </CheckboxItem>
+              <CheckboxItem>
+                <Checkbox checked={formData.section1.utilization.includes('savings')} onChange={(e) => handleCheckboxChange('section1', 'utilization', 'savings', e.target.checked)} />
+                <TranslatedText>Savings (e.g., Fixed Deposit)</TranslatedText>
+              </CheckboxItem>
+              <CheckboxItem>
+                <Checkbox checked={formData.section1.utilization.includes('other')} onChange={(e) => handleCheckboxChange('section1', 'utilization', 'other', e.target.checked)} />
+                <TranslatedText>Others: Specify</TranslatedText>
+              </CheckboxItem>
+            </CheckboxGroup>
+          </FormGroup>
+        </QuestionCard>
+
+      </QuestionGroup>
+    </SectionContent>
+  </>
+)}
 
         {/* Section 2: Socio-Economic Impact */}
-        {currentSection === 2 && (
-          <>
-            <ModernSectionHeader>
-              <ModernSectionTitle>{t('Section 2: Socio-Economic Impact')}</ModernSectionTitle>
-              <ModernSectionDesc>{t('Changes after scheme')}</ModernSectionDesc>
-            </ModernSectionHeader>
-            <SectionContent>
-              <QuestionGroup>
+       {currentSection === 2 && (
+  <>
+    <ModernSectionHeader>
+      <ModernSectionTitle>{t('Section 2: Socio-Economic & Social Impact')}</ModernSectionTitle>
+      <ModernSectionDesc>{t('Please provide details about the changes after receiving the scheme benefit.')}</ModernSectionDesc>
+    </ModernSectionHeader>
+    <SectionContent>
+      <QuestionGroup>
+
+        {/* Q1: Applicant's current source of income */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="What is your current source of income or occupation after receiving the scheme benefit?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="applicantOccupationAfter" value="government_job" checked={formData.section2.applicantOccupationAfter === 'government_job'} onChange={(e) => handleInputChange('section2', 'applicantOccupationAfter', e.target.value)} />
+                <TranslatedText>Government job</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="applicantOccupationAfter" value="private_job" checked={formData.section2.applicantOccupationAfter === 'private_job'} onChange={(e) => handleInputChange('section2', 'applicantOccupationAfter', e.target.value)} />
+                <TranslatedText>Private job</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="applicantOccupationAfter" value="self_employment" checked={formData.section2.applicantOccupationAfter === 'self_employment'} onChange={(e) => handleInputChange('section2', 'applicantOccupationAfter', e.target.value)} />
+                <TranslatedText>Self-employment (e.g., business, tailoring, etc.)</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="applicantOccupationAfter" value="daily_wage_labour" checked={formData.section2.applicantOccupationAfter === 'daily_wage_labour'} onChange={(e) => handleInputChange('section2', 'applicantOccupationAfter', e.target.value)} />
+                <TranslatedText>Daily wage labour</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="applicantOccupationAfter" value="agriculture" checked={formData.section2.applicantOccupationAfter === 'agriculture'} onChange={(e) => handleInputChange('section2', 'applicantOccupationAfter', e.target.value)} />
+                <TranslatedText>Agriculture/Farming</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="applicantOccupationAfter" value="homemaker" checked={formData.section2.applicantOccupationAfter === 'homemaker'} onChange={(e) => handleInputChange('section2', 'applicantOccupationAfter', e.target.value)} />
+                <TranslatedText>Homemaker (No personal income)</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="applicantOccupationAfter" value="unemployed" checked={formData.section2.applicantOccupationAfter === 'unemployed'} onChange={(e) => handleInputChange('section2', 'applicantOccupationAfter', e.target.value)} />
+                <TranslatedText>Unemployed</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="applicantOccupationAfter" value="other" checked={formData.section2.applicantOccupationAfter === 'other'} onChange={(e) => handleInputChange('section2', 'applicantOccupationAfter', e.target.value)} />
+                <TranslatedText>Other (Please specify)</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+          {formData.section2.applicantOccupationAfter === 'other' && (
+            <FormGroup>
+              <Input type="text" value={formData.section2.applicantOccupationAfterOther} onChange={(e) => handleInputChange('section2', 'applicantOccupationAfterOther', e.target.value)} placeholder={t('Specify other occupation')} />
+            </FormGroup>
+          )}
+        </QuestionCard>
+
+        {/* Q2: Spouse's current source of income */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="What is your husband/wife current source of income or occupation after receiving the scheme benefit?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="spouseOccupationAfter" value="government_job" checked={formData.section2.spouseOccupationAfter === 'government_job'} onChange={(e) => handleInputChange('section2', 'spouseOccupationAfter', e.target.value)} />
+                <TranslatedText>Government job</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="spouseOccupationAfter" value="private_job" checked={formData.section2.spouseOccupationAfter === 'private_job'} onChange={(e) => handleInputChange('section2', 'spouseOccupationAfter', e.target.value)} />
+                <TranslatedText>Private job</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="spouseOccupationAfter" value="self_employment" checked={formData.section2.spouseOccupationAfter === 'self_employment'} onChange={(e) => handleInputChange('section2', 'spouseOccupationAfter', e.target.value)} />
+                <TranslatedText>Self-employment (e.g., business, tailoring, etc.)</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="spouseOccupationAfter" value="daily_wage_labour" checked={formData.section2.spouseOccupationAfter === 'daily_wage_labour'} onChange={(e) => handleInputChange('section2', 'spouseOccupationAfter', e.target.value)} />
+                <TranslatedText>Daily wage labour</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="spouseOccupationAfter" value="agriculture" checked={formData.section2.spouseOccupationAfter === 'agriculture'} onChange={(e) => handleInputChange('section2', 'spouseOccupationAfter', e.target.value)} />
+                <TranslatedText>Agriculture/Farming</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="spouseOccupationAfter" value="homemaker" checked={formData.section2.spouseOccupationAfter === 'homemaker'} onChange={(e) => handleInputChange('section2', 'spouseOccupationAfter', e.target.value)} />
+                <TranslatedText>Homemaker (No personal income)</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="spouseOccupationAfter" value="unemployed" checked={formData.section2.spouseOccupationAfter === 'unemployed'} onChange={(e) => handleInputChange('section2', 'spouseOccupationAfter', e.target.value)} />
+                <TranslatedText>Unemployed</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="spouseOccupationAfter" value="other" checked={formData.section2.spouseOccupationAfter === 'other'} onChange={(e) => handleInputChange('section2', 'spouseOccupationAfter', e.target.value)} />
+                <TranslatedText>Other (Please specify)</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+          {formData.section2.spouseOccupationAfter === 'other' && (
+            <FormGroup>
+              <Input type="text" value={formData.section2.spouseOccupationAfterOther} onChange={(e) => handleInputChange('section2', 'spouseOccupationAfterOther', e.target.value)} placeholder={t('Specify other occupation')} />
+            </FormGroup>
+          )}
+        </QuestionCard>
+
+        {/* Q3: Household's combined annual income */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="What is your household's combined annual income after receiving the scheme benefit / at present?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="householdAnnualIncomeAfter" value="below_50k" checked={formData.section2.householdAnnualIncomeAfter === 'below_50k'} onChange={(e) => handleInputChange('section2', 'householdAnnualIncomeAfter', e.target.value)} />
+                <TranslatedText>Below ₹50,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="householdAnnualIncomeAfter" value="50k_1l" checked={formData.section2.householdAnnualIncomeAfter === '50k_1l'} onChange={(e) => handleInputChange('section2', 'householdAnnualIncomeAfter', e.target.value)} />
+                <TranslatedText>₹50,001 – ₹1,00,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="householdAnnualIncomeAfter" value="1l_2l" checked={formData.section2.householdAnnualIncomeAfter === '1l_2l'} onChange={(e) => handleInputChange('section2', 'householdAnnualIncomeAfter', e.target.value)} />
+                <TranslatedText>₹1,00,001 – ₹2,00,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="householdAnnualIncomeAfter" value="2l_3l" checked={formData.section2.householdAnnualIncomeAfter === '2l_3l'} onChange={(e) => handleInputChange('section2', 'householdAnnualIncomeAfter', e.target.value)} />
+                <TranslatedText>₹2,00,001 – ₹3,00,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="householdAnnualIncomeAfter" value="3l_5l" checked={formData.section2.householdAnnualIncomeAfter === '3l_5l'} onChange={(e) => handleInputChange('section2', 'householdAnnualIncomeAfter', e.target.value)} />
+                <TranslatedText>₹3,00,001 – ₹5,00,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="householdAnnualIncomeAfter" value="above_5l" checked={formData.section2.householdAnnualIncomeAfter === 'above_5l'} onChange={(e) => handleInputChange('section2', 'householdAnnualIncomeAfter', e.target.value)} />
+                <TranslatedText>Above ₹5,00,000</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="householdAnnualIncomeAfter" value="prefer_not_to_say" checked={formData.section2.householdAnnualIncomeAfter === 'prefer_not_to_say'} onChange={(e) => handleInputChange('section2', 'householdAnnualIncomeAfter', e.target.value)} />
+                <TranslatedText>Prefer not to say</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q4: Standard of living improved */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Has your standard of living improved since receiving the scheme benefit?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="standardOfLivingImproved" value="significantly_improved" checked={formData.section2.standardOfLivingImproved === 'significantly_improved'} onChange={(e) => handleInputChange('section2', 'standardOfLivingImproved', e.target.value)} />
+                <TranslatedText>Significantly improved</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="standardOfLivingImproved" value="somewhat_improved" checked={formData.section2.standardOfLivingImproved === 'somewhat_improved'} onChange={(e) => handleInputChange('section2', 'standardOfLivingImproved', e.target.value)} />
+                <TranslatedText>Somewhat improved</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="standardOfLivingImproved" value="no_change" checked={formData.section2.standardOfLivingImproved === 'no_change'} onChange={(e) => handleInputChange('section2', 'standardOfLivingImproved', e.target.value)} />
+                <TranslatedText>No change</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="standardOfLivingImproved" value="declined" checked={formData.section2.standardOfLivingImproved === 'declined'} onChange={(e) => handleInputChange('section2', 'standardOfLivingImproved', e.target.value)} />
+                <TranslatedText>Declined</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="standardOfLivingImproved" value="not_applicable" checked={formData.section2.standardOfLivingImproved === 'not_applicable'} onChange={(e) => handleInputChange('section2', 'standardOfLivingImproved', e.target.value)} />
+                <TranslatedText>Not applicable</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q5: Access to basic needs */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Has your access to basic needs such as electricity, clean water, toilets, housing, cooking gas, or health services improved after receiving the scheme benefit?" />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="accessToBasicNeeds" value="greatly_improved" checked={formData.section2.accessToBasicNeeds === 'greatly_improved'} onChange={(e) => handleInputChange('section2', 'accessToBasicNeeds', e.target.value)} />
+                <TranslatedText>Greatly improved</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="accessToBasicNeeds" value="somewhat_improved" checked={formData.section2.accessToBasicNeeds === 'somewhat_improved'} onChange={(e) => handleInputChange('section2', 'accessToBasicNeeds', e.target.value)} />
+                <TranslatedText>Somewhat improved</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="accessToBasicNeeds" value="no_change" checked={formData.section2.accessToBasicNeeds === 'no_change'} onChange={(e) => handleInputChange('section2', 'accessToBasicNeeds', e.target.value)} />
+                <TranslatedText>No change</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="accessToBasicNeeds" value="got_worse" checked={formData.section2.accessToBasicNeeds === 'got_worse'} onChange={(e) => handleInputChange('section2', 'accessToBasicNeeds', e.target.value)} />
+                <TranslatedText>Got worse</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="accessToBasicNeeds" value="not_applicable" checked={formData.section2.accessToBasicNeeds === 'not_applicable'} onChange={(e) => handleInputChange('section2', 'accessToBasicNeeds', e.target.value)} />
+                <TranslatedText>Not applicable</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q6: Social life impact (Opinion) */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="The scheme has made a positive difference in my social life." />
+            <RadioGroup>
+              <RadioItem>
+                <Radio name="socialLifeImpact" value="strongly_agree" checked={formData.section2.socialLifeImpact === 'strongly_agree'} onChange={(e) => handleInputChange('section2', 'socialLifeImpact', e.target.value)} />
+                <TranslatedText>Strongly Agree</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="socialLifeImpact" value="agree" checked={formData.section2.socialLifeImpact === 'agree'} onChange={(e) => handleInputChange('section2', 'socialLifeImpact', e.target.value)} />
+                <TranslatedText>Agree</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="socialLifeImpact" value="neutral" checked={formData.section2.socialLifeImpact === 'neutral'} onChange={(e) => handleInputChange('section2', 'socialLifeImpact', e.target.value)} />
+                <TranslatedText>Neutral</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="socialLifeImpact" value="disagree" checked={formData.section2.socialLifeImpact === 'disagree'} onChange={(e) => handleInputChange('section2', 'socialLifeImpact', e.target.value)} />
+                <TranslatedText>Disagree</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+                <Radio name="socialLifeImpact" value="strongly_disagree" checked={formData.section2.socialLifeImpact === 'strongly_disagree'} onChange={(e) => handleInputChange('section2', 'socialLifeImpact', e.target.value)} />
+                <TranslatedText>Strongly Disagree</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+        
+      </QuestionGroup>
+    </SectionContent>
+  </>
+)}
+
+       {currentSection === 3 && (
+    <>
+        <ModernSectionHeader>
+            <ModernSectionTitle>{t('Section 3: Social Inclusion & Security')}</ModernSectionTitle>
+            <ModernSectionDesc>{t('Please answer questions about the social impact of your marriage.')}</ModernSectionDesc>
+        </ModernSectionHeader>
+        <SectionContent>
+            <QuestionGroup>
+
+                {/* Q1: Did your family oppose the marriage? */}
                 <QuestionCard>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {t('Current Employment Status')}
-                  </h4>
-                  <FormGroup>
-                    <Label>{t('What is your current occupation?')}</Label>
-                    <Input
-                      type="text"
-                      value={formData.section2.occupationAfter}
-                      onChange={(e) => handleInputChange('section2', 'occupationAfter', e.target.value)}
-                      placeholder={t('Enter your current occupation')}
-                    />
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label>{t('Current Income Level')}</Label>
-                    <Select
-                      value={formData.section2.incomeAfter}
-                      onChange={(e) => handleInputChange('section2', 'incomeAfter', e.target.value)}
-                    >
-                      <option value="">{t('Select current income level')}</option>
-                      <option value="below_50k">{t('Below ₹50,000')}</option>
-                      <option value="50k_1l">{t('₹50,000 - ₹1,00,000')}</option>
-                      <option value="1l_2l">{t('₹1,00,000 - ₹2,00,000')}</option>
-                      <option value="2l_3l">{t('₹2,00,000 - ₹3,00,000')}</option>
-                      <option value="3l_5l">{t('₹3,00,000 - ₹5,00,000')}</option>
-                      <option value="above_5l">{t('Above ₹5,00,000')}</option>
-                    </Select>
-                  </FormGroup>
+                    <FormGroup>
+                        <TranslatedLabel text="Did your family or your husband/wife's family oppose the marriage?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="familyOpposedMarriage" value="yes" checked={formData.section3.familyOpposedMarriage === 'yes'} onChange={(e) => handleInputChange('section3', 'familyOpposedMarriage', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="familyOpposedMarriage" value="no" checked={formData.section3.familyOpposedMarriage === 'no'} onChange={(e) => handleInputChange('section3', 'familyOpposedMarriage', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                    {formData.section3.familyOpposedMarriage === 'yes' && (
+                        <FormGroup>
+                            <TranslatedLabel text="If Yes, who opposed the marriage?" />
+                            <RadioGroup>
+                                <RadioItem>
+                                    <Radio name="whoOpposed" value="your_family" checked={formData.section3.whoOpposed === 'your_family'} onChange={(e) => handleInputChange('section3', 'whoOpposed', e.target.value)} />
+                                    <TranslatedText>Your family</TranslatedText>
+                                </RadioItem>
+                                <RadioItem>
+                                    <Radio name="whoOpposed" value="spouse_family" checked={formData.section3.whoOpposed === 'spouse_family'} onChange={(e) => handleInputChange('section3', 'whoOpposed', e.target.value)} />
+                                    <TranslatedText>Husband/wife's family</TranslatedText>
+                                </RadioItem>
+                                <RadioItem>
+                                    <Radio name="whoOpposed" value="both_families" checked={formData.section3.whoOpposed === 'both_families'} onChange={(e) => handleInputChange('section3', 'whoOpposed', e.target.value)} />
+                                    <TranslatedText>Both families</TranslatedText>
+                                </RadioItem>
+                                <RadioItem>
+                                    <Radio name="whoOpposed" value="other" checked={formData.section3.whoOpposed === 'other'} onChange={(e) => handleInputChange('section3', 'whoOpposed', e.target.value)} />
+                                    <TranslatedText>Other (Please specify)</TranslatedText>
+                                </RadioItem>
+                            </RadioGroup>
+                            {formData.section3.whoOpposed === 'other' && (
+                                <Input type="text" value={formData.section3.whoOpposedOther || ''} onChange={(e) => handleInputChange('section3', 'whoOpposedOther', e.target.value)} placeholder={t('Specify other source of opposition')} />
+                            )}
+                        </FormGroup>
+                    )}
                 </QuestionCard>
 
+                {/* Q2 & Q3: Reactions */}
                 <QuestionCard>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {t('Quality of Life Assessment')}
-                  </h4>
-                <FormGroup>
-                  <TranslatedLabel text="How would you describe your socio-economic status before the scheme?" />
-                  <Select
-                    value={formData.section2.socioEconomicStatusBefore}
-                    onChange={(e) => handleInputChange('section2', 'socioEconomicStatusBefore', e.target.value)}
-                  >
-                    <TranslatedOption value="">Select status</TranslatedOption>
-                    <TranslatedOption value="very_poor">Very Poor</TranslatedOption>
-                    <TranslatedOption value="poor">Poor</TranslatedOption>
-                    <TranslatedOption value="average">Average</TranslatedOption>
-                    <TranslatedOption value="good">Good</TranslatedOption>
-                    <TranslatedOption value="very_good">Very Good</TranslatedOption>
-                  </Select>
-                </FormGroup>
-
-                <FormGroup>
-                  <TranslatedLabel text="On a scale of 1-5, how financially secure do you feel now? (1=Very Insecure, 5=Very Secure)" />
-                  <Select
-                    value={formData.section2.financialSecurityScale}
-                    onChange={(e) => handleInputChange('section2', 'financialSecurityScale', e.target.value)}
-                  >
-                    <TranslatedOption value="">Select rating</TranslatedOption>
-                    <TranslatedOption value="1">1 - Very Insecure</TranslatedOption>
-                    <TranslatedOption value="2">2 - Insecure</TranslatedOption>
-                    <TranslatedOption value="3">3 - Neutral</TranslatedOption>
-                    <TranslatedOption value="4">4 - Secure</TranslatedOption>
-                    <TranslatedOption value="5">5 - Very Secure</TranslatedOption>
-                  </Select>
-                </FormGroup>
-
-                <FormGroup>
-                  <TranslatedLabel text="Is your spouse currently employed?" />
-                  <RadioGroup>
-                    <RadioItem>
-                      <Radio
-                        name="spouseEmploymentAfter"
-                        value="yes"
-                        checked={formData.section2.spouseEmploymentAfter === 'yes'}
-                        onChange={(e) => handleInputChange('section2', 'spouseEmploymentAfter', e.target.value)}
-                      />
-                      <TranslatedText>Yes</TranslatedText>
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="spouseEmploymentAfter"
-                        value="no"
-                        checked={formData.section2.spouseEmploymentAfter === 'no'}
-                        onChange={(e) => handleInputChange('section2', 'spouseEmploymentAfter', e.target.value)}
-                      />
-                      <TranslatedText>No</TranslatedText>
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="spouseEmploymentAfter"
-                        value="not_applicable"
-                        checked={formData.section2.spouseEmploymentAfter === 'not_applicable'}
-                        onChange={(e) => handleInputChange('section2', 'spouseEmploymentAfter', e.target.value)}
-                      />
-                      <TranslatedText>Not Applicable</TranslatedText>
-                    </RadioItem>
-                  </RadioGroup>
-                </FormGroup>
-
-                <FormGroup>
-                  <TranslatedLabel text="How would you describe your current socio-economic status?" />
-                  <Select
-                    value={formData.section2.socioEconomicStatusAfter}
-                    onChange={(e) => handleInputChange('section2', 'socioEconomicStatusAfter', e.target.value)}
-                  >
-                    <TranslatedOption value="">Select status</TranslatedOption>
-                    <TranslatedOption value="very_poor">Very Poor</TranslatedOption>
-                    <TranslatedOption value="poor">Poor</TranslatedOption>
-                    <TranslatedOption value="average">Average</TranslatedOption>
-                    <TranslatedOption value="good">Good</TranslatedOption>
-                    <TranslatedOption value="very_good">Very Good</TranslatedOption>
-                  </Select>
-                </FormGroup>
-
-                <FormGroup>
-                  <TranslatedLabel text="How has the scheme impacted your social life?" />
-                  <Select
-                    value={formData.section2.socialLifeImpact}
-                    onChange={(e) => handleInputChange('section2', 'socialLifeImpact', e.target.value)}
-                  >
-                    <TranslatedOption value="">Select impact</TranslatedOption>
-                    <TranslatedOption value="significantly_improved">Significantly Improved</TranslatedOption>
-                    <TranslatedOption value="moderately_improved">Moderately Improved</TranslatedOption>
-                    <TranslatedOption value="slightly_improved">Slightly Improved</TranslatedOption>
-                    <TranslatedOption value="no_change">No Change</TranslatedOption>
-                    <TranslatedOption value="worsened">Worsened</TranslatedOption>
-                  </Select>
-                </FormGroup>
-
-                <FormGroup>
-                  <TranslatedLabel text="Who makes decisions about how to use the scheme funds in your household?" />
-                  <RadioGroup>
-                    <RadioItem>
-                      <Radio
-                        name="fundDecisionMaker"
-                        value="self"
-                        checked={formData.section2.fundDecisionMaker === 'self'}
-                        onChange={(e) => handleInputChange('section2', 'fundDecisionMaker', e.target.value)}
-                      />
-                      <TranslatedText>Myself</TranslatedText>
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="fundDecisionMaker"
-                        value="spouse"
-                        checked={formData.section2.fundDecisionMaker === 'spouse'}
-                        onChange={(e) => handleInputChange('section2', 'fundDecisionMaker', e.target.value)}
-                      />
-                      <TranslatedText>Spouse</TranslatedText>
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="fundDecisionMaker"
-                        value="joint"
-                        checked={formData.section2.fundDecisionMaker === 'joint'}
-                        onChange={(e) => handleInputChange('section2', 'fundDecisionMaker', e.target.value)}
-                      />
-                      <TranslatedText>Joint Decision</TranslatedText>
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="fundDecisionMaker"
-                        value="family_elders"
-                        checked={formData.section2.fundDecisionMaker === 'family_elders'}
-                        onChange={(e) => handleInputChange('section2', 'fundDecisionMaker', e.target.value)}
-                      />
-                      <TranslatedText>Family Elders</TranslatedText>
-                    </RadioItem>
-                  </RadioGroup>
-                </FormGroup>
-
-                <FormGroup>
-                  <Label>{t('Has the scheme reduced your financial dependency on others?')}</Label>
-                  <RadioGroup>
-                    <RadioItem>
-                      <Radio
-                        name="financialDependencyReduced"
-                        value="yes_significantly"
-                        checked={formData.section2.financialDependencyReduced === 'yes_significantly'}
-                        onChange={(e) => handleInputChange('section2', 'financialDependencyReduced', e.target.value)}
-                      />
-                      {t('Yes, Significantly')}
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="financialDependencyReduced"
-                        value="yes_somewhat"
-                        checked={formData.section2.financialDependencyReduced === 'yes_somewhat'}
-                        onChange={(e) => handleInputChange('section2', 'financialDependencyReduced', e.target.value)}
-                      />
-                      {t('Yes, Somewhat')}
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="financialDependencyReduced"
-                        value="no"
-                        checked={formData.section2.financialDependencyReduced === 'no'}
-                        onChange={(e) => handleInputChange('section2', 'financialDependencyReduced', e.target.value)}
-                      />
-                      {t('No')}
-                    </RadioItem>
-                  </RadioGroup>
-                </FormGroup>
-
-                <FormGroup>
-                  <Label>{t('Have you started any new livelihood activities with the scheme benefits?')}</Label>
-                  <RadioGroup>
-                    <RadioItem>
-                      <Radio
-                        name="startedNewLivelihood"
-                        value="yes"
-                        checked={formData.section2.startedNewLivelihood === 'yes'}
-                        onChange={(e) => handleInputChange('section2', 'startedNewLivelihood', e.target.value)}
-                      />
-                      {t('Yes')}
-                    </RadioItem>
-                    <RadioItem>
-                      <Radio
-                        name="startedNewLivelihood"
-                        value="no"
-                        checked={formData.section2.startedNewLivelihood === 'no'}
-                        onChange={(e) => handleInputChange('section2', 'startedNewLivelihood', e.target.value)}
-                      />
-                      {t('No')}
-                    </RadioItem>
-                  </RadioGroup>
-                </FormGroup>
+                    <FormGroup>
+                        <TranslatedLabel text="How did your extended family react to your marriage?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="extendedFamilyReaction" value="supportive" checked={formData.section3.extendedFamilyReaction === 'supportive'} onChange={(e) => handleInputChange('section3', 'extendedFamilyReaction', e.target.value)} />
+                                <TranslatedText>Supportive</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="extendedFamilyReaction" value="opposed" checked={formData.section3.extendedFamilyReaction === 'opposed'} onChange={(e) => handleInputChange('section3', 'extendedFamilyReaction', e.target.value)} />
+                                <TranslatedText>Opposed</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="extendedFamilyReaction" value="neutral" checked={formData.section3.extendedFamilyReaction === 'neutral'} onChange={(e) => handleInputChange('section3', 'extendedFamilyReaction', e.target.value)} />
+                                <TranslatedText>Neutral</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="extendedFamilyReaction" value="mixed" checked={formData.section3.extendedFamilyReaction === 'mixed'} onChange={(e) => handleInputChange('section3', 'extendedFamilyReaction', e.target.value)} />
+                                <TranslatedText>Mixed Reaction</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="extendedFamilyReaction" value="others" checked={formData.section3.extendedFamilyReaction === 'others'} onChange={(e) => handleInputChange('section3', 'extendedFamilyReaction', e.target.value)} />
+                                <TranslatedText>Others</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                    <FormGroup>
+                        <TranslatedLabel text="How did your neighbours and your village react to your marriage?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="neighboursReaction" value="supportive" checked={formData.section3.neighboursReaction === 'supportive'} onChange={(e) => handleInputChange('section3', 'neighboursReaction', e.target.value)} />
+                                <TranslatedText>Supportive</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="neighboursReaction" value="opposed" checked={formData.section3.neighboursReaction === 'opposed'} onChange={(e) => handleInputChange('section3', 'neighboursReaction', e.target.value)} />
+                                <TranslatedText>Opposed</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="neighboursReaction" value="neutral" checked={formData.section3.neighboursReaction === 'neutral'} onChange={(e) => handleInputChange('section3', 'neighboursReaction', e.target.value)} />
+                                <TranslatedText>Neutral</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="neighboursReaction" value="mixed" checked={formData.section3.neighboursReaction === 'mixed'} onChange={(e) => handleInputChange('section3', 'neighboursReaction', e.target.value)} />
+                                <TranslatedText>Mixed Reaction</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="neighboursReaction" value="others" checked={formData.section3.neighboursReaction === 'others'} onChange={(e) => handleInputChange('section3', 'neighboursReaction', e.target.value)} />
+                                <TranslatedText>Others</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
                 </QuestionCard>
-              </QuestionGroup>
-            </SectionContent>
-          </>
-        )}
 
-        {/* Section 3: Social Impact */}
-        {currentSection === 3 && (
-          <>
-            <ModernSectionHeader>
-              <ModernSectionTitle>{t('Section 3: Social Impact')}</ModernSectionTitle>
-              <ModernSectionDesc>{t('Social acceptance and challenges')}</ModernSectionDesc>
-            </ModernSectionHeader>
-            <SectionContent>
-              <QuestionGroup>
+                {/* Q4: Inter-caste marriages in community */}
                 <QuestionCard>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {t('Social Progress Assessment')}
-                  </h4>
-                  <FormGroup>
-                    <Label>{t('On a scale of 1-5, how much progressive change have you experienced? (1=No Change, 5=Significant Change)')}</Label>
-                    <Select
-                  value={formData.section3.progressiveChangeScale}
-                  onChange={(e) => handleInputChange('section3', 'progressiveChangeScale', e.target.value)}
-                >
-                  <option value="">{t('Select rating')}</option>
-                  <option value="1">{t('1 - No Change')}</option>
-                  <option value="2">{t('2 - Little Change')}</option>
-                  <option value="3">{t('3 - Moderate Change')}</option>
-                  <option value="4">{t('4 - Good Change')}</option>
-                  <option value="5">{t('5 - Significant Change')}</option>
-                </Select>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Do you feel more socially accepted in your community now?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="feltSociallyAccepted"
-                      value="yes_much_more"
-                      checked={formData.section3.feltSociallyAccepted === 'yes_much_more'}
-                      onChange={(e) => handleInputChange('section3', 'feltSociallyAccepted', e.target.value)}
-                    />
-                    {t('Yes, Much More')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="feltSociallyAccepted"
-                      value="yes_somewhat"
-                      checked={formData.section3.feltSociallyAccepted === 'yes_somewhat'}
-                      onChange={(e) => handleInputChange('section3', 'feltSociallyAccepted', e.target.value)}
-                    />
-                    {t('Yes, Somewhat')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="feltSociallyAccepted"
-                      value="no_change"
-                      checked={formData.section3.feltSociallyAccepted === 'no_change'}
-                      onChange={(e) => handleInputChange('section3', 'feltSociallyAccepted', e.target.value)}
-                    />
-                    {t('No Change')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="feltSociallyAccepted"
-                      value="less_accepted"
-                      checked={formData.section3.feltSociallyAccepted === 'less_accepted'}
-                      onChange={(e) => handleInputChange('section3', 'feltSociallyAccepted', e.target.value)}
-                    />
-                    {t('Less Accepted')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Has caste-based discrimination reduced in your experience?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="discriminationReduction"
-                      value="yes_significantly"
-                      checked={formData.section3.discriminationReduction === 'yes_significantly'}
-                      onChange={(e) => handleInputChange('section3', 'discriminationReduction', e.target.value)}
-                    />
-                    {t('Yes, Significantly')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="discriminationReduction"
-                      value="yes_somewhat"
-                      checked={formData.section3.discriminationReduction === 'yes_somewhat'}
-                      onChange={(e) => handleInputChange('section3', 'discriminationReduction', e.target.value)}
-                    />
-                    {t('Yes, Somewhat')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="discriminationReduction"
-                      value="no_change"
-                      checked={formData.section3.discriminationReduction === 'no_change'}
-                      onChange={(e) => handleInputChange('section3', 'discriminationReduction', e.target.value)}
-                    />
-                    {t('No Change')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="discriminationReduction"
-                      value="increased"
-                      checked={formData.section3.discriminationReduction === 'increased'}
-                      onChange={(e) => handleInputChange('section3', 'discriminationReduction', e.target.value)}
-                    />
-                    {t('Increased')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Do you feel more secure in your community now?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="feltMoreSecure"
-                      value="yes"
-                      checked={formData.section3.feltMoreSecure === 'yes'}
-                      onChange={(e) => handleInputChange('section3', 'feltMoreSecure', e.target.value)}
-                    />
-                    {t('Yes')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="feltMoreSecure"
-                      value="no"
-                      checked={formData.section3.feltMoreSecure === 'no'}
-                      onChange={(e) => handleInputChange('section3', 'feltMoreSecure', e.target.value)}
-                    />
-                    {t('No')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="feltMoreSecure"
-                      value="same_as_before"
-                      checked={formData.section3.feltMoreSecure === 'same_as_before'}
-                      onChange={(e) => handleInputChange('section3', 'feltMoreSecure', e.target.value)}
-                    />
-                    {t('Same as Before')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Are you currently living with your in-laws?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="livingWithInLaws"
-                      value="yes"
-                      checked={formData.section3.livingWithInLaws === 'yes'}
-                      onChange={(e) => handleInputChange('section3', 'livingWithInLaws', e.target.value)}
-                    />
-                    {t('Yes')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="livingWithInLaws"
-                      value="no"
-                      checked={formData.section3.livingWithInLaws === 'no'}
-                      onChange={(e) => handleInputChange('section3', 'livingWithInLaws', e.target.value)}
-                    />
-                    {t('No')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="livingWithInLaws"
-                      value="sometimes"
-                      checked={formData.section3.livingWithInLaws === 'sometimes'}
-                      onChange={(e) => handleInputChange('section3', 'livingWithInLaws', e.target.value)}
-                    />
-                    {t('Sometimes')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Have you faced discrimination from in-laws?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="inLawDiscrimination"
-                      value="yes"
-                      checked={formData.section3.inLawDiscrimination === 'yes'}
-                      onChange={(e) => handleInputChange('section3', 'inLawDiscrimination', e.target.value)}
-                    />
-                    {t('Yes')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="inLawDiscrimination"
-                      value="no"
-                      checked={formData.section3.inLawDiscrimination === 'no'}
-                      onChange={(e) => handleInputChange('section3', 'inLawDiscrimination', e.target.value)}
-                    />
-                    {t('No')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              {formData.section3.inLawDiscrimination === 'yes' && (
-                <FormGroup>
-                  <Label>{t('Please describe the discrimination you faced:')}</Label>
-                  <TextArea
-                    value={formData.section3.inLawDiscriminationDetails}
-                    onChange={(e) => handleInputChange('section3', 'inLawDiscriminationDetails', e.target.value)}
-                    placeholder={t('Describe the discrimination you experienced')}
-                  />
-                </FormGroup>
-              )}
-
-              <FormGroup>
-                <Label>{t('Have you filed any police complaint regarding discrimination?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="filedPoliceComplaint"
-                      value="yes"
-                      checked={formData.section3.filedPoliceComplaint === 'yes'}
-                      onChange={(e) => handleInputChange('section3', 'filedPoliceComplaint', e.target.value)}
-                    />
-                    {t('Yes')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="filedPoliceComplaint"
-                      value="no"
-                      checked={formData.section3.filedPoliceComplaint === 'no'}
-                      onChange={(e) => handleInputChange('section3', 'filedPoliceComplaint', e.target.value)}
-                    />
-                    {t('No')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Have you received support from NGOs or government officials?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="supportFromNgosOrOfficials"
-                      value="yes_ngos"
-                      checked={formData.section3.supportFromNgosOrOfficials === 'yes_ngos'}
-                      onChange={(e) => handleInputChange('section3', 'supportFromNgosOrOfficials', e.target.value)}
-                    />
-                    {t('Yes, from NGOs')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="supportFromNgosOrOfficials"
-                      value="yes_officials"
-                      checked={formData.section3.supportFromNgosOrOfficials === 'yes_officials'}
-                      onChange={(e) => handleInputChange('section3', 'supportFromNgosOrOfficials', e.target.value)}
-                    />
-                    {t('Yes, from Government Officials')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="supportFromNgosOrOfficials"
-                      value="yes_both"
-                      checked={formData.section3.supportFromNgosOrOfficials === 'yes_both'}
-                      onChange={(e) => handleInputChange('section3', 'supportFromNgosOrOfficials', e.target.value)}
-                    />
-                    {t('Yes, from Both')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="supportFromNgosOrOfficials"
-                      value="no"
-                      checked={formData.section3.supportFromNgosOrOfficials === 'no'}
-                      onChange={(e) => handleInputChange('section3', 'supportFromNgosOrOfficials', e.target.value)}
-                    />
-                    {t('No')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              {/* Additional Widow Remarriage Section */}
-              {formData.section1.schemes.includes('widow_remarriage') && (
-                <QuestionCard style={{ marginTop: '25px', backgroundColor: '#fef7e0', border: '2px solid #f59e0b' }}>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#92400e', fontSize: '1.2rem', fontWeight: '700' }}>
-                    {t('Additional Questions for Widow Remarriage Beneficiaries')}
-                  </h4>
-                  
-                  <FormGroup>
-                    <Label>{t('How long were you a widow before remarrying?')}</Label>
-                    <Select
-                      value={formData.section3.widowDuration || ''}
-                      onChange={(e) => handleInputChange('section3', 'widowDuration', e.target.value)}
-                    >
-                      <option value="">{t('Select duration')}</option>
-                      <option value="less_than_1_year">{t('Less than 1 year')}</option>
-                      <option value="1_3_years">{t('1-3 years')}</option>
-                      <option value="3_5_years">{t('3-5 years')}</option>
-                      <option value="5_10_years">{t('5-10 years')}</option>
-                      <option value="more_than_10_years">{t('More than 10 years')}</option>
-                    </Select>
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label>{t('Did you face specific challenges as a widow before remarriage?')}</Label>
-                    <CheckboxGroup>
-                      {['financial_hardship', 'social_ostracism', 'family_pressure', 'childcare_burden', 'employment_issues', 'housing_problems'].map((challenge) => (
-                        <CheckboxItem key={challenge}>
-                          <Checkbox
-                            checked={(formData.section3.widowChallenges || []).includes(challenge)}
-                            onChange={(e) => handleCheckboxChange('section3', 'widowChallenges', challenge, e.target.checked)}
-                          />
-                          {t(challenge.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))}
-                        </CheckboxItem>
-                      ))}
-                    </CheckboxGroup>
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label>{t('How did the widow remarriage scheme specifically help you?')}</Label>
-                    <CheckboxGroup>
-                      {['financial_independence', 'social_acceptance', 'emotional_support', 'family_stability', 'reduced_stigma', 'better_future_for_children'].map((benefit) => (
-                        <CheckboxItem key={benefit}>
-                          <Checkbox
-                            checked={(formData.section3.widowSchemeBenefits || []).includes(benefit)}
-                            onChange={(e) => handleCheckboxChange('section3', 'widowSchemeBenefits', benefit, e.target.checked)}
-                          />
-                          {t(benefit.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))}
-                        </CheckboxItem>
-                      ))}
-                    </CheckboxGroup>
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label>{t('Would you recommend the widow remarriage scheme to other widows?')}</Label>
-                    <RadioGroup>
-                      <RadioItem>
-                        <Radio
-                          name="recommendWidowScheme"
-                          value="definitely_yes"
-                          checked={formData.section3.recommendWidowScheme === 'definitely_yes'}
-                          onChange={(e) => handleInputChange('section3', 'recommendWidowScheme', e.target.value)}
-                        />
-                        {t('Definitely Yes')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="recommendWidowScheme"
-                          value="yes_with_conditions"
-                          checked={formData.section3.recommendWidowScheme === 'yes_with_conditions'}
-                          onChange={(e) => handleInputChange('section3', 'recommendWidowScheme', e.target.value)}
-                        />
-                        {t('Yes, with certain conditions')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="recommendWidowScheme"
-                          value="uncertain"
-                          checked={formData.section3.recommendWidowScheme === 'uncertain'}
-                          onChange={(e) => handleInputChange('section3', 'recommendWidowScheme', e.target.value)}
-                        />
-                        {t('Uncertain')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="recommendWidowScheme"
-                          value="no"
-                          checked={formData.section3.recommendWidowScheme === 'no'}
-                          onChange={(e) => handleInputChange('section3', 'recommendWidowScheme', e.target.value)}
-                        />
-                        {t('No')}
-                      </RadioItem>
-                    </RadioGroup>
-                  </FormGroup>
+                    <FormGroup>
+                        <TranslatedLabel text="Have there been any inter-caste marriages in your family or community?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="interCasteMarriagesInCommunity" value="yes" checked={formData.section3.interCasteMarriagesInCommunity === 'yes'} onChange={(e) => handleInputChange('section3', 'interCasteMarriagesInCommunity', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="interCasteMarriagesInCommunity" value="no" checked={formData.section3.interCasteMarriagesInCommunity === 'no'} onChange={(e) => handleInputChange('section3', 'interCasteMarriagesInCommunity', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
                 </QuestionCard>
-              )}
 
-              {/* Additional SC/ST Specific Section */}
-              {(formData.section1.casteCategory === 'sc' || formData.section1.casteCategory === 'st') && (
-                <QuestionCard style={{ marginTop: '25px', backgroundColor: '#f0f9ff', border: '2px solid #0ea5e9' }}>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#0c4a6e', fontSize: '1.2rem', fontWeight: '700' }}>
-                    {t('Additional Questions for')} {formData.section1.casteCategory === 'sc' ? t('Scheduled Caste') : t('Scheduled Tribe')} {t('Beneficiaries')}
-                  </h4>
-                  
-                  <FormGroup>
-                    <Label>{t('Have you experienced specific caste-based discrimination in your community?')}</Label>
-                    <RadioGroup>
-                      <RadioItem>
-                        <Radio
-                          name="casteDiscriminationExperience"
-                          value="frequent"
-                          checked={formData.section3.casteDiscriminationExperience === 'frequent'}
-                          onChange={(e) => handleInputChange('section3', 'casteDiscriminationExperience', e.target.value)}
-                        />
-                        {t('Frequently')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="casteDiscriminationExperience"
-                          value="sometimes"
-                          checked={formData.section3.casteDiscriminationExperience === 'sometimes'}
-                          onChange={(e) => handleInputChange('section3', 'casteDiscriminationExperience', e.target.value)}
-                        />
-                        {t('Sometimes')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="casteDiscriminationExperience"
-                          value="rarely"
-                          checked={formData.section3.casteDiscriminationExperience === 'rarely'}
-                          onChange={(e) => handleInputChange('section3', 'casteDiscriminationExperience', e.target.value)}
-                        />
-                        {t('Rarely')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="casteDiscriminationExperience"
-                          value="never"
-                          checked={formData.section3.casteDiscriminationExperience === 'never'}
-                          onChange={(e) => handleInputChange('section3', 'casteDiscriminationExperience', e.target.value)}
-                        />
-                        {t('Never')}
-                      </RadioItem>
-                    </RadioGroup>
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label>{t('Which SCSP/TSP programs have been most beneficial for your community?')}</Label>
-                    <CheckboxGroup>
-                      {['education_scholarships', 'employment_opportunities', 'housing_schemes', 'healthcare_access', 'skill_development', 'entrepreneur_support', 'infrastructure_development'].map((program) => (
-                        <CheckboxItem key={program}>
-                          <Checkbox
-                            checked={(formData.section3.beneficialPrograms || []).includes(program)}
-                            onChange={(e) => handleCheckboxChange('section3', 'beneficialPrograms', program, e.target.checked)}
-                          />
-                          {t(program.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))}
-                        </CheckboxItem>
-                      ))}
-                    </CheckboxGroup>
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label>{t('How has SCSP/TSP implementation impacted your community overall?')}</Label>
-                    <RadioGroup>
-                      <RadioItem>
-                        <Radio
-                          name="communityImpact"
-                          value="very_positive"
-                          checked={formData.section3.communityImpact === 'very_positive'}
-                          onChange={(e) => handleInputChange('section3', 'communityImpact', e.target.value)}
-                        />
-                        {t('Very Positive Impact')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="communityImpact"
-                          value="somewhat_positive"
-                          checked={formData.section3.communityImpact === 'somewhat_positive'}
-                          onChange={(e) => handleInputChange('section3', 'communityImpact', e.target.value)}
-                        />
-                        {t('Somewhat Positive')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="communityImpact"
-                          value="minimal_impact"
-                          checked={formData.section3.communityImpact === 'minimal_impact'}
-                          onChange={(e) => handleInputChange('section3', 'communityImpact', e.target.value)}
-                        />
-                        {t('Minimal Impact')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="communityImpact"
-                          value="no_impact"
-                          checked={formData.section3.communityImpact === 'no_impact'}
-                          onChange={(e) => handleInputChange('section3', 'communityImpact', e.target.value)}
-                        />
-                        {t('No Impact')}
-                      </RadioItem>
-                    </RadioGroup>
-                  </FormGroup>
-                </QuestionCard>
-              )}
-                </QuestionCard>
-              </QuestionGroup>
-            </SectionContent>
-          </>
-        )}
-
-        {/* Section 4: Scheme Experience */}
-        {currentSection === 4 && (
-          <>
-            <ModernSectionHeader>
-              <ModernSectionTitle>{t('Section 4: Scheme Experience')}</ModernSectionTitle>
-              <ModernSectionDesc>{t('Experience with the process')}</ModernSectionDesc>
-            </ModernSectionHeader>
-            <SectionContent>
-              <QuestionGroup>
+                {/* Q5: Challenges after marriage */}
                 <QuestionCard>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {t('Scheme Awareness & Access')}
-                  </h4>
-                  <FormGroup>
-                    <Label>{t('How did you become aware of the scheme?')}</Label>
-                    <Select
-                      value={formData.section4.schemeAwarenessSource}
-                      onChange={(e) => handleInputChange('section4', 'schemeAwarenessSource', e.target.value)}
-                    >
-                  <option value="">{t('Select source')}</option>
-                  <option value="government_officials">{t('Government Officials')}</option>
-                  <option value="ngo">{t('NGO')}</option>
-                  <option value="friends_family">{t('Friends/Family')}</option>
-                  <option value="media">{t('Media')}</option>
-                  <option value="community_leaders">{t('Community Leaders')}</option>
-                  <option value="others">{t('Others')}</option>
-                </Select>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Were the officials supportive during the application process?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="officialsSupportive"
-                      value="very_supportive"
-                      checked={formData.section4.officialsSupportive === 'very_supportive'}
-                      onChange={(e) => handleInputChange('section4', 'officialsSupportive', e.target.value)}
-                    />
-                    {t('Very Supportive')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="officialsSupportive"
-                      value="somewhat_supportive"
-                      checked={formData.section4.officialsSupportive === 'somewhat_supportive'}
-                      onChange={(e) => handleInputChange('section4', 'officialsSupportive', e.target.value)}
-                    />
-                    {t('Somewhat Supportive')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="officialsSupportive"
-                      value="neutral"
-                      checked={formData.section4.officialsSupportive === 'neutral'}
-                      onChange={(e) => handleInputChange('section4', 'officialsSupportive', e.target.value)}
-                    />
-                    {t('Neutral')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="officialsSupportive"
-                      value="unsupportive"
-                      checked={formData.section4.officialsSupportive === 'unsupportive'}
-                      onChange={(e) => handleInputChange('section4', 'officialsSupportive', e.target.value)}
-                    />
-                    {t('Unsupportive')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('How difficult was the application process?')}</Label>
-                <Select
-                  value={formData.section4.applicationDifficulty}
-                  onChange={(e) => handleInputChange('section4', 'applicationDifficulty', e.target.value)}
-                >
-                  <option value="">{t('Select difficulty level')}</option>
-                  <option value="very_easy">{t('Very Easy')}</option>
-                  <option value="easy">{t('Easy')}</option>
-                  <option value="moderate">{t('Moderate')}</option>
-                  <option value="difficult">{t('Difficult')}</option>
-                  <option value="very_difficult">{t('Very Difficult')}</option>
-                </Select>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('How long did it take to receive the benefit after applying?')}</Label>
-                <Select
-                  value={formData.section4.timeToReceiveBenefit}
-                  onChange={(e) => handleInputChange('section4', 'timeToReceiveBenefit', e.target.value)}
-                >
-                  <option value="">{t('Select time period')}</option>
-                  <option value="within_1_month">{t('Within 1 Month')}</option>
-                  <option value="1_3_months">{t('1-3 Months')}</option>
-                  <option value="3_6_months">{t('3-6 Months')}</option>
-                  <option value="6_12_months">{t('6-12 Months')}</option>
-                  <option value="more_than_1_year">{t('More than 1 Year')}</option>
-                  <option value="still_waiting">{t('Still Waiting')}</option>
-                </Select>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('How effective was the disbursement process?')}</Label>
-                <Select
-                  value={formData.section4.disbursementEffectiveness}
-                  onChange={(e) => handleInputChange('section4', 'disbursementEffectiveness', e.target.value)}
-                >
-                  <option value="">{t('Select effectiveness')}</option>
-                  <option value="very_effective">{t('Very Effective')}</option>
-                  <option value="effective">{t('Effective')}</option>
-                  <option value="moderately_effective">{t('Moderately Effective')}</option>
-                  <option value="ineffective">{t('Ineffective')}</option>
-                  <option value="very_ineffective">{t('Very Ineffective')}</option>
-                </Select>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Were you fully aware of all scheme details before applying?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="awareOfSchemeDetails"
-                      value="fully_aware"
-                      checked={formData.section4.awareOfSchemeDetails === 'fully_aware'}
-                      onChange={(e) => handleInputChange('section4', 'awareOfSchemeDetails', e.target.value)}
-                    />
-                    {t('Fully Aware')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="awareOfSchemeDetails"
-                      value="partially_aware"
-                      checked={formData.section4.awareOfSchemeDetails === 'partially_aware'}
-                      onChange={(e) => handleInputChange('section4', 'awareOfSchemeDetails', e.target.value)}
-                    />
-                    {t('Partially Aware')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="awareOfSchemeDetails"
-                      value="not_aware"
-                      checked={formData.section4.awareOfSchemeDetails === 'not_aware'}
-                      onChange={(e) => handleInputChange('section4', 'awareOfSchemeDetails', e.target.value)}
-                    />
-                    {t('Not Aware')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('What is the current status of your application?')}</Label>
-                <Select
-                  value={formData.section4.applicationStatus}
-                  onChange={(e) => handleInputChange('section4', 'applicationStatus', e.target.value)}
-                >
-                  <option value="">{t('Select status')}</option>
-                  <option value="approved_received">{t('Approved and Received')}</option>
-                  <option value="approved_pending">{t('Approved but Pending')}</option>
-                  <option value="under_review">{t('Under Review')}</option>
-                  <option value="rejected">{t('Rejected')}</option>
-                  <option value="resubmitted">{t('Resubmitted')}</option>
-                </Select>
-              </FormGroup>
-
-              {formData.section4.applicationStatus === 'approved_pending' && (
-                <FormGroup>
-                  <Label>{t('How long has it been pending?')}</Label>
-                  <Input
-                    type="text"
-                    value={formData.section4.pendingDuration}
-                    onChange={(e) => handleInputChange('section4', 'pendingDuration', e.target.value)}
-                    placeholder={t('e.g., 6 months')}
-                  />
-                </FormGroup>
-              )}
-
-              {formData.section4.applicationStatus === 'rejected' && (
-                <>
-                  <FormGroup>
-                    <Label>{t('Was the reason for rejection clearly communicated to you?')}</Label>
-                    <RadioGroup>
-                      <RadioItem>
-                        <Radio
-                          name="rejectionReasonCommunicated"
-                          value="yes"
-                          checked={formData.section4.rejectionReasonCommunicated === 'yes'}
-                          onChange={(e) => handleInputChange('section4', 'rejectionReasonCommunicated', e.target.value)}
-                        />
-                        {t('Yes')}
-                      </RadioItem>
-                      <RadioItem>
-                        <Radio
-                          name="rejectionReasonCommunicated"
-                          value="no"
-                          checked={formData.section4.rejectionReasonCommunicated === 'no'}
-                          onChange={(e) => handleInputChange('section4', 'rejectionReasonCommunicated', e.target.value)}
-                        />
-                        {t('No')}
-                      </RadioItem>
-                    </RadioGroup>
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Label>{t('What was the reason for rejection?')}</Label>
-                    <TextArea
-                      value={formData.section4.rejectionReason}
-                      onChange={(e) => handleInputChange('section4', 'rejectionReason', e.target.value)}
-                      placeholder={t('Please describe the reason for rejection')}
-                    />
-                  </FormGroup>
-                </>
-              )}
-
-              <FormGroup>
-                <Label>{t('How would you rate the quality of information provided about the scheme?')}</Label>
-                <Select
-                  value={formData.section4.qualityOfInformation}
-                  onChange={(e) => handleInputChange('section4', 'qualityOfInformation', e.target.value)}
-                >
-                  <option value="">{t('Select rating')}</option>
-                  <option value="excellent">{t('Excellent')}</option>
-                  <option value="good">{t('Good')}</option>
-                  <option value="average">{t('Average')}</option>
-                  <option value="poor">{t('Poor')}</option>
-                  <option value="very_poor">{t('Very Poor')}</option>
-                </Select>
-              </FormGroup>
+                    <FormGroup>
+                        <TranslatedLabel text="Did you and your husband/wife face any challenges after marriage?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="challengesAfterMarriage" value="yes" checked={formData.section3.challengesAfterMarriage === 'yes'} onChange={(e) => handleInputChange('section3', 'challengesAfterMarriage', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="challengesAfterMarriage" value="no" checked={formData.section3.challengesAfterMarriage === 'no'} onChange={(e) => handleInputChange('section3', 'challengesAfterMarriage', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                    {formData.section3.challengesAfterMarriage === 'yes' && (
+                        <FormGroup>
+                            <TranslatedLabel text="If Yes, what kind of challenges did you face? (Select all that apply):" />
+                            <CheckboxGroup>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.challengesList?.includes('financial_difficulties')} onChange={(e) => handleCheckboxChange('section3', 'challengesList', 'financial_difficulties', e.target.checked)} />
+                                    <TranslatedText>Financial difficulties</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.challengesList?.includes('family_opposition')} onChange={(e) => handleCheckboxChange('section3', 'challengesList', 'family_opposition', e.target.checked)} />
+                                    <TranslatedText>Family opposition</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.challengesList?.includes('social_discrimination')} onChange={(e) => handleCheckboxChange('section3', 'challengesList', 'social_discrimination', e.target.checked)} />
+                                    <TranslatedText>Social discrimination or stigma</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.challengesList?.includes('legal_issues')} onChange={(e) => handleCheckboxChange('section3', 'challengesList', 'legal_issues', e.target.checked)} />
+                                    <TranslatedText>Legal issues</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.challengesList?.includes('lack_of_community_support')} onChange={(e) => handleCheckboxChange('section3', 'challengesList', 'lack_of_community_support', e.target.checked)} />
+                                    <TranslatedText>Lack of community support</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.challengesList?.includes('emotional_stress')} onChange={(e) => handleCheckboxChange('section3', 'challengesList', 'emotional_stress', e.target.checked)} />
+                                    <TranslatedText>Emotional or mental stress</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.challengesList?.includes('other')} onChange={(e) => handleCheckboxChange('section3', 'challengesList', 'other', e.target.checked)} />
+                                    <TranslatedText>Other (Please specify)</TranslatedText>
+                                </CheckboxItem>
+                            </CheckboxGroup>
+                            {formData.section3.challengesList?.includes('other') && (
+                                <Input type="text" value={formData.section3.challengesOther || ''} onChange={(e) => handleInputChange('section3', 'challengesOther', e.target.value)} placeholder={t('Specify other challenges')} />
+                            )}
+                        </FormGroup>
+                    )}
                 </QuestionCard>
-              </QuestionGroup>
-            </SectionContent>
-          </>
-        )}
 
-        {/* Section 5: Feedback */}
-        {currentSection === 5 && (
-          <>
-            <ModernSectionHeader>
-              <ModernSectionTitle>{t('Section 5: Feedback')}</ModernSectionTitle>
-              <ModernSectionDesc>{t('Suggestions and improvements')}</ModernSectionDesc>
-            </ModernSectionHeader>
-            <SectionContent>
-              <QuestionGroup>
+                {/* Q6: Domestic violence */}
                 <QuestionCard>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {t('Scheme Impact Assessment')}
-                  </h4>
-                  <FormGroup>
-                    <Label>{t('Do you think the scheme is successful in reducing caste-based discrimination?')}</Label>
-                    <RadioGroup>
-                      <RadioItem>
-                        <Radio
-                          name="schemeSuccessCasteDiscrimination"
-                          value="very_successful"
-                          checked={formData.section5.schemeSuccessCasteDiscrimination === 'very_successful'}
-                          onChange={(e) => handleInputChange('section5', 'schemeSuccessCasteDiscrimination', e.target.value)}
-                        />
-                        {t('Very Successful')}
-                      </RadioItem>
-                      <RadioItem>
-                    <Radio
-                      name="schemeSuccessCasteDiscrimination"
-                      value="somewhat_successful"
-                      checked={formData.section5.schemeSuccessCasteDiscrimination === 'somewhat_successful'}
-                      onChange={(e) => handleInputChange('section5', 'schemeSuccessCasteDiscrimination', e.target.value)}
-                    />
-                    {t('Somewhat Successful')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeSuccessCasteDiscrimination"
-                      value="not_successful"
-                      checked={formData.section5.schemeSuccessCasteDiscrimination === 'not_successful'}
-                      onChange={(e) => handleInputChange('section5', 'schemeSuccessCasteDiscrimination', e.target.value)}
-                    />
-                    {t('Not Successful')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeSuccessCasteDiscrimination"
-                      value="uncertain"
-                      checked={formData.section5.schemeSuccessCasteDiscrimination === 'uncertain'}
-                      onChange={(e) => handleInputChange('section5', 'schemeSuccessCasteDiscrimination', e.target.value)}
-                    />
-                    {t('Uncertain')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Has the scheme improved your sense of security and dignity?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="schemeSuccessSecurity"
-                      value="significantly_improved"
-                      checked={formData.section5.schemeSuccessSecurity === 'significantly_improved'}
-                      onChange={(e) => handleInputChange('section5', 'schemeSuccessSecurity', e.target.value)}
-                    />
-                    {t('Significantly Improved')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeSuccessSecurity"
-                      value="moderately_improved"
-                      checked={formData.section5.schemeSuccessSecurity === 'moderately_improved'}
-                      onChange={(e) => handleInputChange('section5', 'schemeSuccessSecurity', e.target.value)}
-                    />
-                    {t('Moderately Improved')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeSuccessSecurity"
-                      value="slightly_improved"
-                      checked={formData.section5.schemeSuccessSecurity === 'slightly_improved'}
-                      onChange={(e) => handleInputChange('section5', 'schemeSuccessSecurity', e.target.value)}
-                    />
-                    {t('Slightly Improved')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeSuccessSecurity"
-                      value="no_change"
-                      checked={formData.section5.schemeSuccessSecurity === 'no_change'}
-                      onChange={(e) => handleInputChange('section5', 'schemeSuccessSecurity', e.target.value)}
-                    />
-                    {t('No Change')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('What areas of the scheme need improvement? (Select all that apply)')}</Label>
-                <CheckboxGroup>
-                  {[
-                    'application_process',
-                    'disbursement_speed',
-                    'information_quality',
-                    'official_support',
-                    'scheme_amount',
-                    'follow_up_support',
-                    'awareness_campaigns',
-                    'documentation_requirements'
-                  ].map((area) => (
-                    <CheckboxItem key={area}>
-                      <Checkbox
-                        checked={formData.section5.areasForImprovement.includes(area)}
-                        onChange={(e) => handleCheckboxChange('section5', 'areasForImprovement', area, e.target.checked)}
-                      />
-                      {t(area.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))}
-                    </CheckboxItem>
-                  ))}
-                </CheckboxGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Should the incentive amount be revised?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="shouldReviseIncentive"
-                      value="increase_significantly"
-                      checked={formData.section5.shouldReviseIncentive === 'increase_significantly'}
-                      onChange={(e) => handleInputChange('section5', 'shouldReviseIncentive', e.target.value)}
-                    />
-                    {t('Should be Increased Significantly')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="shouldReviseIncentive"
-                      value="increase_moderately"
-                      checked={formData.section5.shouldReviseIncentive === 'increase_moderately'}
-                      onChange={(e) => handleInputChange('section5', 'shouldReviseIncentive', e.target.value)}
-                    />
-                    {t('Should be Increased Moderately')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="shouldReviseIncentive"
-                      value="current_amount_adequate"
-                      checked={formData.section5.shouldReviseIncentive === 'current_amount_adequate'}
-                      onChange={(e) => handleInputChange('section5', 'shouldReviseIncentive', e.target.value)}
-                    />
-                    {t('Current Amount is Adequate')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="shouldReviseIncentive"
-                      value="can_be_reduced"
-                      checked={formData.section5.shouldReviseIncentive === 'can_be_reduced'}
-                      onChange={(e) => handleInputChange('section5', 'shouldReviseIncentive', e.target.value)}
-                    />
-                    {t('Can be Reduced')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('What benefits have you experienced from the scheme? (Select all that apply)')}</Label>
-                <CheckboxGroup>
-                  {[
-                    'financial_security',
-                    'social_acceptance',
-                    'reduced_discrimination',
-                    'improved_confidence',
-                    'better_livelihood',
-                    'family_support',
-                    'community_respect',
-                    'educational_opportunities'
-                  ].map((benefit) => (
-                    <CheckboxItem key={benefit}>
-                      <Checkbox
-                        checked={formData.section5.experiencedBenefits.includes(benefit)}
-                        onChange={(e) => handleCheckboxChange('section5', 'experiencedBenefits', benefit, e.target.checked)}
-                      />
-                      {t(benefit.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))}
-                    </CheckboxItem>
-                  ))}
-                </CheckboxGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Should this scheme be continued in the future?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="shouldContinueScheme"
-                      value="definitely_yes"
-                      checked={formData.section5.shouldContinueScheme === 'definitely_yes'}
-                      onChange={(e) => handleInputChange('section5', 'shouldContinueScheme', e.target.value)}
-                    />
-                    {t('Definitely Yes')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="shouldContinueScheme"
-                      value="yes_with_improvements"
-                      checked={formData.section5.shouldContinueScheme === 'yes_with_improvements'}
-                      onChange={(e) => handleInputChange('section5', 'shouldContinueScheme', e.target.value)}
-                    />
-                    {t('Yes, with Improvements')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="shouldContinueScheme"
-                      value="uncertain"
-                      checked={formData.section5.shouldContinueScheme === 'uncertain'}
-                      onChange={(e) => handleInputChange('section5', 'shouldContinueScheme', e.target.value)}
-                    />
-                    {t('Uncertain')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="shouldContinueScheme"
-                      value="no"
-                      checked={formData.section5.shouldContinueScheme === 'no'}
-                      onChange={(e) => handleInputChange('section5', 'shouldContinueScheme', e.target.value)}
-                    />
-                    {t('No')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Would you encourage others to pursue inter-caste marriage?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="encourageIntercasteMarriage"
-                      value="definitely_yes"
-                      checked={formData.section5.encourageIntercasteMarriage === 'definitely_yes'}
-                      onChange={(e) => handleInputChange('section5', 'encourageIntercasteMarriage', e.target.value)}
-                    />
-                    {t('Definitely Yes')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="encourageIntercasteMarriage"
-                      value="yes_with_caution"
-                      checked={formData.section5.encourageIntercasteMarriage === 'yes_with_caution'}
-                      onChange={(e) => handleInputChange('section5', 'encourageIntercasteMarriage', e.target.value)}
-                    />
-                    {t('Yes, with Caution')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="encourageIntercasteMarriage"
-                      value="neutral"
-                      checked={formData.section5.encourageIntercasteMarriage === 'neutral'}
-                      onChange={(e) => handleInputChange('section5', 'encourageIntercasteMarriage', e.target.value)}
-                    />
-                    {t('Neutral')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="encourageIntercasteMarriage"
-                      value="no"
-                      checked={formData.section5.encourageIntercasteMarriage === 'no'}
-                      onChange={(e) => handleInputChange('section5', 'encourageIntercasteMarriage', e.target.value)}
-                    />
-                    {t('No')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Has the scheme helped reduce discrimination in your area overall?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="schemeHelpedReduceDiscriminationInArea"
-                      value="yes_significantly"
-                      checked={formData.section5.schemeHelpedReduceDiscriminationInArea === 'yes_significantly'}
-                      onChange={(e) => handleInputChange('section5', 'schemeHelpedReduceDiscriminationInArea', e.target.value)}
-                    />
-                    {t('Yes, Significantly')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeHelpedReduceDiscriminationInArea"
-                      value="yes_somewhat"
-                      checked={formData.section5.schemeHelpedReduceDiscriminationInArea === 'yes_somewhat'}
-                      onChange={(e) => handleInputChange('section5', 'schemeHelpedReduceDiscriminationInArea', e.target.value)}
-                    />
-                    {t('Yes, Somewhat')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeHelpedReduceDiscriminationInArea"
-                      value="no_change"
-                      checked={formData.section5.schemeHelpedReduceDiscriminationInArea === 'no_change'}
-                      onChange={(e) => handleInputChange('section5', 'schemeHelpedReduceDiscriminationInArea', e.target.value)}
-                    />
-                    {t('No Change')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeHelpedReduceDiscriminationInArea"
-                      value="uncertain"
-                      checked={formData.section5.schemeHelpedReduceDiscriminationInArea === 'uncertain'}
-                      onChange={(e) => handleInputChange('section5', 'schemeHelpedReduceDiscriminationInArea', e.target.value)}
-                    />
-                    {t('Uncertain')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('What kind of future support do you expect? (Select all that apply)')}</Label>
-                <CheckboxGroup>
-                  {[
-                    'continued_financial_support',
-                    'employment_opportunities',
-                    'educational_support',
-                    'healthcare_benefits',
-                    'housing_assistance',
-                    'skill_development',
-                    'legal_support',
-                    'counseling_services'
-                  ].map((support) => (
-                    <CheckboxItem key={support}>
-                      <Checkbox
-                        checked={formData.section5.futureSupportExpected.includes(support)}
-                        onChange={(e) => handleCheckboxChange('section5', 'futureSupportExpected', support, e.target.checked)}
-                      />
-                      {t(support.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))}
-                    </CheckboxItem>
-                  ))}
-                </CheckboxGroup>
-              </FormGroup>
+                    <FormGroup>
+                        <TranslatedLabel text="Have there been any instances of domestic violence after receiving the scheme benefit?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="domesticViolence" value="yes" checked={formData.section3.domesticViolence === 'yes'} onChange={(e) => handleInputChange('section3', 'domesticViolence', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="domesticViolence" value="no" checked={formData.section3.domesticViolence === 'no'} onChange={(e) => handleInputChange('section3', 'domesticViolence', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="domesticViolence" value="prefer_not_to_say" checked={formData.section3.domesticViolence === 'prefer_not_to_say'} onChange={(e) => handleInputChange('section3', 'domesticViolence', e.target.value)} />
+                                <TranslatedText>Prefer not to say</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
                 </QuestionCard>
-              </QuestionGroup>
-            </SectionContent>
-          </>
-        )}
+
+                {/* Q7: Relocated to new place? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Did you relocate to a new place after your marriage?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="relocatedAfterMarriage" value="yes" checked={formData.section3.relocatedAfterMarriage === 'yes'} onChange={(e) => handleInputChange('section3', 'relocatedAfterMarriage', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="relocatedAfterMarriage" value="no" checked={formData.section3.relocatedAfterMarriage === 'no'} onChange={(e) => handleInputChange('section3', 'relocatedAfterMarriage', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                    {formData.section3.relocatedAfterMarriage === 'yes' && (
+                        <FormGroup>
+                            <TranslatedLabel text="If Yes, what was the main reason for relocating?" />
+                            <RadioGroup>
+                                <RadioItem>
+                                    <Radio name="relocationReason" value="family_opposed" checked={formData.section3.relocationReason === 'family_opposed'} onChange={(e) => handleInputChange('section3', 'relocationReason', e.target.value)} />
+                                    <TranslatedText>Because family and neighbours are opposed to the marriage</TranslatedText>
+                                </RadioItem>
+                                <RadioItem>
+                                    <Radio name="relocationReason" value="better_job" checked={formData.section3.relocationReason === 'better_job'} onChange={(e) => handleInputChange('section3', 'relocationReason', e.target.value)} />
+                                    <TranslatedText>To find better job opportunities</TranslatedText>
+                                </RadioItem>
+                                <RadioItem>
+                                    <Radio name="relocationReason" value="lack_of_acceptance" checked={formData.section3.relocationReason === 'lack_of_acceptance'} onChange={(e) => handleInputChange('section3', 'relocationReason', e.target.value)} />
+                                    <TranslatedText>Due to lack of acceptance in native place</TranslatedText>
+                                </RadioItem>
+                                <RadioItem>
+                                    <Radio name="relocationReason" value="new_life" checked={formData.section3.relocationReason === 'new_life'} onChange={(e) => handleInputChange('section3', 'relocationReason', e.target.value)} />
+                                    <TranslatedText>To start a new life independently</TranslatedText>
+                                </RadioItem>
+                                <RadioItem>
+                                    <Radio name="relocationReason" value="other" checked={formData.section3.relocationReason === 'other'} onChange={(e) => handleInputChange('section3', 'relocationReason', e.target.value)} />
+                                    <TranslatedText>Other (Please specify)</TranslatedText>
+                                </RadioItem>
+                            </RadioGroup>
+                            {formData.section3.relocationReason === 'other' && (
+                                <Input type="text" value={formData.section3.relocationReasonOther || ''} onChange={(e) => handleInputChange('section3', 'relocationReasonOther', e.target.value)} placeholder={t('Specify other reason')} />
+                            )}
+                        </FormGroup>
+                    )}
+                </QuestionCard>
+
+                {/* Q8: Police complaint? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Has any police complaint ever been filed against you because of your marriage?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="policeComplaint" value="yes" checked={formData.section3.policeComplaint === 'yes'} onChange={(e) => handleInputChange('section3', 'policeComplaint', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="policeComplaint" value="no" checked={formData.section3.policeComplaint === 'no'} onChange={(e) => handleInputChange('section3', 'policeComplaint', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                    {formData.section3.policeComplaint === 'yes' && (
+                        <FormGroup>
+                            <TranslatedLabel text="If Yes, provide details (optional):" />
+                            <TextArea value={formData.section3.policeComplaintDetails || ''} onChange={(e) => handleInputChange('section3', 'policeComplaintDetails', e.target.value)} placeholder={t('Provide details of the police complaint')} />
+                        </FormGroup>
+                    )}
+                </QuestionCard>
+
+                {/* Q9: Harassment source */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Who mainly caused the caste-based harassment you faced?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="harassmentCausedBy" value="your_family" checked={formData.section3.harassmentCausedBy === 'your_family'} onChange={(e) => handleInputChange('section3', 'harassmentCausedBy', e.target.value)} />
+                                <TranslatedText>Your family members</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="harassmentCausedBy" value="spouse_family" checked={formData.section3.harassmentCausedBy === 'spouse_family'} onChange={(e) => handleInputChange('section3', 'harassmentCausedBy', e.target.value)} />
+                                <TranslatedText>Your husband/wife’s family members</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="harassmentCausedBy" value="neighbours" checked={formData.section3.harassmentCausedBy === 'neighbours'} onChange={(e) => handleInputChange('section3', 'harassmentCausedBy', e.target.value)} />
+                                <TranslatedText>Neighbours/villagers</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="harassmentCausedBy" value="religious_groups" checked={formData.section3.harassmentCausedBy === 'religious_groups'} onChange={(e) => handleInputChange('section3', 'harassmentCausedBy', e.target.value)} />
+                                <TranslatedText>Religious or social groups</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="harassmentCausedBy" value="others" checked={formData.section3.harassmentCausedBy === 'others'} onChange={(e) => handleInputChange('section3', 'harassmentCausedBy', e.target.value)} />
+                                <TranslatedText>Others (Please specify)</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                        {formData.section3.harassmentCausedBy === 'others' && (
+                            <Input type="text" value={formData.section3.harassmentCausedByOther || ''} onChange={(e) => handleInputChange('section3', 'harassmentCausedByOther', e.target.value)} placeholder={t('Specify others')} />
+                        )}
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q10: Discrimination ways */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="In what ways did you experience discrimination or mistreatment? (Select all that apply)" />
+                        <CheckboxGroup>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.discriminationWays?.includes('verbal_abuse')} onChange={(e) => handleCheckboxChange('section3', 'discriminationWays', 'verbal_abuse', e.target.checked)} />
+                                <TranslatedText>Verbal abuse</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.discriminationWays?.includes('physical_assault')} onChange={(e) => handleCheckboxChange('section3', 'discriminationWays', 'physical_assault', e.target.checked)} />
+                                <TranslatedText>Physical assault</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.discriminationWays?.includes('social_boycott')} onChange={(e) => handleCheckboxChange('section3', 'discriminationWays', 'social_boycott', e.target.checked)} />
+                                <TranslatedText>Social boycott</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.discriminationWays?.includes('denial_of_property')} onChange={(e) => handleCheckboxChange('section3', 'discriminationWays', 'denial_of_property', e.target.checked)} />
+                                <TranslatedText>Denial of property or housing</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.discriminationWays?.includes('threats_to_life')} onChange={(e) => handleCheckboxChange('section3', 'discriminationWays', 'threats_to_life', e.target.checked)} />
+                                <TranslatedText>Threats to life</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.discriminationWays?.includes('false_legal_complaints')} onChange={(e) => handleCheckboxChange('section3', 'discriminationWays', 'false_legal_complaints', e.target.checked)} />
+                                <TranslatedText>False legal complaints</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.discriminationWays?.includes('other')} onChange={(e) => handleCheckboxChange('section3', 'discriminationWays', 'other', e.target.checked)} />
+                                <TranslatedText>Other (Please specify)</TranslatedText>
+                            </CheckboxItem>
+                        </CheckboxGroup>
+                        {formData.section3.discriminationWays?.includes('other') && (
+                            <Input type="text" value={formData.section3.discriminationWaysOther || ''} onChange={(e) => handleInputChange('section3', 'discriminationWaysOther', e.target.value)} placeholder={t('Specify other forms of mistreatment')} />
+                        )}
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q11: Gained recognition? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Do you feel that you have gained recognition in the society because of receiving the scheme benefit?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="gainedRecognition" value="yes" checked={formData.section3.gainedRecognition === 'yes'} onChange={(e) => handleInputChange('section3', 'gainedRecognition', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="gainedRecognition" value="no" checked={formData.section3.gainedRecognition === 'no'} onChange={(e) => handleInputChange('section3', 'gainedRecognition', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                    {formData.section3.gainedRecognition === 'yes' && (
+                        <FormGroup>
+                            <TranslatedLabel text="If Yes, in what ways? (Select all that apply):" />
+                            <CheckboxGroup>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.recognitionWays?.includes('better_family_response')} onChange={(e) => handleCheckboxChange('section3', 'recognitionWays', 'better_family_response', e.target.checked)} />
+                                    <TranslatedText>Better response/relationship from family members</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.recognitionWays?.includes('greater_respect_community')} onChange={(e) => handleCheckboxChange('section3', 'recognitionWays', 'greater_respect_community', e.target.checked)} />
+                                    <TranslatedText>Greater respect in the community</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.recognitionWays?.includes('more_support_neighbours')} onChange={(e) => handleCheckboxChange('section3', 'recognitionWays', 'more_support_neighbours', e.target.checked)} />
+                                    <TranslatedText>More support from neighbours and local people</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.recognitionWays?.includes('social_programs_opportunity')} onChange={(e) => handleCheckboxChange('section3', 'recognitionWays', 'social_programs_opportunity', e.target.checked)} />
+                                    <TranslatedText>Opportunity to participate in social programs</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.recognitionWays?.includes('recognition_local_admin')} onChange={(e) => handleCheckboxChange('section3', 'recognitionWays', 'recognition_local_admin', e.target.checked)} />
+                                    <TranslatedText>Recognition from local administration</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.recognitionWays?.includes('other')} onChange={(e) => handleCheckboxChange('section3', 'recognitionWays', 'other', e.target.checked)} />
+                                    <TranslatedText>Other (Please specify)</TranslatedText>
+                                </CheckboxItem>
+                            </CheckboxGroup>
+                            {formData.section3.recognitionWays?.includes('other') && (
+                                <Input type="text" value={formData.section3.recognitionWaysOther || ''} onChange={(e) => handleInputChange('section3', 'recognitionWaysOther', e.target.value)} placeholder={t('Specify other ways of recognition')} />
+                            )}
+                        </FormGroup>
+                    )}
+                </QuestionCard>
+                
+                {/* Q12: Cordial relationship with in-laws? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Has receiving the benefit enabled you to have a cordial relationship with your in-laws?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="cordialRelationshipInLaws" value="yes" checked={formData.section3.cordialRelationshipInLaws === 'yes'} onChange={(e) => handleInputChange('section3', 'cordialRelationshipInLaws', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="cordialRelationshipInLaws" value="no" checked={formData.section3.cordialRelationshipInLaws === 'no'} onChange={(e) => handleInputChange('section3', 'cordialRelationshipInLaws', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="cordialRelationshipInLaws" value="not_applicable" checked={formData.section3.cordialRelationshipInLaws === 'not_applicable'} onChange={(e) => handleInputChange('section3', 'cordialRelationshipInLaws', e.target.value)} />
+                                <TranslatedText>Not applicable</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                    {formData.section3.cordialRelationshipInLaws === 'yes' && (
+                        <FormGroup>
+                            <TranslatedLabel text="If Yes, in what ways? (Select all that apply):" />
+                            <CheckboxGroup>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.cordialRelationshipWays?.includes('reduced_financial_burden')} onChange={(e) => handleCheckboxChange('section3', 'cordialRelationshipWays', 'reduced_financial_burden', e.target.checked)} />
+                                    <TranslatedText>Reduced financial burden on the household</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.cordialRelationshipWays?.includes('improved_mutual_respect')} onChange={(e) => handleCheckboxChange('section3', 'cordialRelationshipWays', 'improved_mutual_respect', e.target.checked)} />
+                                    <TranslatedText>Improved mutual respect and relationships</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.cordialRelationshipWays?.includes('greater_involvement_decisions')} onChange={(e) => handleCheckboxChange('section3', 'cordialRelationshipWays', 'greater_involvement_decisions', e.target.checked)} />
+                                    <TranslatedText>Greater involvement in family decisions</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.cordialRelationshipWays?.includes('better_living_conditions')} onChange={(e) => handleCheckboxChange('section3', 'cordialRelationshipWays', 'better_living_conditions', e.target.checked)} />
+                                    <TranslatedText>Better living conditions (e.g., housing, other amenities)</TranslatedText>
+                                </CheckboxItem>
+                                <CheckboxItem>
+                                    <Checkbox checked={formData.section3.cordialRelationshipWays?.includes('other')} onChange={(e) => handleCheckboxChange('section3', 'cordialRelationshipWays', 'other', e.target.checked)} />
+                                    <TranslatedText>Other (Please specify)</TranslatedText>
+                                </CheckboxItem>
+                            </CheckboxGroup>
+                            {formData.section3.cordialRelationshipWays?.includes('other') && (
+                                <Input type="text" value={formData.section3.cordialRelationshipWaysOther || ''} onChange={(e) => handleInputChange('section3', 'cordialRelationshipWaysOther', e.target.value)} placeholder={t('Specify other ways')} />
+                            )}
+                        </FormGroup>
+                    )}
+                </QuestionCard>
+
+                {/* Q13: Public opinion change */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="This scheme has helped bring about a positive and progressive change in public opinion regarding inter-caste marriages, widow remarriage, Ex Devadasi children’s marriages, and inter-sub-caste marriages." />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="progressiveChangePublicOpinion" value="strongly_disagree" checked={formData.section3.progressiveChangePublicOpinion === 'strongly_disagree'} onChange={(e) => handleInputChange('section3', 'progressiveChangePublicOpinion', e.target.value)} />
+                                <TranslatedText>Strongly disagree</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="progressiveChangePublicOpinion" value="disagree" checked={formData.section3.progressiveChangePublicOpinion === 'disagree'} onChange={(e) => handleInputChange('section3', 'progressiveChangePublicOpinion', e.target.value)} />
+                                <TranslatedText>Disagree</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="progressiveChangePublicOpinion" value="neutral" checked={formData.section3.progressiveChangePublicOpinion === 'neutral'} onChange={(e) => handleInputChange('section3', 'progressiveChangePublicOpinion', e.target.value)} />
+                                <TranslatedText>Neutral</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="progressiveChangePublicOpinion" value="agree" checked={formData.section3.progressiveChangePublicOpinion === 'agree'} onChange={(e) => handleInputChange('section3', 'progressiveChangePublicOpinion', e.target.value)} />
+                                <TranslatedText>Agree</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="progressiveChangePublicOpinion" value="strongly_agree" checked={formData.section3.progressiveChangePublicOpinion === 'strongly_agree'} onChange={(e) => handleInputChange('section3', 'progressiveChangePublicOpinion', e.target.value)} />
+                                <TranslatedText>Strongly agree</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q14: Who supported you? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Who supported you during or after your marriage? (Select all that apply)" />
+                        <CheckboxGroup>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.supportSource?.includes('parents')} onChange={(e) => handleCheckboxChange('section3', 'supportSource', 'parents', e.target.checked)} />
+                                <TranslatedText>Parents or close family members</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.supportSource?.includes('friends')} onChange={(e) => handleCheckboxChange('section3', 'supportSource', 'friends', e.target.checked)} />
+                                <TranslatedText>Friends</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.supportSource?.includes('spouse_family')} onChange={(e) => handleCheckboxChange('section3', 'supportSource', 'spouse_family', e.target.checked)} />
+                                <TranslatedText>Husband/wife’s family</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.supportSource?.includes('community_leaders')} onChange={(e) => handleCheckboxChange('section3', 'supportSource', 'community_leaders', e.target.checked)} />
+                                <TranslatedText>Community leaders or local representatives</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.supportSource?.includes('ngos')} onChange={(e) => handleCheckboxChange('section3', 'supportSource', 'ngos', e.target.checked)} />
+                                <TranslatedText>NGOs or support organizations</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.supportSource?.includes('government_officials')} onChange={(e) => handleCheckboxChange('section3', 'supportSource', 'government_officials', e.target.checked)} />
+                                <TranslatedText>Government officials</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.supportSource?.includes('no_one')} onChange={(e) => handleCheckboxChange('section3', 'supportSource', 'no_one', e.target.checked)} />
+                                <TranslatedText>No one</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section3.supportSource?.includes('other')} onChange={(e) => handleCheckboxChange('section3', 'supportSource', 'other', e.target.checked)} />
+                                <TranslatedText>Other (Please specify)</TranslatedText>
+                            </CheckboxItem>
+                        </CheckboxGroup>
+                        {formData.section3.supportSource?.includes('other') && (
+                            <Input type="text" value={formData.section3.supportSourceOther || ''} onChange={(e) => handleInputChange('section3', 'supportSourceOther', e.target.value)} placeholder={t('Specify other support source')} />
+                        )}
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q15: Marriage influence on others */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Has your marriage influenced others in your community to consider or support similar marriages?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="marriageInfluence" value="yes" checked={formData.section3.marriageInfluence === 'yes'} onChange={(e) => handleInputChange('section3', 'marriageInfluence', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="marriageInfluence" value="no" checked={formData.section3.marriageInfluence === 'no'} onChange={(e) => handleInputChange('section3', 'marriageInfluence', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="marriageInfluence" value="not_sure" checked={formData.section3.marriageInfluence === 'not_sure'} onChange={(e) => handleInputChange('section3', 'marriageInfluence', e.target.value)} />
+                                <TranslatedText>Not sure</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q16: Recommend scheme? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Would you suggest or recommend this scheme to others?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="recommendScheme" value="yes" checked={formData.section3.recommendScheme === 'yes'} onChange={(e) => handleInputChange('section3', 'recommendScheme', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="recommendScheme" value="no" checked={formData.section3.recommendScheme === 'no'} onChange={(e) => handleInputChange('section3', 'recommendScheme', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="recommendScheme" value="not_sure" checked={formData.section3.recommendScheme === 'not_sure'} onChange={(e) => handleInputChange('section3', 'recommendScheme', e.target.value)} />
+                                <TranslatedText>Not sure</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q17: Feel safe? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Do you feel safe in your community after receiving the scheme benefit?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="safetyInCommunity" value="much_safer" checked={formData.section3.safetyInCommunity === 'much_safer'} onChange={(e) => handleInputChange('section3', 'safetyInCommunity', e.target.value)} />
+                                <TranslatedText>Yes – Much safer</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="safetyInCommunity" value="slightly_safer" checked={formData.section3.safetyInCommunity === 'slightly_safer'} onChange={(e) => handleInputChange('section3', 'safetyInCommunity', e.target.value)} />
+                                <TranslatedText>Yes – Slightly safer</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="safetyInCommunity" value="no_change" checked={formData.section3.safetyInCommunity === 'no_change'} onChange={(e) => handleInputChange('section3', 'safetyInCommunity', e.target.value)} />
+                                <TranslatedText>No change</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="safetyInCommunity" value="less_safe" checked={formData.section3.safetyInCommunity === 'less_safe'} onChange={(e) => handleInputChange('section3', 'safetyInCommunity', e.target.value)} />
+                                <TranslatedText>Feel less safe</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="safetyInCommunity" value="not_sure" checked={formData.section3.safetyInCommunity === 'not_sure'} onChange={(e) => handleInputChange('section3', 'safetyInCommunity', e.target.value)} />
+                                <TranslatedText>Not sure</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q18: Opposition after benefit? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Have you faced any opposition or negative behaviour from your community/family/neighbours after receiving the scheme benefit?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="oppositionAfterBenefit" value="yes" checked={formData.section3.oppositionAfterBenefit === 'yes'} onChange={(e) => handleInputChange('section3', 'oppositionAfterBenefit', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="oppositionAfterBenefit" value="no" checked={formData.section3.oppositionAfterBenefit === 'no'} onChange={(e) => handleInputChange('section3', 'oppositionAfterBenefit', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="oppositionAfterBenefit" value="not_sure" checked={formData.section3.oppositionAfterBenefit === 'not_sure'} onChange={(e) => handleInputChange('section3', 'oppositionAfterBenefit', e.target.value)} />
+                                <TranslatedText>Not sure</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                    {formData.section3.oppositionAfterBenefit === 'yes' && (
+                        <FormGroup>
+                            <TranslatedLabel text="If Yes, please specify:" />
+                            <Input type="text" value={formData.section3.oppositionDetails || ''} onChange={(e) => handleInputChange('section3', 'oppositionDetails', e.target.value)} placeholder={t('Specify details of the opposition')} />
+                        </FormGroup>
+                    )}
+                </QuestionCard>
+
+            </QuestionGroup>
+          </SectionContent>
+        </>
+    )}
+    
+        {/* Section 4: Awareness, Access & Quality of Service */}
+{currentSection === 4 && (
+  <>
+    <ModernSectionHeader>
+      <ModernSectionTitle>{t('Section 4: Awareness, Access & Quality of Service')}</ModernSectionTitle>
+      <ModernSectionDesc>{t('This section will enable accurate information on awareness of benefits, application process, reasons for approval/rejection, and feedback on the quality of services received, as well as timely delivery and impact.')}</ModernSectionDesc>
+    </ModernSectionHeader>
+    <SectionContent>
+      <QuestionGroup>
+
+        {/* Q1: Who made you aware of this scheme? */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Who made you aware of this scheme?" />
+            <RadioGroup>
+              <RadioItem>
+<Radio name="awarenessSource" value="government_official" checked={formData.section4.awarenessSource === 'government_official'} onChange={(e) => handleInputChange('section4', 'awarenessSource', e.target.value as AwarenessSource)} />
+                <TranslatedText>Government official</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="awarenessSource" value="community_leader" checked={formData.section4.awarenessSource === 'community_leader'} onChange={(e) => handleInputChange('section4', 'awarenessSource', e.target.value as AwarenessSource)} />
+                <TranslatedText>Community leader or local representative</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="awarenessSource" value="panchayat" checked={formData.section4.awarenessSource === 'panchayat'} onChange={(e) => handleInputChange('section4', 'awarenessSource', e.target.value as AwarenessSource)} />
+                <TranslatedText>Panchayat or Ward Member</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="awarenessSource" value="friends_family" checked={formData.section4.awarenessSource === 'friends_family'} onChange={(e) => handleInputChange('section4', 'awarenessSource', e.target.value as AwarenessSource)} />
+                <TranslatedText>Friends or family</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="awarenessSource" value="media" checked={formData.section4.awarenessSource === 'media'} onChange={(e) => handleInputChange('section4', 'awarenessSource', e.target.value as AwarenessSource)} />
+                <TranslatedText>Television, radio, or newspaper</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="awarenessSource" value="social_media" checked={formData.section4.awarenessSource === 'social_media'} onChange={(e) => handleInputChange('section4', 'awarenessSource', e.target.value as AwarenessSource)} />
+                <TranslatedText>Social media</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="awarenessSource" value="online_portal" checked={formData.section4.awarenessSource === 'online_portal'} onChange={(e) => handleInputChange('section4', 'awarenessSource', e.target.value as AwarenessSource)} />
+                <TranslatedText>Online portal or app</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="awarenessSource" value="other" checked={formData.section4.awarenessSource === 'other'} onChange={(e) => handleInputChange('section4', 'awarenessSource', e.target.value as AwarenessSource)} />
+                <TranslatedText>Other (Please specify)</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+            {formData.section4.awarenessSource === 'other' && (
+              <Input type="text" value={formData.section4.awarenessSourceOther || ''} onChange={(e) => handleInputChange('section4', 'awarenessSourceOther', e.target.value)} placeholder={t('Specify other source')} />
+            )}
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q2: How supportive were the officials? */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="How supportive were the officials during the application process?" />
+            <RadioGroup>
+              <RadioItem>
+<Radio name="officialsSupportiveness" value="not_at_all" checked={formData.section4.officialsSupportiveness === 'not_at_all'} onChange={(e) => handleInputChange('section4', 'officialsSupportiveness', e.target.value as OfficialsSupportiveness)} />
+                <TranslatedText>Not at all supportive</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="officialsSupportiveness" value="slightly" checked={formData.section4.officialsSupportiveness === 'slightly'} onChange={(e) => handleInputChange('section4', 'officialsSupportiveness', e.target.value as OfficialsSupportiveness)} />
+                <TranslatedText>Slightly supportive</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="officialsSupportiveness" value="moderately" checked={formData.section4.officialsSupportiveness === 'moderately'} onChange={(e) => handleInputChange('section4', 'officialsSupportiveness', e.target.value as OfficialsSupportiveness)} />
+                <TranslatedText>Moderately supportive</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="officialsSupportiveness" value="very" checked={formData.section4.officialsSupportiveness === 'very'} onChange={(e) => handleInputChange('section4', 'officialsSupportiveness', e.target.value as OfficialsSupportiveness)} />
+                <TranslatedText>Very supportive</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="officialsSupportiveness" value="extremely" checked={formData.section4.officialsSupportiveness === 'extremely'} onChange={(e) => handleInputChange('section4', 'officialsSupportiveness', e.target.value as OfficialsSupportiveness)} />
+                <TranslatedText>Extremely supportive</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q3: How easy or difficult was the application process? */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="How easy or difficult was the application process for the scheme?" />
+            <RadioGroup>
+              <RadioItem>
+<Radio name="applicationProcessDifficulty" value="very_easy" checked={formData.section4.applicationProcessDifficulty === 'very_easy'} onChange={(e) => handleInputChange('section4', 'applicationProcessDifficulty', e.target.value as ApplicationProcessDifficulty)} />
+                <TranslatedText>Very Easy</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="applicationProcessDifficulty" value="easy" checked={formData.section4.applicationProcessDifficulty === 'easy'} onChange={(e) => handleInputChange('section4', 'applicationProcessDifficulty', e.target.value as ApplicationProcessDifficulty)} />
+                <TranslatedText>Easy</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="applicationProcessDifficulty" value="moderate" checked={formData.section4.applicationProcessDifficulty === 'moderate'} onChange={(e) => handleInputChange('section4', 'applicationProcessDifficulty', e.target.value as ApplicationProcessDifficulty)} />
+                <TranslatedText>Moderate</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="applicationProcessDifficulty" value="difficult" checked={formData.section4.applicationProcessDifficulty === 'difficult'} onChange={(e) => handleInputChange('section4', 'applicationProcessDifficulty', e.target.value as ApplicationProcessDifficulty)} />
+                <TranslatedText>Difficult</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="applicationProcessDifficulty" value="very_difficult" checked={formData.section4.applicationProcessDifficulty === 'very_difficult'} onChange={(e) => handleInputChange('section4', 'applicationProcessDifficulty', e.target.value as ApplicationProcessDifficulty)} />
+                <TranslatedText>Very Difficult</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q4: Did anyone help you? */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Did anyone help you while submitting the online application?" />
+            <RadioGroup>
+              <RadioItem>
+<Radio name="applicationHelpSource" value="department_staff" checked={formData.section4.applicationHelpSource === 'department_staff'} onChange={(e) => handleInputChange('section4', 'applicationHelpSource', e.target.value as ApplicationHelpSource)} />
+                <TranslatedText>Yes – Received help from department staff</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="applicationHelpSource" value="friend_or_family" checked={formData.section4.applicationHelpSource === 'friend_or_family'} onChange={(e) => handleInputChange('section4', 'applicationHelpSource', e.target.value as ApplicationHelpSource)} />
+                <TranslatedText>Yes – Received help from a friend or family member</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="applicationHelpSource" value="on_my_own" checked={formData.section4.applicationHelpSource === 'on_my_own'} onChange={(e) => handleInputChange('section4', 'applicationHelpSource', e.target.value as ApplicationHelpSource)} />
+                <TranslatedText>No – Filled it on my own</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="applicationHelpSource" value="other" checked={formData.section4.applicationHelpSource === 'other'} onChange={(e) => handleInputChange('section4', 'applicationHelpSource', e.target.value as ApplicationHelpSource)} />
+                <TranslatedText>Other (Please specify)</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+            {formData.section4.applicationHelpSource === 'other' && (
+              <Input type="text" value={formData.section4.applicationHelpSourceOther || ''} onChange={(e) => handleInputChange('section4', 'applicationHelpSourceOther', e.target.value)} placeholder={t('Specify who helped you')} />
+            )}
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q5: Time to receive benefit */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="How much time did it take to receive the scheme benefit after applying?" />
+            <RadioGroup>
+              <RadioItem>
+<Radio name="timeToReceiveBenefit" value="less_than_3_months" checked={formData.section4.timeToReceiveBenefit === 'less_than_3_months'} onChange={(e) => handleInputChange('section4', 'timeToReceiveBenefit', e.target.value as TimeToReceiveBenefit)} />
+                <TranslatedText>Less than 3 months</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="timeToReceiveBenefit" value="3_6_months" checked={formData.section4.timeToReceiveBenefit === '3_6_months'} onChange={(e) => handleInputChange('section4', 'timeToReceiveBenefit', e.target.value as TimeToReceiveBenefit)} />
+                <TranslatedText>3-6 months</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="timeToReceiveBenefit" value="6_12_months" checked={formData.section4.timeToReceiveBenefit === '6_12_months'} onChange={(e) => handleInputChange('section4', 'timeToReceiveBenefit', e.target.value as TimeToReceiveBenefit)} />
+                <TranslatedText>6-12 months</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="timeToReceiveBenefit" value="1_2_years" checked={formData.section4.timeToReceiveBenefit === '1_2_years'} onChange={(e) => handleInputChange('section4', 'timeToReceiveBenefit', e.target.value as TimeToReceiveBenefit)} />
+                <TranslatedText>1 to 2 years</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="timeToReceiveBenefit" value="still_not_received" checked={formData.section4.timeToReceiveBenefit === 'still_not_received'} onChange={(e) => handleInputChange('section4', 'timeToReceiveBenefit', e.target.value as TimeToReceiveBenefit)} />
+                <TranslatedText>Still not received</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="timeToReceiveBenefit" value="cant_remember" checked={formData.section4.timeToReceiveBenefit === 'cant_remember'} onChange={(e) => handleInputChange('section4', 'timeToReceiveBenefit', e.target.value as TimeToReceiveBenefit)} />
+                <TranslatedText>Can’t remember</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q6: Overall process rating */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="How do you consider the overall process of obtaining the scheme benefit?" />
+            <RadioGroup>
+              <RadioItem>
+<Radio name="overallProcessRating" value="very_easy" checked={formData.section4.overallProcessRating === 'very_easy'} onChange={(e) => handleInputChange('section4', 'overallProcessRating', e.target.value as OverallProcessRating)} />
+                <TranslatedText>Very Easy</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="overallProcessRating" value="easy" checked={formData.section4.overallProcessRating === 'easy'} onChange={(e) => handleInputChange('section4', 'overallProcessRating', e.target.value as OverallProcessRating)} />
+                <TranslatedText>Easy</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="overallProcessRating" value="moderate" checked={formData.section4.overallProcessRating === 'moderate'} onChange={(e) => handleInputChange('section4', 'overallProcessRating', e.target.value as OverallProcessRating)} />
+                <TranslatedText>Moderate</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="overallProcessRating" value="difficult" checked={formData.section4.overallProcessRating === 'difficult'} onChange={(e) => handleInputChange('section4', 'overallProcessRating', e.target.value as OverallProcessRating)} />
+                <TranslatedText>Difficult</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="overallProcessRating" value="very_difficult" checked={formData.section4.overallProcessRating === 'very_difficult'} onChange={(e) => handleInputChange('section4', 'overallProcessRating', e.target.value as OverallProcessRating)} />
+                <TranslatedText>Very Difficult</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q7: Participated in awareness programs? */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Have you ever taken part in any awareness programs that promote intercaste harmony?" />
+            <RadioGroup>
+              <RadioItem>
+<Radio name="participatedInAwarenessPrograms" value="yes" checked={formData.section4.participatedInAwarenessPrograms === 'yes'} onChange={(e) => handleInputChange('section4', 'participatedInAwarenessPrograms', e.target.value as YesNo)} />
+                <TranslatedText>Yes</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="participatedInAwarenessPrograms" value="no" checked={formData.section4.participatedInAwarenessPrograms === 'no'} onChange={(e) => handleInputChange('section4', 'participatedInAwarenessPrograms', e.target.value as YesNo)} />
+                <TranslatedText>No</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+        </QuestionCard>
+
+        {/* Q8: Invited to speak? */}
+        <QuestionCard>
+          <FormGroup>
+            <TranslatedLabel text="Have you ever been invited to talk or share about the problems you faced/your experience/your success story related to your marriage in any public event?" />
+            <RadioGroup>
+              <RadioItem>
+<Radio name="invitedToSpeak" value="yes" checked={formData.section4.invitedToSpeak === 'yes'} onChange={(e) => handleInputChange('section4', 'invitedToSpeak', e.target.value as InvitedToSpeak)} />
+                <TranslatedText>Yes</TranslatedText>
+              </RadioItem>
+              <RadioItem>
+<Radio name="invitedToSpeak" value="no" checked={formData.section4.invitedToSpeak === 'no'} onChange={(e) => handleInputChange('section4', 'invitedToSpeak', e.target.value as InvitedToSpeak)} />
+                <TranslatedText>No</TranslatedText>
+              </RadioItem>
+            </RadioGroup>
+          </FormGroup>
+          {formData.section4.invitedToSpeak === 'yes' && (
+            <FormGroup>
+              <TranslatedLabel text="If Yes, where did you share your experience? (Select all that apply):" />
+              <CheckboxGroup>
+                <CheckboxItem>
+<Checkbox checked={formData.section4.speakingPlatforms?.includes('community_meetings')} onChange={(e) => handleCheckboxChange('section4', 'speakingPlatforms', 'community_meetings' as SpeakingPlatform, e.target.checked)} />
+                  <TranslatedText>Community or village meetings (Gram Sabha)</TranslatedText>
+                </CheckboxItem>
+                <CheckboxItem>
+<Checkbox checked={formData.section4.speakingPlatforms?.includes('school_college')} onChange={(e) => handleCheckboxChange('section4', 'speakingPlatforms', 'school_college' as SpeakingPlatform, e.target.checked)} />
+                  <TranslatedText>School or college awareness programs</TranslatedText>
+                </CheckboxItem>
+                <CheckboxItem>
+<Checkbox checked={formData.section4.speakingPlatforms?.includes('ngo_events')} onChange={(e) => handleCheckboxChange('section4', 'speakingPlatforms', 'ngo_events' as SpeakingPlatform, e.target.checked)} />
+                  <TranslatedText>NGO-organized events</TranslatedText>
+                </CheckboxItem>
+                <CheckboxItem>
+<Checkbox checked={formData.section4.speakingPlatforms?.includes('government_programs')} onChange={(e) => handleCheckboxChange('section4', 'speakingPlatforms', 'government_programs' as SpeakingPlatform, e.target.checked)} />
+                  <TranslatedText>Government or official programs</TranslatedText>
+                </CheckboxItem>
+                <CheckboxItem>
+<Checkbox checked={formData.section4.speakingPlatforms?.includes('religious_gatherings')} onChange={(e) => handleCheckboxChange('section4', 'speakingPlatforms', 'religious_gatherings' as SpeakingPlatform, e.target.checked)} />
+                  <TranslatedText>Religious or cultural gatherings</TranslatedText>
+                </CheckboxItem>
+                <CheckboxItem>
+<Checkbox checked={formData.section4.speakingPlatforms?.includes('media_interviews')} onChange={(e) => handleCheckboxChange('section4', 'speakingPlatforms', 'media_interviews' as SpeakingPlatform, e.target.checked)} />
+                  <TranslatedText>Media interviews (TV, radio, newspaper)</TranslatedText>
+                </CheckboxItem>
+                <CheckboxItem>
+<Checkbox checked={formData.section4.speakingPlatforms?.includes('other')} onChange={(e) => handleCheckboxChange('section4', 'speakingPlatforms', 'other' as SpeakingPlatform, e.target.checked)} />
+                  <TranslatedText>Other (Please specify)</TranslatedText>
+                </CheckboxItem>
+              </CheckboxGroup>
+              {formData.section4.speakingPlatforms?.includes('other') && (
+                <Input type="text" value={formData.section4.speakingPlatformsOther || ''} onChange={(e) => handleInputChange('section4', 'speakingPlatformsOther', e.target.value)} placeholder={t('Specify other platform')} />
+              )}
+            </FormGroup>
+          )}
+        </QuestionCard>
+
+      </QuestionGroup>
+    </SectionContent>
+  </>
+)}
+
+       {/* Section 5: Overall Satisfaction, Challenges & Recommendations */}
+{currentSection === 5 && (
+    <>
+        <ModernSectionHeader>
+            <ModernSectionTitle>{t('Section 5: Overall Satisfaction, Challenges & Recommendations')}</ModernSectionTitle>
+            <ModernSectionDesc>{t('Suggestions and improvements')}</ModernSectionDesc>
+        </ModernSectionHeader>
+        <SectionContent>
+            <QuestionGroup>
+
+                {/* Q1: Scheme success in reducing discrimination */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="In your opinion, how successful has this scheme been in reducing caste-based discrimination?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="successInReducingDiscrimination" value="very_successful" checked={formData.section5.successInReducingDiscrimination === 'very_successful'} onChange={(e) => handleInputChange('section5', 'successInReducingDiscrimination', e.target.value)} />
+                                <TranslatedText>Very Successful</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="successInReducingDiscrimination" value="successful" checked={formData.section5.successInReducingDiscrimination === 'successful'} onChange={(e) => handleInputChange('section5', 'successInReducingDiscrimination', e.target.value)} />
+                                <TranslatedText>Successful</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="successInReducingDiscrimination" value="moderately_successful" checked={formData.section5.successInReducingDiscrimination === 'moderately_successful'} onChange={(e) => handleInputChange('section5', 'successInReducingDiscrimination', e.target.value)} />
+                                <TranslatedText>Moderately Successful</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="successInReducingDiscrimination" value="not_successful" checked={formData.section5.successInReducingDiscrimination === 'not_successful'} onChange={(e) => handleInputChange('section5', 'successInReducingDiscrimination', e.target.value)} />
+                                <TranslatedText>Not Successful</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="successInReducingDiscrimination" value="unsure" checked={formData.section5.successInReducingDiscrimination === 'unsure'} onChange={(e) => handleInputChange('section5', 'successInReducingDiscrimination', e.target.value)} />
+                                <TranslatedText>Unsure</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q2: Scheme success in providing a safe attitude/security */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="In your opinion, how successful has this scheme been in providing a safe attitude to beneficiaries?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="successInProvidingSecurity" value="very_successful" checked={formData.section5.successInProvidingSecurity === 'very_successful'} onChange={(e) => handleInputChange('section5', 'successInProvidingSecurity', e.target.value)} />
+                                <TranslatedText>Very Successful</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="successInProvidingSecurity" value="successful" checked={formData.section5.successInProvidingSecurity === 'successful'} onChange={(e) => handleInputChange('section5', 'successInProvidingSecurity', e.target.value)} />
+                                <TranslatedText>Successful</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="successInProvidingSecurity" value="moderately_successful" checked={formData.section5.successInProvidingSecurity === 'moderately_successful'} onChange={(e) => handleInputChange('section5', 'successInProvidingSecurity', e.target.value)} />
+                                <TranslatedText>Moderately Successful</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="successInProvidingSecurity" value="not_successful" checked={formData.section5.successInProvidingSecurity === 'not_successful'} onChange={(e) => handleInputChange('section5', 'successInProvidingSecurity', e.target.value)} />
+                                <TranslatedText>Not Successful</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="successInProvidingSecurity" value="unsure" checked={formData.section5.successInProvidingSecurity === 'unsure'} onChange={(e) => handleInputChange('section5', 'successInProvidingSecurity', e.target.value)} />
+                                <TranslatedText>Unsure</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q3: Which aspects need improvement? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Which aspects of the scheme do you think need improvement? (Select all that apply)" />
+                        <CheckboxGroup>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.improvementAreas.includes('awareness_and_publicity')} onChange={(e) => handleCheckboxChange('section5', 'improvementAreas', 'awareness_and_publicity', e.target.checked)} />
+                                <TranslatedText>Awareness and publicity of the scheme</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.improvementAreas.includes('clarity_of_guidelines')} onChange={(e) => handleCheckboxChange('section5', 'improvementAreas', 'clarity_of_guidelines', e.target.checked)} />
+                                <TranslatedText>Clarity of guidelines and documentation to be provided</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.improvementAreas.includes('application_and_approval')} onChange={(e) => handleCheckboxChange('section5', 'improvementAreas', 'application_and_approval', e.target.checked)} />
+                                <TranslatedText>Application and approval process</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.improvementAreas.includes('timely_disbursement')} onChange={(e) => handleCheckboxChange('section5', 'improvementAreas', 'timely_disbursement', e.target.checked)} />
+                                <TranslatedText>Timely disbursement of funds</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.improvementAreas.includes('monitoring_and_follow_up')} onChange={(e) => handleCheckboxChange('section5', 'improvementAreas', 'monitoring_and_follow_up', e.target.checked)} />
+                                <TranslatedText>Monitoring and follow-up of beneficiaries</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.improvementAreas.includes('support_services')} onChange={(e) => handleCheckboxChange('section5', 'improvementAreas', 'support_services', e.target.checked)} />
+                                <TranslatedText>Support services after receiving the benefit</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.improvementAreas.includes('other')} onChange={(e) => handleCheckboxChange('section5', 'improvementAreas', 'other', e.target.checked)} />
+                                <TranslatedText>Other (Please specify)</TranslatedText>
+                            </CheckboxItem>
+                        </CheckboxGroup>
+                        {formData.section5.improvementAreas.includes('other') && (
+                            <Input type="text" value={formData.section5.improvementAreasOther || ''} onChange={(e) => handleInputChange('section5', 'improvementAreasOther', e.target.value)} placeholder={t('Specify other area for improvement')} />
+                        )}
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q4: Increase financial incentive? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Do you think the amount of financial incentive provided under the scheme should be increased?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="increaseIncentive" value="yes" checked={formData.section5.increaseIncentive === 'yes'} onChange={(e) => handleInputChange('section5', 'increaseIncentive', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="increaseIncentive" value="no" checked={formData.section5.increaseIncentive === 'no'} onChange={(e) => handleInputChange('section5', 'increaseIncentive', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                    {formData.section5.increaseIncentive === 'yes' && (
+                        <FormGroup>
+                            <TranslatedLabel text="If yes, how much? What amount should be allocated as incentive?" />
+                            <Input type="text" value={formData.section5.increasedIncentiveAmount || ''} onChange={(e) => handleInputChange('section5', 'increasedIncentiveAmount', e.target.value)} placeholder={t('Specify the new amount')} />
+                        </FormGroup>
+                    )}
+                </QuestionCard>
+
+                {/* Q5: How has receiving this scheme helped you? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="How has receiving this scheme helped you? (Select all that apply)" />
+                        <CheckboxGroup>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.schemeBenefits.includes('financial_support')} onChange={(e) => handleCheckboxChange('section5', 'schemeBenefits', 'financial_support', e.target.checked)} />
+                                <TranslatedText>Financial support</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.schemeBenefits.includes('gained_asset')} onChange={(e) => handleCheckboxChange('section5', 'schemeBenefits', 'gained_asset', e.target.checked)} />
+                                <TranslatedText>Gained a specific asset (e.g., land, house, business support)</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.schemeBenefits.includes('improved_social_standing')} onChange={(e) => handleCheckboxChange('section5', 'schemeBenefits', 'improved_social_standing', e.target.checked)} />
+                                <TranslatedText>Improved social standing in the community</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.schemeBenefits.includes('recognition_from_society')} onChange={(e) => handleCheckboxChange('section5', 'schemeBenefits', 'recognition_from_society', e.target.checked)} />
+                                <TranslatedText>Recognition or appreciation from society or officials</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.schemeBenefits.includes('reduced_discrimination')} onChange={(e) => handleCheckboxChange('section5', 'schemeBenefits', 'reduced_discrimination', e.target.checked)} />
+                                <TranslatedText>Reduced social discrimination</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.schemeBenefits.includes('better_emotional_well_being')} onChange={(e) => handleCheckboxChange('section5', 'schemeBenefits', 'better_emotional_well_being', e.target.checked)} />
+                                <TranslatedText>Better emotional or mental well-being</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.schemeBenefits.includes('no_change')} onChange={(e) => handleCheckboxChange('section5', 'schemeBenefits', 'no_change', e.target.checked)} />
+                                <TranslatedText>No noticeable change</TranslatedText>
+                            </CheckboxItem>
+                        </CheckboxGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q6: Should this scheme continue? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Should this scheme continue?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="continueScheme" value="yes" checked={formData.section5.continueScheme === 'yes'} onChange={(e) => handleInputChange('section5', 'continueScheme', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="continueScheme" value="no" checked={formData.section5.continueScheme === 'no'} onChange={(e) => handleInputChange('section5', 'continueScheme', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="continueScheme" value="not_sure" checked={formData.section5.continueScheme === 'not_sure'} onChange={(e) => handleInputChange('section5', 'continueScheme', e.target.value)} />
+                                <TranslatedText>Not sure</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q7: Will marriages become more accepted? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Do you think marriages supported under this scheme (such as inter-caste, widow remarriage, Devadasi children’s marriage, simple and inter-sub-caste marriages) will become more accepted in your community in the next 10 years?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="marriagesMoreAccepted" value="strongly_agree" checked={formData.section5.marriagesMoreAccepted === 'strongly_agree'} onChange={(e) => handleInputChange('section5', 'marriagesMoreAccepted', e.target.value)} />
+                                <TranslatedText>Strongly Agree</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="marriagesMoreAccepted" value="agree" checked={formData.section5.marriagesMoreAccepted === 'agree'} onChange={(e) => handleInputChange('section5', 'marriagesMoreAccepted', e.target.value)} />
+                                <TranslatedText>Agree</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="marriagesMoreAccepted" value="neutral" checked={formData.section5.marriagesMoreAccepted === 'neutral'} onChange={(e) => handleInputChange('section5', 'marriagesMoreAccepted', e.target.value)} />
+                                <TranslatedText>Neutral</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="marriagesMoreAccepted" value="disagree" checked={formData.section5.marriagesMoreAccepted === 'disagree'} onChange={(e) => handleInputChange('section5', 'marriagesMoreAccepted', e.target.value)} />
+                                <TranslatedText>Disagree</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="marriagesMoreAccepted" value="strongly_disagree" checked={formData.section5.marriagesMoreAccepted === 'strongly_disagree'} onChange={(e) => handleInputChange('section5', 'marriagesMoreAccepted', e.target.value)} />
+                                <TranslatedText>Strongly Disagree</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q8: Advocate for inter-caste marriages? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="If given the opportunity, would you openly support or advocate for inter-caste marriages?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="advocateForIntercaste" value="yes" checked={formData.section5.advocateForIntercaste === 'yes'} onChange={(e) => handleInputChange('section5', 'advocateForIntercaste', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="advocateForIntercaste" value="no" checked={formData.section5.advocateForIntercaste === 'no'} onChange={(e) => handleInputChange('section5', 'advocateForIntercaste', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q9: Encourage children to marry inter-caste? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="Would you encourage your children to marry inter-caste?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="encourageChildrenIntercaste" value="yes" checked={formData.section5.encourageChildrenIntercaste === 'yes'} onChange={(e) => handleInputChange('section5', 'encourageChildrenIntercaste', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="encourageChildrenIntercaste" value="no" checked={formData.section5.encourageChildrenIntercaste === 'no'} onChange={(e) => handleInputChange('section5', 'encourageChildrenIntercaste', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="encourageChildrenIntercaste" value="not_sure" checked={formData.section5.encourageChildrenIntercaste === 'not_sure'} onChange={(e) => handleInputChange('section5', 'encourageChildrenIntercaste', e.target.value)} />
+                                <TranslatedText>Not sure</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q10: What kind of future support? */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="What kind of future support would you like to receive from the Government? (Select all that apply)" />
+                        <CheckboxGroup>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.futureSupport.includes('legal_protection')} onChange={(e) => handleCheckboxChange('section5', 'futureSupport', 'legal_protection', e.target.checked)} />
+                                <TranslatedText>Legal protection and counselling support</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.futureSupport.includes('financial_assistance')} onChange={(e) => handleCheckboxChange('section5', 'futureSupport', 'financial_assistance', e.target.checked)} />
+                                <TranslatedText>Financial assistance or subsidies for economic development</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.futureSupport.includes('educational_support')} onChange={(e) => handleCheckboxChange('section5', 'futureSupport', 'educational_support', e.target.checked)} />
+                                <TranslatedText>Educational support for children</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.futureSupport.includes('housing_assistance')} onChange={(e) => handleCheckboxChange('section5', 'futureSupport', 'housing_assistance', e.target.checked)} />
+                                <TranslatedText>Housing assistance</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.futureSupport.includes('mental_health_services')} onChange={(e) => handleCheckboxChange('section5', 'futureSupport', 'mental_health_services', e.target.checked)} />
+                                <TranslatedText>Access to mental health and well-being services</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.futureSupport.includes('skill_development')} onChange={(e) => handleCheckboxChange('section5', 'futureSupport', 'skill_development', e.target.checked)} />
+                                <TranslatedText>Skill development and job training programs</TranslatedText>
+                            </CheckboxItem>
+                            <CheckboxItem>
+                                <Checkbox checked={formData.section5.futureSupport.includes('other')} onChange={(e) => handleCheckboxChange('section5', 'futureSupport', 'other', e.target.checked)} />
+                                <TranslatedText>Other (Please specify)</TranslatedText>
+                            </CheckboxItem>
+                        </CheckboxGroup>
+                        {formData.section5.futureSupport.includes('other') && (
+                            <Input type="text" value={formData.section5.futureSupportOther || ''} onChange={(e) => handleInputChange('section5', 'futureSupportOther', e.target.value)} placeholder={t('Specify other support')} />
+                        )}
+                    </FormGroup>
+                </QuestionCard>
+
+                {/* Q11: Improvements or suggestions */}
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="What improvements or suggestions would you like to recommend for improving this scheme?" />
+                        <TextArea value={formData.section5.improvementSuggestions || ''} onChange={(e) => handleInputChange('section5', 'improvementSuggestions', e.target.value)} placeholder={t('Enter your suggestions here...')} />
+                    </FormGroup>
+                </QuestionCard>
+            </QuestionGroup>
+        </SectionContent>
+    </>
+)}
 
         {/* Section 6: Devadasi Children */}
         {currentSection === 6 && (
           <>
             <ModernSectionHeader>
-              <ModernSectionTitle>{t('Section 6: Devadasi Children (Optional)')}</ModernSectionTitle>
-              <ModernSectionDesc>{t('Special section for Devadasi children - Skip if not applicable')}</ModernSectionDesc>
+              <ModernSectionTitle>{t('Section 6: Devadasi Children / widow Remarriage (Optional)')}</ModernSectionTitle>
+              <ModernSectionDesc>{t('Special section for Devadasi children, and for widow Remarriage - Skip if not applicable')}</ModernSectionDesc>
             </ModernSectionHeader>
             <SectionContent>
               <div style={{ 
@@ -3519,7 +4286,7 @@ export default function QuestionnairePage() {
                   <strong style={{ color: '#1e40af', fontSize: '1.1rem' }}>{t('This Section is Optional')}</strong>
                 </div>
                 <p style={{ margin: '0', color: '#1e40af', lineHeight: '1.6' }}>
-                  {t('This section is specifically designed for children of Devadasi women who have benefited from marriage incentive schemes.')} 
+                  {t('This section is specifically designed for children of Devadasi women who have benefited from marriage incentive schemes and and for widow Remarriage.')} 
                   <strong> {t('If this doesn\'t apply to your situation, you can skip this section entirely')}</strong> {t('and proceed to submit your response.')}
                 </p>
                 <div style={{ marginTop: '15px', display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
@@ -3558,215 +4325,490 @@ export default function QuestionnairePage() {
                 </div>
               </div>
 
-              <QuestionGroup>
-                <QuestionCard>
-                  <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
-                    {t('Marriage & Social Impact')}
-                  </h4>
-                  <FormGroup>
-                    <Label>{t('At what age did you get married?')}</Label>
-                    <Input
-                      type="number"
-                      value={formData.section6_DevadasiChildren.childAgeAtMarriage}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'childAgeAtMarriage', e.target.value)}
-                      placeholder={t('Enter your age at marriage')}
-                    />
-                  </FormGroup>
+             <QuestionGroup>
+    <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+        {t('A: Specific questions about the marriage of children of Ex Devadasis')}
+    </h4>
 
-                  <FormGroup>
-                    <Label>{t('Has the scheme improved your dignity and social standing?')}</Label>
+    <QuestionCard>
+        <FormGroup>
+            <TranslatedLabel text="What was the age of the Ex-Devadasi’s son/daughter at the time of marriage?" />
+            <RadioGroup>
+                <RadioItem>
+                    <Radio name="devadasiAgeAtMarriage" value="below_18" checked={formData.section6_Devadasi.devadasiAgeAtMarriage === 'below_18'} onChange={(e) => handleInputChange('section6_Devadasi', 'devadasiAgeAtMarriage', e.target.value)} />
+                    <TranslatedText>Below 18 years</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="devadasiAgeAtMarriage" value="18_21" checked={formData.section6_Devadasi.devadasiAgeAtMarriage === '18_21'} onChange={(e) => handleInputChange('section6_Devadasi', 'devadasiAgeAtMarriage', e.target.value)} />
+                    <TranslatedText>18–21 years</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="devadasiAgeAtMarriage" value="22_25" checked={formData.section6_Devadasi.devadasiAgeAtMarriage === '22_25'} onChange={(e) => handleInputChange('section6_Devadasi', 'devadasiAgeAtMarriage', e.target.value)} />
+                    <TranslatedText>22–25 years</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="devadasiAgeAtMarriage" value="above_25" checked={formData.section6_Devadasi.devadasiAgeAtMarriage === 'above_25'} onChange={(e) => handleInputChange('section6_Devadasi', 'devadasiAgeAtMarriage', e.target.value)} />
+                    <TranslatedText>Above 25 years</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="devadasiAgeAtMarriage" value="prefer_not_to_say" checked={formData.section6_Devadasi.devadasiAgeAtMarriage === 'prefer_not_to_say'} onChange={(e) => handleInputChange('section6_Devadasi', 'devadasiAgeAtMarriage', e.target.value)} />
+                    <TranslatedText>Prefer not to say</TranslatedText>
+                </RadioItem>
+            </RadioGroup>
+        </FormGroup>
+    </QuestionCard>
+
+    <QuestionCard>
+        <FormGroup>
+            <TranslatedLabel text="Do you feel the benefit improved the social dignity of the Ex Devadasi family?" />
+            <RadioGroup>
+                <RadioItem>
+                    <Radio name="dignityImproved" value="yes" checked={formData.section6_Devadasi.dignityImproved === 'yes'} onChange={(e) => handleInputChange('section6_Devadasi', 'dignityImproved', e.target.value)} />
+                    <TranslatedText>Yes</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="dignityImproved" value="no" checked={formData.section6_Devadasi.dignityImproved === 'no'} onChange={(e) => handleInputChange('section6_Devadasi', 'dignityImproved', e.target.value)} />
+                    <TranslatedText>No</TranslatedText>
+                </RadioItem>
+            </RadioGroup>
+        </FormGroup>
+    </QuestionCard>
+
+    <QuestionCard>
+        <FormGroup>
+            <TranslatedLabel text="Do families have any problems with the marriage of children of Ex devadasis?" />
+            <RadioGroup>
+                <RadioItem>
+                    <Radio name="familyProblemsWithMarriage" value="strongly_agree" checked={formData.section6_Devadasi.familyProblemsWithMarriage === 'strongly_agree'} onChange={(e) => handleInputChange('section6_Devadasi', 'familyProblemsWithMarriage', e.target.value)} />
+                    <TranslatedText>Strongly Agree</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="familyProblemsWithMarriage" value="agree" checked={formData.section6_Devadasi.familyProblemsWithMarriage === 'agree'} onChange={(e) => handleInputChange('section6_Devadasi', 'familyProblemsWithMarriage', e.target.value)} />
+                    <TranslatedText>Agree</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="familyProblemsWithMarriage" value="neutral" checked={formData.section6_Devadasi.familyProblemsWithMarriage === 'neutral'} onChange={(e) => handleInputChange('section6_Devadasi', 'familyProblemsWithMarriage', e.target.value)} />
+                    <TranslatedText>Neutral</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="familyProblemsWithMarriage" value="disagree" checked={formData.section6_Devadasi.familyProblemsWithMarriage === 'disagree'} onChange={(e) => handleInputChange('section6_Devadasi', 'familyProblemsWithMarriage', e.target.value)} />
+                    <TranslatedText>Disagree</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="familyProblemsWithMarriage" value="strongly_disagree" checked={formData.section6_Devadasi.familyProblemsWithMarriage === 'strongly_disagree'} onChange={(e) => handleInputChange('section6_Devadasi', 'familyProblemsWithMarriage', e.target.value)} />
+                    <TranslatedText>Strongly Disagree</TranslatedText>
+                </RadioItem>
+            </RadioGroup>
+        </FormGroup>
+    </QuestionCard>
+
+    <QuestionCard>
+        <FormGroup>
+            <TranslatedLabel text="To which caste does your husband/wife belong?" />
+            <Input type="text" value={formData.section6_Devadasi.spouseCaste} onChange={(e) => handleInputChange('section6_Devadasi', 'spouseCaste', e.target.value)} placeholder={t("Enter spouse's caste")} />
+        </FormGroup>
+    </QuestionCard>
+
+    <QuestionCard>
+        <FormGroup>
+            <TranslatedLabel text="Did you or your husband/wife disclose your Devadasi background during the marriage process?" />
+            <RadioGroup>
+                <RadioItem>
+                    <Radio name="disclosedBackground" value="yes" checked={formData.section6_Devadasi.disclosedBackground === 'yes'} onChange={(e) => handleInputChange('section6_Devadasi', 'disclosedBackground', e.target.value)} />
+                    <TranslatedText>Yes</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="disclosedBackground" value="no" checked={formData.section6_Devadasi.disclosedBackground === 'no'} onChange={(e) => handleInputChange('section6_Devadasi', 'disclosedBackground', e.target.value)} />
+                    <TranslatedText>No</TranslatedText>
+                </RadioItem>
+            </RadioGroup>
+        </FormGroup>
+    </QuestionCard>
+    
+    <QuestionCard>
+        <FormGroup>
+            <TranslatedLabel text="How accepting was your husband/wife’s family of your Devadasi background?" />
+            <RadioGroup>
+                <RadioItem>
+                    <Radio name="spouseFamilyAcceptance" value="supportive" checked={formData.section6_Devadasi.spouseFamilyAcceptance === 'supportive'} onChange={(e) => handleInputChange('section6_Devadasi', 'spouseFamilyAcceptance', e.target.value)} />
+                    <TranslatedText>Supportive</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="spouseFamilyAcceptance" value="opposed" checked={formData.section6_Devadasi.spouseFamilyAcceptance === 'opposed'} onChange={(e) => handleInputChange('section6_Devadasi', 'spouseFamilyAcceptance', e.target.value)} />
+                    <TranslatedText>Opposed</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="spouseFamilyAcceptance" value="neutral" checked={formData.section6_Devadasi.spouseFamilyAcceptance === 'neutral'} onChange={(e) => handleInputChange('section6_Devadasi', 'spouseFamilyAcceptance', e.target.value)} />
+                    <TranslatedText>Neutral</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="spouseFamilyAcceptance" value="mixed" checked={formData.section6_Devadasi.spouseFamilyAcceptance === 'mixed'} onChange={(e) => handleInputChange('section6_Devadasi', 'spouseFamilyAcceptance', e.target.value)} />
+                    <TranslatedText>Mixed Reaction</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="spouseFamilyAcceptance" value="others" checked={formData.section6_Devadasi.spouseFamilyAcceptance === 'others'} onChange={(e) => handleInputChange('section6_Devadasi', 'spouseFamilyAcceptance', e.target.value)} />
+                    <TranslatedText>Others</TranslatedText>
+                </RadioItem>
+            </RadioGroup>
+        </FormGroup>
+    </QuestionCard>
+
+    <QuestionCard>
+        <FormGroup>
+            <TranslatedLabel text="Did you face any problems after marrying a person with Devadasi background?" />
+            <RadioGroup>
+                <RadioItem>
+                    <Radio name="problemsAfterMarriage" value="yes" checked={formData.section6_Devadasi.problemsAfterMarriage === 'yes'} onChange={(e) => handleInputChange('section6_Devadasi', 'problemsAfterMarriage', e.target.value)} />
+                    <TranslatedText>Yes</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="problemsAfterMarriage" value="no" checked={formData.section6_Devadasi.problemsAfterMarriage === 'no'} onChange={(e) => handleInputChange('section6_Devadasi', 'problemsAfterMarriage', e.target.value)} />
+                    <TranslatedText>No</TranslatedText>
+                </RadioItem>
+            </RadioGroup>
+        </FormGroup>
+    </QuestionCard>
+</QuestionGroup>
+
+<QuestionGroup>
+    <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+        {t(' Questions for Non-Beneficiaries / Rejected Applications')}
+    </h4>
+
+    <QuestionCard>
+        <FormGroup>
+            <TranslatedLabel text="Were you aware of the scheme and its benefits?" />
+            <RadioGroup>
+                <RadioItem>
+                    <Radio name="awareOfScheme" value="yes" checked={formData.section6_NonBeneficiary.awareOfScheme === 'yes'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'awareOfScheme', e.target.value)} />
+                    <TranslatedText>Yes</TranslatedText>
+                </RadioItem>
+                <RadioItem>
+                    <Radio name="awareOfScheme" value="no" checked={formData.section6_NonBeneficiary.awareOfScheme === 'no'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'awareOfScheme', e.target.value)} />
+                    <TranslatedText>No</TranslatedText>
+                </RadioItem>
+            </RadioGroup>
+        </FormGroup>
+    </QuestionCard>
+
+    {formData.section6_NonBeneficiary.awareOfScheme === 'yes' && (
+        <>
+            <QuestionCard>
+                <FormGroup>
+                    <TranslatedLabel text="If you applied, what is the status of your application?" />
                     <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="schemeImprovedDignity"
-                      value="significantly_improved"
-                      checked={formData.section6_DevadasiChildren.schemeImprovedDignity === 'significantly_improved'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'schemeImprovedDignity', e.target.value)}
-                    />
-                    {t('Significantly Improved')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeImprovedDignity"
-                      value="moderately_improved"
-                      checked={formData.section6_DevadasiChildren.schemeImprovedDignity === 'moderately_improved'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'schemeImprovedDignity', e.target.value)}
-                    />
-                    {t('Moderately Improved')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeImprovedDignity"
-                      value="slightly_improved"
-                      checked={formData.section6_DevadasiChildren.schemeImprovedDignity === 'slightly_improved'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'schemeImprovedDignity', e.target.value)}
-                    />
-                    {t('Slightly Improved')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="schemeImprovedDignity"
-                      value="no_change"
-                      checked={formData.section6_DevadasiChildren.schemeImprovedDignity === 'no_change'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'schemeImprovedDignity', e.target.value)}
-                    />
-                    {t('No Change')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
+                        <RadioItem>
+                            <Radio name="applicationStatus" value="approved_not_received" checked={formData.section6_NonBeneficiary.applicationStatus === 'approved_not_received'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'applicationStatus', e.target.value)} />
+                            <TranslatedText>Approved but benefit not received</TranslatedText>
+                        </RadioItem>
+                        <RadioItem>
+                            <Radio name="applicationStatus" value="pending" checked={formData.section6_NonBeneficiary.applicationStatus === 'pending'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'applicationStatus', e.target.value)} />
+                            <TranslatedText>Benefit still pending</TranslatedText>
+                        </RadioItem>
+                        <RadioItem>
+                            <Radio name="applicationStatus" value="rejected" checked={formData.section6_NonBeneficiary.applicationStatus === 'rejected'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'applicationStatus', e.target.value)} />
+                            <TranslatedText>Rejected</TranslatedText>
+                        </RadioItem>
+                    </RadioGroup>
+                </FormGroup>
+            </QuestionCard>
 
-              <FormGroup>
-                <Label>{t('Do you feel you are treated differently because of your mother\'s background?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="treatmentDifference"
-                      value="yes_negatively"
-                      checked={formData.section6_DevadasiChildren.treatmentDifference === 'yes_negatively'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'treatmentDifference', e.target.value)}
-                    />
-                    {t('Yes, Negatively')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="treatmentDifference"
-                      value="sometimes"
-                      checked={formData.section6_DevadasiChildren.treatmentDifference === 'sometimes'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'treatmentDifference', e.target.value)}
-                    />
-                    {t('Sometimes')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="treatmentDifference"
-                      value="no"
-                      checked={formData.section6_DevadasiChildren.treatmentDifference === 'no'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'treatmentDifference', e.target.value)}
-                    />
-                    {t('No')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="treatmentDifference"
-                      value="not_sure"
-                      checked={formData.section6_DevadasiChildren.treatmentDifference === 'not_sure'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'treatmentDifference', e.target.value)}
-                    />
-                    {t('Not Sure')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('What is your spouse\'s caste background?')}</Label>
-                <Select
-                  value={formData.section6_DevadasiChildren.spouseCaste}
-                  onChange={(e) => handleInputChange('section6_DevadasiChildren', 'spouseCaste', e.target.value)}
-                >
-                  <option value="">{t('Select caste category')}</option>
-                  <option value="same_caste">{t('Same Caste')}</option>
-                  <option value="different_sc">{t('Different SC')}</option>
-                  <option value="st">{t('ST')}</option>
-                  <option value="obc">{t('OBC')}</option>
-                  <option value="general">{t('General')}</option>
-                  <option value="prefer_not_to_say">{t('Prefer not to say')}</option>
-                </Select>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Do you own any property now (land, house, etc.)?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="ownsPropertyNow"
-                      value="yes_independently"
-                      checked={formData.section6_DevadasiChildren.ownsPropertyNow === 'yes_independently'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'ownsPropertyNow', e.target.value)}
-                    />
-                    {t('Yes, Independently')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="ownsPropertyNow"
-                      value="yes_jointly"
-                      checked={formData.section6_DevadasiChildren.ownsPropertyNow === 'yes_jointly'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'ownsPropertyNow', e.target.value)}
-                    />
-                    {t('Yes, Jointly')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="ownsPropertyNow"
-                      value="no"
-                      checked={formData.section6_DevadasiChildren.ownsPropertyNow === 'no'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'ownsPropertyNow', e.target.value)}
-                    />
-                    {t('No')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('On a scale of 1-5, how accepted are you by your in-laws? (1=Not at all, 5=Completely accepted)')}</Label>
-                <Select
-                  value={formData.section6_DevadasiChildren.inLawAcceptabilityScale}
-                  onChange={(e) => handleInputChange('section6_DevadasiChildren', 'inLawAcceptabilityScale', e.target.value)}
-                >
-                  <option value="">{t('Select rating')}</option>
-                  <option value="1">{t('1 - Not at all accepted')}</option>
-                  <option value="2">{t('2 - Poorly accepted')}</option>
-                  <option value="3">{t('3 - Moderately accepted')}</option>
-                  <option value="4">{t('4 - Well accepted')}</option>
-                  <option value="5">{t('5 - Completely accepted')}</option>
-                </Select>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>{t('Have you faced any stigma related to your background since marriage?')}</Label>
-                <RadioGroup>
-                  <RadioItem>
-                    <Radio
-                      name="facedStigma"
-                      value="frequently"
-                      checked={formData.section6_DevadasiChildren.facedStigma === 'frequently'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'facedStigma', e.target.value)}
-                    />
-                    {t('Frequently')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="facedStigma"
-                      value="occasionally"
-                      checked={formData.section6_DevadasiChildren.facedStigma === 'occasionally'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'facedStigma', e.target.value)}
-                    />
-                    {t('Occasionally')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="facedStigma"
-                      value="rarely"
-                      checked={formData.section6_DevadasiChildren.facedStigma === 'rarely'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'facedStigma', e.target.value)}
-                    />
-                    {t('Rarely')}
-                  </RadioItem>
-                  <RadioItem>
-                    <Radio
-                      name="facedStigma"
-                      value="never"
-                      checked={formData.section6_DevadasiChildren.facedStigma === 'never'}
-                      onChange={(e) => handleInputChange('section6_DevadasiChildren', 'facedStigma', e.target.value)}
-                    />
-                    {t('Never')}
-                  </RadioItem>
-                </RadioGroup>
-              </FormGroup>
+            {formData.section6_NonBeneficiary.applicationStatus === 'pending' && (
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="If your application is still pending, how long has it been pending?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="pendingDuration" value="less_than_3_months" checked={formData.section6_NonBeneficiary.pendingDuration === 'less_than_3_months'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'pendingDuration', e.target.value)} />
+                                <TranslatedText>Less than 3 months</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="pendingDuration" value="3_6_months" checked={formData.section6_NonBeneficiary.pendingDuration === '3_6_months'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'pendingDuration', e.target.value)} />
+                                <TranslatedText>3–6 months</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="pendingDuration" value="6_12_months" checked={formData.section6_NonBeneficiary.pendingDuration === '6_12_months'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'pendingDuration', e.target.value)} />
+                                <TranslatedText>6–12 months</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="pendingDuration" value="1_2_years" checked={formData.section6_NonBeneficiary.pendingDuration === '1_2_years'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'pendingDuration', e.target.value)} />
+                                <TranslatedText>1-2 year</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="pendingDuration" value="not_sure" checked={formData.section6_NonBeneficiary.pendingDuration === 'not_sure'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'pendingDuration', e.target.value)} />
+                                <TranslatedText>Not sure</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
                 </QuestionCard>
-              </QuestionGroup>
+            )}
+
+            {formData.section6_NonBeneficiary.applicationStatus === 'rejected' && (
+                <QuestionCard>
+                    <FormGroup>
+                        <TranslatedLabel text="If your application was rejected, were you informed about the reason?" />
+                        <RadioGroup>
+                            <RadioItem>
+                                <Radio name="rejectionReasonCommunicated" value="yes" checked={formData.section6_NonBeneficiary.rejectionReasonCommunicated === 'yes'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'rejectionReasonCommunicated', e.target.value)} />
+                                <TranslatedText>Yes</TranslatedText>
+                            </RadioItem>
+                            <RadioItem>
+                                <Radio name="rejectionReasonCommunicated" value="no" checked={formData.section6_NonBeneficiary.rejectionReasonCommunicated === 'no'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'rejectionReasonCommunicated', e.target.value)} />
+                                <TranslatedText>No</TranslatedText>
+                            </RadioItem>
+                        </RadioGroup>
+                    </FormGroup>
+                    {formData.section6_NonBeneficiary.rejectionReasonCommunicated === 'yes' && (
+                        <FormGroup>
+                            <TranslatedLabel text="If Yes, what was the reason for rejection?" />
+                            <Input type="text" value={formData.section6_NonBeneficiary.rejectionReason || ''} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'rejectionReason', e.target.value)} placeholder={t('Specify the rejection reason')} />
+                        </FormGroup>
+                    )}
+                </QuestionCard>
+            )}
+            
+            <QuestionCard>
+                <FormGroup>
+                    <TranslatedLabel text="How do you consider the information you received from the department/officials regarding the scheme?" />
+                    <RadioGroup>
+                        <RadioItem>
+                            <Radio name="informationQuality" value="excellent" checked={formData.section6_NonBeneficiary.informationQuality === 'excellent'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'informationQuality', e.target.value)} />
+                            <TranslatedText>Excellent</TranslatedText>
+                        </RadioItem>
+                        <RadioItem>
+                            <Radio name="informationQuality" value="good" checked={formData.section6_NonBeneficiary.informationQuality === 'good'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'informationQuality', e.target.value)} />
+                            <TranslatedText>Good</TranslatedText>
+                        </RadioItem>
+                        <RadioItem>
+                            <Radio name="informationQuality" value="fair" checked={formData.section6_NonBeneficiary.informationQuality === 'fair'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'informationQuality', e.target.value)} />
+                            <TranslatedText>Fair</TranslatedText>
+                        </RadioItem>
+                        <RadioItem>
+                            <Radio name="informationQuality" value="poor" checked={formData.section6_NonBeneficiary.informationQuality === 'poor'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'informationQuality', e.target.value)} />
+                            <TranslatedText>Poor</TranslatedText>
+                        </RadioItem>
+                        <RadioItem>
+                            <Radio name="informationQuality" value="very_poor" checked={formData.section6_NonBeneficiary.informationQuality === 'very_poor'} onChange={(e) => handleInputChange('section6_NonBeneficiary', 'informationQuality', e.target.value)} />
+                            <TranslatedText>Very Poor</TranslatedText>
+                        </RadioItem>
+                    </RadioGroup>
+                </FormGroup>
+            </QuestionCard>
+        </>
+    )}
+</QuestionGroup>
+ <QuestionGroup>
+        <h4 style={{ margin: '0 0 20px 0', color: '#2d3748', fontSize: '1.1rem', fontWeight: '600' }}>
+            {t('B: Questions related to widow remarriage incentive')}
+        </h4>
+
+        <QuestionCard>
+            <FormGroup>
+                <TranslatedLabel text="Age at the time of remarriage:" />
+                <Input type="number" value={formData.section6_Widow.remarriageAge} onChange={(e) => handleInputChange('section6_Widow', 'remarriageAge', e.target.value)} placeholder={t('Enter age in years')} />
+            </FormGroup>
+        </QuestionCard>
+
+        <QuestionCard>
+            <FormGroup>
+                <TranslatedLabel text="Did you have any children from your previous marriage?" />
+                <RadioGroup>
+                    <RadioItem>
+                        <Radio name="childrenFromPreviousMarriage" value="yes" checked={formData.section6_Widow.childrenFromPreviousMarriage === 'yes'} onChange={(e) => handleInputChange('section6_Widow', 'childrenFromPreviousMarriage', e.target.value)} />
+                        <TranslatedText>Yes</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="childrenFromPreviousMarriage" value="no" checked={formData.section6_Widow.childrenFromPreviousMarriage === 'no'} onChange={(e) => handleInputChange('section6_Widow', 'childrenFromPreviousMarriage', e.target.value)} />
+                        <TranslatedText>No</TranslatedText>
+                    </RadioItem>
+                </RadioGroup>
+            </FormGroup>
+            {formData.section6_Widow.childrenFromPreviousMarriage === 'yes' && (
+                <FormGroup>
+                    <TranslatedLabel text="If yes, how many? Gender:" />
+                    <Input type="number" value={formData.section6_Widow.childrenCount || ''} onChange={(e) => handleInputChange('section6_Widow', 'childrenCount', e.target.value)} placeholder={t('Number of children')} />
+                    <RadioGroup>
+                        <RadioItem>
+                            <Radio name="childrenGender" value="male" checked={formData.section6_Widow.childrenGender === 'male'} onChange={(e) => handleInputChange('section6_Widow', 'childrenGender', e.target.value)} />
+                            <TranslatedText>Male</TranslatedText>
+                        </RadioItem>
+                        <RadioItem>
+                            <Radio name="childrenGender" value="female" checked={formData.section6_Widow.childrenGender === 'female'} onChange={(e) => handleInputChange('section6_Widow', 'childrenGender', e.target.value)} />
+                            <TranslatedText>Female</TranslatedText>
+                        </RadioItem>
+                        <RadioItem>
+                            <Radio name="childrenGender" value="other" checked={formData.section6_Widow.childrenGender === 'other'} onChange={(e) => handleInputChange('section6_Widow', 'childrenGender', e.target.value)} />
+                            <TranslatedText>Other</TranslatedText>
+                        </RadioItem>
+                    </RadioGroup>
+                </FormGroup>
+            )}
+        </QuestionCard>
+
+        <QuestionCard>
+            <FormGroup>
+                <TranslatedLabel text="Does your present husband have any children from his previous marriage?" />
+                <RadioGroup>
+                    <RadioItem>
+                        <Radio name="husbandChildrenFromPreviousMarriage" value="yes" checked={formData.section6_Widow.husbandChildrenFromPreviousMarriage === 'yes'} onChange={(e) => handleInputChange('section6_Widow', 'husbandChildrenFromPreviousMarriage', e.target.value)} />
+                        <TranslatedText>Yes</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="husbandChildrenFromPreviousMarriage" value="no" checked={formData.section6_Widow.husbandChildrenFromPreviousMarriage === 'no'} onChange={(e) => handleInputChange('section6_Widow', 'husbandChildrenFromPreviousMarriage', e.target.value)} />
+                        <TranslatedText>No</TranslatedText>
+                    </RadioItem>
+                </RadioGroup>
+            </FormGroup>
+            {formData.section6_Widow.husbandChildrenFromPreviousMarriage === 'yes' && (
+                <FormGroup>
+                    <TranslatedLabel text="If yes, how many? Gender:" />
+                    <Input type="number" value={formData.section6_Widow.husbandChildrenCount || ''} onChange={(e) => handleInputChange('section6_Widow', 'husbandChildrenCount', e.target.value)} placeholder={t('Number of children')} />
+                    <RadioGroup>
+                        <RadioItem>
+                            <Radio name="husbandChildrenGender" value="male" checked={formData.section6_Widow.husbandChildrenGender === 'male'} onChange={(e) => handleInputChange('section6_Widow', 'husbandChildrenGender', e.target.value)} />
+                            <TranslatedText>Male</TranslatedText>
+                        </RadioItem>
+                        <RadioItem>
+                            <Radio name="husbandChildrenGender" value="female" checked={formData.section6_Widow.husbandChildrenGender === 'female'} onChange={(e) => handleInputChange('section6_Widow', 'husbandChildrenGender', e.target.value)} />
+                            <TranslatedText>Female</TranslatedText>
+                        </RadioItem>
+                        <RadioItem>
+                            <Radio name="husbandChildrenGender" value="other" checked={formData.section6_Widow.husbandChildrenGender === 'other'} onChange={(e) => handleInputChange('section6_Widow', 'husbandChildrenGender', e.target.value)} />
+                            <TranslatedText>Other</TranslatedText>
+                        </RadioItem>
+                    </RadioGroup>
+                </FormGroup>
+            )}
+        </QuestionCard>
+        
+        <QuestionCard>
+            <FormGroup>
+                <TranslatedLabel text="What is the marital status of your present husband at the time of this marriage?" />
+                <RadioGroup>
+                    <RadioItem>
+                        <Radio name="husbandMaritalStatus" value="widower" checked={formData.section6_Widow.husbandMaritalStatus === 'widower'} onChange={(e) => handleInputChange('section6_Widow', 'husbandMaritalStatus', e.target.value)} />
+                        <TranslatedText>Widower</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="husbandMaritalStatus" value="divorcee" checked={formData.section6_Widow.husbandMaritalStatus === 'divorcee'} onChange={(e) => handleInputChange('section6_Widow', 'husbandMaritalStatus', e.target.value)} />
+                        <TranslatedText>Divorcee</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="husbandMaritalStatus" value="unmarried" checked={formData.section6_Widow.husbandMaritalStatus === 'unmarried'} onChange={(e) => handleInputChange('section6_Widow', 'husbandMaritalStatus', e.target.value)} />
+                        <TranslatedText>Unmarried</TranslatedText>
+                    </RadioItem>
+                </RadioGroup>
+            </FormGroup>
+        </QuestionCard>
+
+        <QuestionCard>
+            <FormGroup>
+                <TranslatedLabel text="Caste of your present husband:" />
+                <RadioGroup>
+                    <RadioItem>
+                        <Radio name="husbandCaste" value="same_as_yours" checked={formData.section6_Widow.husbandCaste === 'same_as_yours'} onChange={(e) => handleInputChange('section6_Widow', 'husbandCaste', e.target.value)} />
+                        <TranslatedText>Same as yours</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="husbandCaste" value="different" checked={formData.section6_Widow.husbandCaste === 'different'} onChange={(e) => handleInputChange('section6_Widow', 'husbandCaste', e.target.value)} />
+                        <TranslatedText>Different (Please specify)</TranslatedText>
+                    </RadioItem>
+                </RadioGroup>
+                {formData.section6_Widow.husbandCaste === 'different' && (
+                    <Input type="text" value={formData.section6_Widow.husbandCasteOther || ''} onChange={(e) => handleInputChange('section6_Widow', 'husbandCasteOther', e.target.value)} placeholder={t('Specify caste')} />
+                )}
+            </FormGroup>
+        </QuestionCard>
+        
+        <QuestionCard>
+            <FormGroup>
+                <TranslatedLabel text="Did you own any property before this remarriage?" />
+                <RadioGroup>
+                    <RadioItem>
+                        <Radio name="ownedPropertyBeforeRemarriage" value="yes" checked={formData.section6_Widow.ownedPropertyBeforeRemarriage === 'yes'} onChange={(e) => handleInputChange('section6_Widow', 'ownedPropertyBeforeRemarriage', e.target.value)} />
+                        <TranslatedText>Yes</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="ownedPropertyBeforeRemarriage" value="no" checked={formData.section6_Widow.ownedPropertyBeforeRemarriage === 'no'} onChange={(e) => handleInputChange('section6_Widow', 'ownedPropertyBeforeRemarriage', e.target.value)} />
+                        <TranslatedText>No</TranslatedText>
+                    </RadioItem>
+                </RadioGroup>
+                {formData.section6_Widow.ownedPropertyBeforeRemarriage === 'yes' && (
+                    <TextArea value={formData.section6_Widow.previousPropertyDetails || ''} onChange={(e) => handleInputChange('section6_Widow', 'previousPropertyDetails', e.target.value)} placeholder={t('Please specify the property')} />
+                )}
+            </FormGroup>
+        </QuestionCard>
+
+        <QuestionCard>
+            <FormGroup>
+                <TranslatedLabel text="Is there any property registered in your name after this remarriage?" />
+                <RadioGroup>
+                    <RadioItem>
+                        <Radio name="ownedPropertyAfterRemarriage" value="yes" checked={formData.section6_Widow.ownedPropertyAfterRemarriage === 'yes'} onChange={(e) => handleInputChange('section6_Widow', 'ownedPropertyAfterRemarriage', e.target.value)} />
+                        <TranslatedText>Yes</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="ownedPropertyAfterRemarriage" value="no" checked={formData.section6_Widow.ownedPropertyAfterRemarriage === 'no'} onChange={(e) => handleInputChange('section6_Widow', 'ownedPropertyAfterRemarriage', e.target.value)} />
+                        <TranslatedText>No</TranslatedText>
+                    </RadioItem>
+                </RadioGroup>
+                {formData.section6_Widow.ownedPropertyAfterRemarriage === 'yes' && (
+                    <TextArea value={formData.section6_Widow.newPropertyDetails || ''} onChange={(e) => handleInputChange('section6_Widow', 'newPropertyDetails', e.target.value)} placeholder={t('Please specify the property')} />
+                )}
+            </FormGroup>
+        </QuestionCard>
+
+        <QuestionCard>
+            <FormGroup>
+                <TranslatedLabel text="What is the level of acceptability in the family you are married into?" />
+                <RadioGroup>
+                    <RadioItem>
+                        <Radio name="familyAcceptanceScale" value="very_high" checked={formData.section6_Widow.familyAcceptanceScale === 'very_high'} onChange={(e) => handleInputChange('section6_Widow', 'familyAcceptanceScale', e.target.value)} />
+                        <TranslatedText>Very High</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="familyAcceptanceScale" value="high" checked={formData.section6_Widow.familyAcceptanceScale === 'high'} onChange={(e) => handleInputChange('section6_Widow', 'familyAcceptanceScale', e.target.value)} />
+                        <TranslatedText>High</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="familyAcceptanceScale" value="moderate" checked={formData.section6_Widow.familyAcceptanceScale === 'moderate'} onChange={(e) => handleInputChange('section6_Widow', 'familyAcceptanceScale', e.target.value)} />
+                        <TranslatedText>Moderate</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="familyAcceptanceScale" value="low" checked={formData.section6_Widow.familyAcceptanceScale === 'low'} onChange={(e) => handleInputChange('section6_Widow', 'familyAcceptanceScale', e.target.value)} />
+                        <TranslatedText>Low</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="familyAcceptanceScale" value="very_low" checked={formData.section6_Widow.familyAcceptanceScale === 'very_low'} onChange={(e) => handleInputChange('section6_Widow', 'familyAcceptanceScale', e.target.value)} />
+                        <TranslatedText>Very Low</TranslatedText>
+                    </RadioItem>
+                </RadioGroup>
+            </FormGroup>
+        </QuestionCard>
+
+        <QuestionCard>
+            <FormGroup>
+                <TranslatedLabel text="Have you faced stigma or discrimination from society after remarriage?" />
+                <RadioGroup>
+                    <RadioItem>
+                        <Radio name="facedStigmaAfterRemarriage" value="yes" checked={formData.section6_Widow.facedStigmaAfterRemarriage === 'yes'} onChange={(e) => handleInputChange('section6_Widow', 'facedStigmaAfterRemarriage', e.target.value)} />
+                        <TranslatedText>Yes</TranslatedText>
+                    </RadioItem>
+                    <RadioItem>
+                        <Radio name="facedStigmaAfterRemarriage" value="no" checked={formData.section6_Widow.facedStigmaAfterRemarriage === 'no'} onChange={(e) => handleInputChange('section6_Widow', 'facedStigmaAfterRemarriage', e.target.value)} />
+                        <TranslatedText>No</TranslatedText>
+                    </RadioItem>
+                </RadioGroup>
+                {formData.section6_Widow.facedStigmaAfterRemarriage === 'yes' && (
+                    <TextArea value={formData.section6_Widow.stigmaDetails || ''} onChange={(e) => handleInputChange('section6_Widow', 'stigmaDetails', e.target.value)} placeholder={t('Briefly explain the stigma or discrimination faced')} />
+                )}
+            </FormGroup>
+        </QuestionCard>
+    </QuestionGroup>
             </SectionContent>
           </>
         )}
+        
 
         {/* Add the navigation buttons */}
         <ButtonGroup>
