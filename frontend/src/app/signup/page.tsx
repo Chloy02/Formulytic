@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { theme } from '@/styles/theme';
+import { buildApiUrl } from '@/config/api';
 import {
   Button,
   Input,
@@ -20,7 +21,7 @@ import {
   Stack
 } from '@/components/ui';
 import EnhancedNavbar from '@/components/EnhancedNavbar';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, User } from 'lucide-react';
 import axios from 'axios';
 
 // Styled Components for the Sign-Up Page
@@ -196,13 +197,18 @@ const LoadingSpinner = styled(motion.div)`
 `;
 
 export default function SignUpPage() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Specific error states for each field
+  const [nameError, setNameError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
   const [generalError, setGeneralError] = useState<string | null>(null);
 
   const [success, setSuccess] = useState<string | null>(null);
@@ -214,28 +220,54 @@ export default function SignUpPage() {
     e.preventDefault();
 
     // Reset all specific and general errors
+    setNameError(null);
     setEmailError(null);
     setPasswordError(null);
+    setConfirmPasswordError(null);
     setGeneralError(null);
     setSuccess(null);
     setIsLoading(true);
 
     // Client-side validation
     let isValid = true;
+    
+    // Name validation
+    if (!name || name.trim().length === 0) {
+      setNameError('Name is required.');
+      isValid = false;
+    } else if (name.trim().length < 2) {
+      setNameError('Name must be at least 2 characters.');
+      isValid = false;
+    }
+
+    // Email validation - specifically check for Gmail
     if (!email) {
       setEmailError('Email is required.');
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-        setEmailError('Invalid email format.');
-        isValid = false;
+      setEmailError('Invalid email format.');
+      isValid = false;
+    } else if (!email.toLowerCase().endsWith('@gmail.com')) {
+      setEmailError('Please use a Gmail address (@gmail.com).');
+      isValid = false;
     }
 
+    // Password validation
     if (!password) {
       setPasswordError('Password is required.');
       isValid = false;
-    } else if (password.length < 8) {
-        setPasswordError('Password must be at least 8 characters.');
-        isValid = false;
+    } else if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters.');
+      isValid = false;
+    }
+
+    // Confirm password validation
+    if (!confirmPassword) {
+      setConfirmPasswordError('Please confirm your password.');
+      isValid = false;
+    } else if (password !== confirmPassword) {
+      setConfirmPasswordError('Passwords do not match.');
+      isValid = false;
     }
 
     if (!isValid) {
@@ -244,7 +276,8 @@ export default function SignUpPage() {
     }
 
     try {
-      await axios.post('/api/auth/register', {
+      await axios.post(buildApiUrl('/auth/register'), {
+        username: name.trim(),
         email,
         password,
       });
@@ -259,11 +292,13 @@ export default function SignUpPage() {
 
       if (apiErrors) {
         // Handle field-specific errors from the API
+        if (apiErrors.name) setNameError(apiErrors.name);
         if (apiErrors.email) setEmailError(apiErrors.email);
         if (apiErrors.password) setPasswordError(apiErrors.password);
+        if (apiErrors.confirmPassword) setConfirmPasswordError(apiErrors.confirmPassword);
         
         // If there's a general API message but no specific field errors, use it as a general error
-        if (apiErrorMessage && !apiErrors.email && !apiErrors.password) {
+        if (apiErrorMessage && !apiErrors.name && !apiErrors.email && !apiErrors.password && !apiErrors.confirmPassword) {
           setGeneralError(apiErrorMessage);
         } else if (!apiErrorMessage) {
           setGeneralError('Signup failed due to validation issues.');
@@ -281,6 +316,10 @@ export default function SignUpPage() {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -312,12 +351,38 @@ export default function SignUpPage() {
               <form onSubmit={handleSubmit}>
                 <Stack spacing="lg">
                 <FormGroup>
+                  <Label htmlFor="name">{t('Full Name')}</Label>
+                  <InputWrapper>
+                    <StyledInput
+                      type="text"
+                      id="name"
+                      placeholder={t('Your full name')}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      hasError={!!nameError}
+                    />
+                    <InputIcon>
+                      <User size={20} />
+                    </InputIcon>
+                  </InputWrapper>
+                  {nameError && (
+                    <Text
+                      size="sm"
+                      style={{ color: theme.colors.error[500], marginTop: '0.25rem' }}
+                    >
+                      {nameError}
+                    </Text>
+                  )}
+                </FormGroup>
+
+                <FormGroup>
                   <Label htmlFor="email">{t('Email')}</Label>
                   <InputWrapper>
                     <StyledInput
                       type="email"
                       id="email"
-                      placeholder={t('you@example.com')}
+                      placeholder={t('you@gmail.com')}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -344,7 +409,7 @@ export default function SignUpPage() {
                     <StyledInput
                       type={showPassword ? 'text' : 'password'}
                       id="password"
-                      placeholder={t('Your password')}
+                      placeholder={t('Your password (6+ characters)')}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -368,6 +433,39 @@ export default function SignUpPage() {
                       style={{ color: theme.colors.error[500], marginTop: '0.25rem' }}
                     >
                       {passwordError}
+                    </Text>
+                  )}
+                </FormGroup>
+
+                <FormGroup>
+                  <Label htmlFor="confirmPassword">{t('Confirm Password')}</Label>
+                  <InputWrapper>
+                    <StyledInput
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      id="confirmPassword"
+                      placeholder={t('Confirm your password')}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      hasError={!!confirmPasswordError}
+                    />
+                    <InputIcon>
+                      <Lock size={20} />
+                    </InputIcon>
+                    <PasswordToggle
+                      type="button"
+                      onClick={toggleConfirmPasswordVisibility}
+                      aria-label={showConfirmPassword ? t('Hide confirm password') : t('Show confirm password')}
+                    >
+                      {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </PasswordToggle>
+                  </InputWrapper>
+                  {confirmPasswordError && (
+                    <Text
+                      size="sm"
+                      style={{ color: theme.colors.error[500], marginTop: '0.25rem' }}
+                    >
+                      {confirmPasswordError}
                     </Text>
                   )}
                 </FormGroup>
@@ -401,7 +499,7 @@ export default function SignUpPage() {
                   type="submit"
                   fullWidth
                   size="lg"
-                  disabled={isLoading || !email || !password}
+                  disabled={isLoading || !name || !email || !password || !confirmPassword}
                   whileHover={{ scale: isLoading ? 1 : 1.02 }}
                   whileTap={{ scale: isLoading ? 1 : 0.98 }}
                 >
