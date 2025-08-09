@@ -20,9 +20,9 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://formulytic.vercel.app/',  // Add your deployed frontend URL
-  'https://formulytic-git-dev-chloys-projects.vercel.app/',           // Add alternative frontend URL
-  'https://formulytic-production.up.railway.app' // Add Railway frontend URL if deployed there
+  'https://formulytic.vercel.app',  // Remove trailing slash
+  'https://formulytic-git-dev-chloys-projects.vercel.app',  // Remove trailing slash
+  'https://formulytic-production.up.railway.app' // Railway backend URL if deployed there
 ];
 
 // In production, be more permissive for deployment flexibility

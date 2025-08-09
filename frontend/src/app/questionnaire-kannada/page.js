@@ -470,7 +470,7 @@ export default function KannadaQuestionnairePage() {
         isComplete: true
       };
 
-      const response = await axios.post(`${ServerLink}/api/responses`, responseData, {
+      const response = await axios.post(`${ServerLink}/responses`, responseData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -506,7 +506,7 @@ export default function KannadaQuestionnairePage() {
         currentSection
       };
 
-      await axios.post(`${ServerLink}/api/responses/draft`, draftData, {
+      await axios.post(`${ServerLink}/responses/draft`, draftData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
