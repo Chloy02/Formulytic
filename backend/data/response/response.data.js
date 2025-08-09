@@ -24,6 +24,26 @@ async function getResponse() {
     }
 }
 
+async function getAllResponsesFromDB() {
+    try {
+        console.log('Attempting to fetch ALL responses for admin analytics...');
+        // Fetch ALL responses including drafts for comprehensive analytics
+        const data = await Response.find({});
+        console.log('Found total responses count:', data.length);
+        
+        const statusCounts = data.reduce((acc, response) => {
+            acc[response.status] = (acc[response.status] || 0) + 1;
+            return acc;
+        }, {});
+        console.log('Response status breakdown:', statusCounts);
+        
+        return data;
+    } catch (err) {
+        console.error('Error in getAllResponsesFromDB:', err);
+        throw new Error("Error to get all responses.");
+    }
+}
+
 async function getSavedDraft(userID, responseID) {
     try {
         // If responseID is provided, find by specific responseID

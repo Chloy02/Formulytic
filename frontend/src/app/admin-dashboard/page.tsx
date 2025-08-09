@@ -659,20 +659,117 @@ export default function AdminDashboardPage() {
             </StatHeader>
           </StatCard>
 
-          <StatCard color={theme.colors.error.gradient}>
+          <StatCard color="#e11d48">
             <StatHeader>
               <div>
-                <StatNumber>{stats.totalDrafts}</StatNumber>
-                <StatLabel>Draft Responses</StatLabel>
-                <StatChange positive={false}>
-                  <FiClock /> Incomplete submissions
+                <StatNumber>{stats.devdasiWomen}</StatNumber>
+                <StatLabel>Devadasi Women</StatLabel>
+                <StatChange positive={true}>
+                  <FiUsers /> Beneficiaries tracked
                 </StatChange>
               </div>
-              <StatIcon color={theme.colors.error.gradient}>
-                <FiClock />
+              <StatIcon color="#e11d48">
+                <FiUsers />
               </StatIcon>
             </StatHeader>
           </StatCard>
+
+          <StatCard color="#7c3aed">
+            <StatHeader>
+              <div>
+                <StatNumber>{stats.widows}</StatNumber>
+                <StatLabel>Widow Beneficiaries</StatLabel>
+                <StatChange positive={true}>
+                  <FiHeart /> Support provided
+                </StatChange>
+              </div>
+              <StatIcon color="#7c3aed">
+                <FiHeart />
+              </StatIcon>
+            </StatHeader>
+          </StatCard>
+
+          <StatCard color="#059669">
+            <StatHeader>
+              <div>
+                <StatNumber>{stats.schemeParticipation.interCasteMarriage}</StatNumber>
+                <StatLabel>Inter-Caste Marriages</StatLabel>
+                <StatChange positive={true}>
+                  <FiHeart /> Incentives provided
+                </StatChange>
+              </div>
+              <StatIcon color="#059669">
+                <FiHeart />
+              </StatIcon>
+            </StatHeader>
+          </StatCard>
+        </Grid>
+
+        {/* --- Beneficiary Analytics Section --- */}
+        <Grid $minWidth="300px">
+          <GlassCard style={{ padding: '1.5rem' }}>
+            <Title size="md" style={{ marginBottom: '1rem', textAlign: 'center' }}>Beneficiary Categories</Title>
+            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '1rem' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#e11d48' }}>{stats.beneficiaryTypes.devadasi}</div>
+                <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Devadasi</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#7c3aed' }}>{stats.beneficiaryTypes.widow}</div>
+                <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Widow</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#059669' }}>{stats.beneficiaryTypes.nonBeneficiary}</div>
+                <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Non-Beneficiary</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#6b7280' }}>{stats.beneficiaryTypes.other}</div>
+                <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Other</div>
+              </div>
+            </div>
+          </GlassCard>
+
+          <GlassCard style={{ padding: '1.5rem' }}>
+            <Title size="md" style={{ marginBottom: '1rem', textAlign: 'center' }}>Scheme Participation</Title>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Inter-Caste Marriage</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ 
+                    width: `${Math.max(10, (stats.schemeParticipation.interCasteMarriage / Math.max(stats.totalResponses, 1)) * 100)}%`, 
+                    height: '8px', 
+                    backgroundColor: '#059669', 
+                    borderRadius: '4px' 
+                  }}></div>
+                  <span style={{ fontSize: '1rem', fontWeight: 'bold', color: '#059669' }}>{stats.schemeParticipation.interCasteMarriage}</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Social Welfare</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ 
+                    width: `${Math.max(10, (stats.schemeParticipation.socialWelfare / Math.max(stats.totalResponses, 1)) * 100)}%`, 
+                    height: '8px', 
+                    backgroundColor: '#3b82f6', 
+                    borderRadius: '4px' 
+                  }}></div>
+                  <span style={{ fontSize: '1rem', fontWeight: 'bold', color: '#3b82f6' }}>{stats.schemeParticipation.socialWelfare}</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Scheduled Caste Welfare</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ 
+                    width: `${Math.max(10, (stats.schemeParticipation.scheduledCasteWelfare / Math.max(stats.totalResponses, 1)) * 100)}%`, 
+                    height: '8px', 
+                    backgroundColor: '#f59e0b', 
+                    borderRadius: '4px' 
+                  }}></div>
+                  <span style={{ fontSize: '1rem', fontWeight: 'bold', color: '#f59e0b' }}>{stats.schemeParticipation.scheduledCasteWelfare}</span>
+                </div>
+              </div>
+            </div>
+          </GlassCard>
         </Grid>
 
         {/* --- Visualizations Section --- */}
