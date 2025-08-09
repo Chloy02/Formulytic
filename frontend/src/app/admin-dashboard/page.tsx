@@ -34,6 +34,7 @@ const PageContainer = styled.div`
   background: #f8fafc;
   display: flex;
   flex-direction: column;
+  padding-top: 80px; /* Add padding to account for fixed navbar */
 `;
 
 const ContentWrapper = styled.div`
@@ -42,6 +43,8 @@ const ContentWrapper = styled.div`
   padding: 2rem 1rem;
   margin: 0 auto;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1; /* Ensure content stays below navbar */
 `;
 
 const HeaderCard = styled.div`
@@ -499,7 +502,7 @@ export default function AdminDashboardPage() {
   const { isLoggedIn } = useAuth();
   const { t } = useTranslation(); // Translation hook
   const router = useRouter();
-  const { responses, stats, loading, error, loadResponses, viewResponse, exportData } = useAdminData();
+  const { responses, allResponses, stats, loading, error, loadResponses, viewResponse, exportData } = useAdminData();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [refreshSuccess, setRefreshSuccess] = useState(false);
@@ -560,32 +563,50 @@ export default function AdminDashboardPage() {
     { name: 'Other', value: stats.genderDistribution.other },
   ];
 
-  // Helper: Prepare district data for BarChart
+  // Helper: Prepare district data for BarChart from allResponses
   const districtCounts: Record<string, number> = {};
-  responses.forEach((r: any) => {
-    if (r.district && r.district !== 'N/A') {
-      districtCounts[r.district] = (districtCounts[r.district] || 0) + 1;
+  const submittedResponses = allResponses.filter(r => r.status === 'submitted');
+  console.log('📊 Chart Data Debug:', {
+    totalAllResponses: allResponses.length,
+    submittedForCharts: submittedResponses.length,
+    sampleResponse: submittedResponses[0]
+  });
+  
+  submittedResponses.forEach((r: any) => {
+    const district = r.answers?.section1?.district || r.answers?.section1?.residentialAddress || 'Unknown';
+    if (district && district !== 'Unknown' && district !== 'N/A') {
+      districtCounts[district] = (districtCounts[district] || 0) + 1;
     }
   });
   const districtData = Object.entries(districtCounts).map(([district, count]) => ({ district, count }));
+  console.log('📊 District Data:', districtData);
 
-  // Helper: Prepare age data for Histogram
+  // Helper: Prepare age data for Histogram from allResponses
   const ageBins = [0, 18, 25, 35, 45, 60, 100];
   const ageLabels = ['<18', '18-24', '25-34', '35-44', '45-59', '60+'];
   const ageCounts = Array(ageLabels.length).fill(0);
-  responses.forEach((r: any) => {
-    const age = Number(r.age);
-    for (let i = 0; i < ageBins.length - 1; i++) {
-      if (age >= ageBins[i] && age < ageBins[i + 1]) {
-        ageCounts[i]++;
-        break;
+  submittedResponses.forEach((r: any) => {
+    const age = Number(r.answers?.section1?.applicantAge || 0);
+    if (age > 0) {
+      for (let i = 0; i < ageBins.length - 1; i++) {
+        if (age >= ageBins[i] && age < ageBins[i + 1]) {
+          ageCounts[i]++;
+          break;
+        }
       }
     }
   });
   const ageData = ageLabels.map((label, i) => ({ ageRange: label, count: ageCounts[i] }));
+  console.log('📊 Age Data:', ageData);
+  console.log('📊 Gender Stats:', stats.genderDistribution);
 
-  // Helper: Get unique locations
-  const uniqueLocations = Array.from(new Set(responses.map((r: any) => r.location).filter(Boolean)));
+  // Helper: Get unique locations from allResponses
+  const uniqueLocations = Array.from(new Set(
+    allResponses
+      .filter(r => r.status === 'submitted')
+      .map((r: any) => r.answers?.section1?.district || r.answers?.section1?.residentialAddress)
+      .filter(Boolean)
+  ));
 
   // Event handlers
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -600,7 +621,7 @@ export default function AdminDashboardPage() {
           <GlassCard style={{ textAlign: 'center', padding: '3rem' }}>
             <LoadingSpinner />
             <p style={{ marginTop: '1rem', color: '#6b7280' }}>
-              Loading government project analytics...
+              Loading analytics...
             </p>
           </GlassCard>
         </ContentWrapper>

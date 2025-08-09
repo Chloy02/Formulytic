@@ -257,8 +257,9 @@ export const useAdminData = () => {
         const analyticsData = await analyticsResponse.json();
         console.log('Raw Analytics API Response:', analyticsData);
         
-        // Extract submitted responses for table display
-        const submittedResponses = analyticsData.submittedResponses || [];
+        // Extract submitted responses for table display - double filter for safety
+        const submittedResponses = (analyticsData.submittedResponses || [])
+          .filter((item: any) => item.status === 'submitted'); // Extra safety filter
         
         // Transform submitted responses for display
         const transformedResponses: Response[] = submittedResponses.map((item: any, index: number) => {
@@ -269,7 +270,7 @@ export const useAdminData = () => {
           return {
             _id: item._id || `temp-${index}`,
             responseId: item.responseId || '',
-            status: item.status || 'submitted',
+            status: 'submitted', // Force status to submitted
             submissionDate: item.submissionDate || new Date().toISOString(),
             lastSaved: item.lastSaved || new Date().toISOString(),
             submittedBy: item.submittedBy || 'Unknown User',
