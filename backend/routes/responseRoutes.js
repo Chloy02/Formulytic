@@ -10,6 +10,7 @@ const {
   getResponseById,
   deleteResponse,
   getAllResponsesAdmin,
+  getAdminAnalytics,
 } = require('../controllers/responseController');
 // Import authentication middleware
 const { verifyToken, isAdmin } = require('../middleware/authMiddleware');
@@ -21,6 +22,11 @@ router.post('/draft', verifyToken, saveDraft);
 router.get('/draft', verifyToken, getDraft);
 
 // Admin routes (place before dynamic routes)
+router.get('/admin/analytics', (req, res, next) => {
+  console.log('Admin analytics route /admin/analytics called');
+  next();
+}, verifyToken, isAdmin, getAdminAnalytics);
+
 router.get('/admin', (req, res, next) => {
   console.log('Admin route /admin called');
   next();

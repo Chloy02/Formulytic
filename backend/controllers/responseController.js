@@ -268,6 +268,40 @@ async function getAllResponsesAdmin(req, res) {
   }
 }
 
+/**
+ * ================================================================
+ * GET ALL RESPONSES FOR ADMIN ANALYTICS (INCLUDING DRAFTS)
+ * @route   GET /api/responses/admin/analytics
+ * @desc    Fetch all responses for comprehensive admin analytics
+ * @access Private (admin)
+ * ================================================================
+*/
+async function getAdminAnalytics(req, res) {
+  try {
+    console.log('Admin analytics endpoint called - fetching ALL responses...');
+    const allResponses = await getAllResponsesFromDB();
+    console.log('Total responses found:', allResponses.length);
+    
+    // Separate submitted and draft responses
+    const submittedResponses = allResponses.filter(r => r.status === 'submitted');
+    const draftResponses = allResponses.filter(r => r.status === 'draft');
+    
+    console.log('Submitted:', submittedResponses.length, 'Drafts:', draftResponses.length);
+    
+    return res.status(200).json({
+      allResponses,
+      submittedResponses,
+      draftResponses,
+      totalCount: allResponses.length,
+      submittedCount: submittedResponses.length,
+      draftCount: draftResponses.length
+    });
+  } catch (err) {
+    console.error('Error in getAdminAnalytics:', err);
+    return res.status(500).json({ error: err.message });
+  }
+}
+
 module.exports = {
   submitResponse,
   saveDraft,
@@ -276,4 +310,5 @@ module.exports = {
   getResponseById,
   deleteResponse,
   getAllResponsesAdmin,
+  getAdminAnalytics,
 };

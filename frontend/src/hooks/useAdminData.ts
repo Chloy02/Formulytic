@@ -61,6 +61,20 @@ export interface Stats {
   avgResponseTime: number;
   totalDistricts: number;
   totalDrafts: number;
+  // New analytics for government project
+  devdasiWomen: number;
+  widows: number;
+  beneficiaryTypes: {
+    devadasi: number;
+    widow: number;
+    nonBeneficiary: number;
+    other: number;
+  };
+  schemeParticipation: {
+    interCasteMarriage: number;
+    socialWelfare: number;
+    scheduledCasteWelfare: number;
+  };
 }
 
 export const useAdminData = () => {
@@ -77,7 +91,20 @@ export const useAdminData = () => {
     completionRate: 0,
     avgResponseTime: 0,
     totalDistricts: 0,
-    totalDrafts: 0
+    totalDrafts: 0,
+    devdasiWomen: 0,
+    widows: 0,
+    beneficiaryTypes: {
+      devadasi: 0,
+      widow: 0,
+      nonBeneficiary: 0,
+      other: 0
+    },
+    schemeParticipation: {
+      interCasteMarriage: 0,
+      socialWelfare: 0,
+      scheduledCasteWelfare: 0
+    }
   });
 
   const calculateStats = useCallback((allResponses: Response[]) => {
@@ -128,6 +155,61 @@ export const useAdminData = () => {
       completedResponses.map(r => r.answers?.section1?.district || r.answers?.section1?.residentialAddress || 'Unknown')
     ).size;
 
+    // Calculate new analytics for government project
+    
+    // Count Devadasi women and widows from section6 data
+    let devdasiWomen = 0;
+    let widows = 0;
+    const beneficiaryTypes = { devadasi: 0, widow: 0, nonBeneficiary: 0, other: 0 };
+    
+    completedResponses.forEach(r => {
+      const answers = r.answers || {};
+      
+      // Check for Devadasi women in section6_Devadasi
+      if (answers.section6_Devadasi && Object.keys(answers.section6_Devadasi).length > 0) {
+        devdasiWomen++;
+        beneficiaryTypes.devadasi++;
+      }
+      // Check for widows in section6_Widow
+      else if (answers.section6_Widow && Object.keys(answers.section6_Widow).length > 0) {
+        widows++;
+        beneficiaryTypes.widow++;
+      }
+      // Check for non-beneficiaries in section6_NonBeneficiary
+      else if (answers.section6_NonBeneficiary && Object.keys(answers.section6_NonBeneficiary).length > 0) {
+        beneficiaryTypes.nonBeneficiary++;
+      }
+      else {
+        beneficiaryTypes.other++;
+      }
+    });
+
+    // Calculate scheme participation from section2 or other relevant sections
+    const schemeParticipation = { interCasteMarriage: 0, socialWelfare: 0, scheduledCasteWelfare: 0 };
+    
+    completedResponses.forEach(r => {
+      const answers = r.answers || {};
+      const section2 = answers.section2 || {};
+      const section3 = answers.section3 || {};
+      
+      // Check for inter-caste marriage incentives
+      if (section2.interCasteMarriageIncentive === 'yes' || 
+          section2.receivedIncentives?.includes('inter-caste') ||
+          section3.marriageType === 'inter-caste') {
+        schemeParticipation.interCasteMarriage++;
+      }
+      
+      // Check for social welfare schemes
+      if (section2.socialWelfareSchemes || section2.receivedSchemes?.includes('social-welfare')) {
+        schemeParticipation.socialWelfare++;
+      }
+      
+      // Check for scheduled caste welfare schemes
+      if (section2.scheduledCasteWelfare || section2.receivedSchemes?.includes('scheduled-caste')) {
+        schemeParticipation.scheduledCasteWelfare++;
+      }
+    });
+
     setStats({
       totalResponses: completedResponses.length,
       recentSubmissions,
@@ -137,7 +219,11 @@ export const useAdminData = () => {
       completionRate: allResponses.length > 0 ? Math.round((completedResponses.length / allResponses.length) * 100) : 0,
       avgResponseTime: 12,
       totalDistricts: uniqueDistricts,
-      totalDrafts: draftResponses.length
+      totalDrafts: draftResponses.length,
+      devdasiWomen,
+      widows,
+      beneficiaryTypes,
+      schemeParticipation
     });
   }, []);
 
@@ -154,83 +240,70 @@ export const useAdminData = () => {
         throw new Error('Authentication required. Please login as admin.');
       }
       
-      console.log('Attempting to fetch from:', '/api/responses/admin');
+      console.log('Attempting to fetch analytics from:', `${ServerLink}/responses/admin/analytics`);
       
-      // Call the admin endpoint with proper authentication
-      const response = await fetch(`${ServerLink}/responses`, {
+      // Call the admin analytics endpoint to get comprehensive data
+      const analyticsResponse = await fetch(`${ServerLink}/responses/admin/analytics`, {
         method: 'GET',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Backend server authentication
+          'Authorization': `Bearer ${token}`
         }
       });
 
-      console.log('Response status:', response.status);
+      console.log('Analytics response status:', analyticsResponse.status);
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Raw API Response:', data);
+      if (analyticsResponse.ok) {
+        const analyticsData = await analyticsResponse.json();
+        console.log('Raw Analytics API Response:', analyticsData);
         
-        // Handle the response data structure
-        let transformedResponses: Response[] = [];
+        // Extract submitted responses for table display
+        const submittedResponses = analyticsData.submittedResponses || [];
         
-        if (Array.isArray(data)) {
-          // Filter out drafts at the API level (backend should do this, but extra safety)
-          const submittedResponsesOnly = data.filter((item: any) => 
-            item.status === 'submitted' || item.status === 'completed'
-          );
+        // Transform submitted responses for display
+        const transformedResponses: Response[] = submittedResponses.map((item: any, index: number) => {
+          console.log(`Processing submitted response ${index}:`, item);
           
-          transformedResponses = submittedResponsesOnly.map((item: any, index: number) => {
-            console.log(`Processing item ${index}:`, item);
-            
-            // Handle different possible data structures
-            const answers = item.answers || {};
-            const section1 = answers.section1 || {};
-            
-            return {
-              _id: item._id || `temp-${index}`,
-              responseId: item.responseId || '',
-              status: item.status || 'submitted',
-              submissionDate: item.submissionDate || new Date().toISOString(),
-              lastSaved: item.lastSaved || new Date().toISOString(),
-              submittedBy: item.submittedBy || 'Unknown User',
-              answers: answers
-            };
-          });
-        } else {
-          console.warn('API returned non-array data:', data);
-        }
+          const answers = item.answers || {};
+          
+          return {
+            _id: item._id || `temp-${index}`,
+            responseId: item.responseId || '',
+            status: item.status || 'submitted',
+            submissionDate: item.submissionDate || new Date().toISOString(),
+            lastSaved: item.lastSaved || new Date().toISOString(),
+            submittedBy: item.submittedBy || 'Unknown User',
+            answers: answers
+          };
+        });
         
-        console.log('Transformed responses:', transformedResponses);
+        console.log('Transformed submitted responses:', transformedResponses);
         
-        // Store all responses for export
-        setAllResponses(transformedResponses);
+        // Store all responses for analytics (including drafts)
+        setAllResponses(analyticsData.allResponses || []);
         
-        // All responses are already filtered to be submitted only
+        // Store only submitted responses for table display
         setResponses(transformedResponses);
         
-        // Calculate stats using the submitted responses
-        calculateStats(transformedResponses);
+        // Calculate stats using ALL responses for comprehensive analytics
+        calculateStats(analyticsData.allResponses || []);
         
       } else {
-        const errorText = await response.text();
-        console.error('API Error Response:', errorText);
-        throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
+        const errorText = await analyticsResponse.text();
+        console.error('Analytics API Error Response:', errorText);
+        throw new Error(`Analytics API Error: ${analyticsResponse.status} ${analyticsResponse.statusText} - ${errorText}`);
       }
     } catch (err) {
       console.error('Fetch error:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load responses';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load analytics';
       setError(errorMessage);
       
-      // Fallback to sample data for development
-      console.log('Using fallback sample data due to error');
+      // Fallback to empty data
+      console.log('Using fallback empty data due to error');
       const sampleData: Response[] = [];
       
       setAllResponses(sampleData);
-      const completedSampleData = sampleData.filter(r => 
-        r.status === 'submitted' || r.status === 'completed'
-      );
-      setResponses(completedSampleData);
+      setResponses(sampleData);
       calculateStats(sampleData);
     } finally {
       setLoading(false);
