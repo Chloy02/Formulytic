@@ -510,7 +510,9 @@ export default function AdminDashboardPage() {
     setSearchTerm,
     currentPage,
     setCurrentPage,
-    totalPages
+    totalPages,
+    statusFilter,
+    setStatusFilter
   } = useResponseFilters(responses, 10);
 
   useEffect(() => {
@@ -520,16 +522,6 @@ export default function AdminDashboardPage() {
     }
     loadResponses();
   }, [isLoggedIn, router, loadResponses]);
-
-  // Auto-refresh every 30 seconds to get real-time updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log('Auto-refreshing admin dashboard data...');
-      handleRefresh();
-    }, 30000); // 30 seconds
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -965,11 +957,21 @@ export default function AdminDashboardPage() {
             <SearchIcon />
             <SearchInput
               type="text"
-              placeholder="Search by name, location, or district..."
+              placeholder="Search by name, username, email, or location..."
               value={searchTerm}
               onChange={handleSearchChange}
             />
           </SearchIconWrapper>
+          
+          <Select 
+            value={statusFilter} 
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{ minWidth: '140px' }}
+          >
+            <option value="submitted">Submitted Only</option>
+            <option value="all">All Responses</option>
+            <option value="draft">Drafts Only</option>
+          </Select>
           
           <Select disabled>
             <option value="">All Genders</option>
