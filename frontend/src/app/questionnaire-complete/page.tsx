@@ -1362,10 +1362,18 @@ const getSections = (t: any) => [
 
 export default function QuestionnairePage() {
   const { isLoggedIn, user } = useAuth();
-  const { t } = useTranslation(); // Translation hook
+  const { t, language } = useTranslation(); // Translation hook with language
   const { dtSync } = useDynamicTranslation(); // Dynamic translation hook
   const router = useRouter();
   const [currentSection, setCurrentSection] = useState(1);
+
+  // Redirect to Kannada questionnaire if language is Kannada
+  useEffect(() => {
+    if (language === 'kn') {
+      router.push('/questionnaire-kannada');
+      return;
+    }
+  }, [language, router]);
   const [validFields, setValidFields] = useState(new Set());
   const [previousSubmissions, setPreviousSubmissions] = useState<any[]>([]);
   const [showSubmissionHistory, setShowSubmissionHistory] = useState(false);
