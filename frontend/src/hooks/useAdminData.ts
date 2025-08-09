@@ -287,6 +287,13 @@ export const useAdminData = () => {
         
         // Calculate stats using ALL responses for comprehensive analytics
         calculateStats(analyticsData.allResponses || []);
+        console.log('✅ Admin Dashboard: Stats calculated with', analyticsData.allResponses?.length || 0, 'total responses');
+        console.log('📊 Analytics Summary:', {
+          totalResponses: analyticsData.totalCount,
+          submitted: analyticsData.submittedCount, 
+          drafts: analyticsData.draftCount,
+          transformedForTable: transformedResponses.length
+        });
         
       } else {
         const errorText = await analyticsResponse.text();

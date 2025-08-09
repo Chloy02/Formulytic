@@ -86,10 +86,23 @@ async function saveDraftToDB(data) {
 
 async function getAllResponsesFromDB(username) {
     try {
-        const result = await Response.find({ status: 'submitted', submittedBy: username }).populate('submittedBy', 'username');
+        // If username is provided, filter by specific user (for user-specific queries)
+        // If no username, return ALL responses for admin analytics
+        let query = {};
+        
+        if (username) {
+            query = { status: 'submitted', submittedBy: username };
+        } else {
+            // For admin analytics - get ALL responses (submitted + drafts)
+            query = {}; // No filter - get everything
+        }
+        
+        const result = await Response.find(query).populate('submittedBy', 'username email');
+        console.log(`getAllResponsesFromDB: Found ${result.length} responses with query:`, query);
         return result;
     } catch (err) {
-        throw new Error("Cannot get user responses.");
+        console.error('getAllResponsesFromDB error:', err);
+        throw new Error("Cannot get responses: " + err.message);
     }
 }
 
