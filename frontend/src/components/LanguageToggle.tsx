@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/contexts/TranslationContext';
+import { useRouter, usePathname } from 'next/navigation';
 import { theme } from '@/styles/theme';
 
 const ToggleContainer = styled.div`
@@ -111,18 +112,45 @@ const LoadingIndicator = styled(motion.div)`
 
 export default function LanguageToggle() {
   const { language, setLanguage, isLoading } = useTranslation();
+  const router = useRouter();
+  const pathname = usePathname();
   
   const isKannada = language === 'kn';
 
   const handleToggle = () => {
     if (!isLoading) {
-      setLanguage(isKannada ? 'en' : 'kn');
+      const newLang = isKannada ? 'en' : 'kn';
+      
+      // Handle navigation for questionnaire pages
+      if (pathname.includes('/questionnaire-complete') || pathname.includes('/questionnaire-kannada')) {
+        if (newLang === 'kn') {
+          router.push('/questionnaire-kannada');
+        } else {
+          router.push('/questionnaire-complete');
+        }
+        // Set language after navigation to prevent double redirect
+        setTimeout(() => setLanguage(newLang), 100);
+      } else {
+        setLanguage(newLang);
+      }
     }
   };
 
   const handleLabelClick = (lang: 'en' | 'kn') => {
     if (!isLoading && language !== lang) {
-      setLanguage(lang);
+      
+      // Handle navigation for questionnaire pages
+      if (pathname.includes('/questionnaire-complete') || pathname.includes('/questionnaire-kannada')) {
+        if (lang === 'kn') {
+          router.push('/questionnaire-kannada');
+        } else {
+          router.push('/questionnaire-complete');
+        }
+        // Set language after navigation to prevent double redirect
+        setTimeout(() => setLanguage(lang), 100);
+      } else {
+        setLanguage(lang);
+      }
     }
   };
 

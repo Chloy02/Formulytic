@@ -19,21 +19,56 @@ const app = express();
 // Define a list of allowed origins.
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://localhost:3001'
+  'http://localhost:3001',
+  'https://formulytic.vercel.app',  // Remove trailing slash
+  'https://formulytic-git-dev-chloys-projects.vercel.app',  // Remove trailing slash
+  'https://formulytic-production.up.railway.app' // Railway backend URL if deployed there
 ];
+
+// In production, be more permissive for deployment flexibility
+if (process.env.NODE_ENV === 'production') {
+  // Allow all Vercel app domains
+  allowedOrigins.push(/\.vercel\.app$/);
+  // Allow all Railway app domains  
+  allowedOrigins.push(/\.railway\.app$/);
+  // Allow all Netlify app domains
+  allowedOrigins.push(/\.netlify\.app$/);
+}
+
 if (process.env.FRONTEND_URL) {
   allowedOrigins.push(process.env.FRONTEND_URL);
 }
+
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+    
+    // Check if origin matches any allowed origins
+    const isAllowed = allowedOrigins.some(allowedOrigin => {
+      if (typeof allowedOrigin === 'string') {
+        return origin === allowedOrigin;
+      } else if (allowedOrigin instanceof RegExp) {
+        return allowedOrigin.test(origin);
+      }
+      return false;
+    });
+    
+    if (isAllowed) {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true, // Allow credentials (cookies, authorization headers)
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
 };
 
 // --- END OF CORS CONFIGURATION ---
@@ -102,6 +137,21 @@ function addData() {
 
 // Apply Middleware
 app.use(cors(corsOptions));
+
+// Additional CORS headers for preflight requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 app.use(express.json());
 
 // Health check endpoint for Railway debugging
