@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EnhancedNavbar from '../../components/EnhancedNavbar';
 import { useAuth } from '../../contexts/AuthContext';
@@ -20,7 +20,8 @@ import {
   FiClock,
   FiBarChart,
   FiGlobe,
-  FiHeart
+  FiHeart,
+  FiRefreshCw
 } from 'react-icons/fi';
 import {
   PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend as RechartsLegend,
@@ -462,6 +463,36 @@ const LoadingSpinner = styled.div`
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-5px); }
+    100% { opacity: 1; transform: translateY(0px); }
+  }
+`;
+
+const RefreshButton = styled.button<{ $isRefreshing: boolean }>`
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: ${props => props.$isRefreshing ? 'not-allowed' : 'pointer'};
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  fontSize: 0.875rem;
+  font-weight: 500;
+  opacity: ${props => props.$isRefreshing ? 0.7 : 1};
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+
+  .refresh-icon {
+    animation: ${props => props.$isRefreshing ? 'spin 1s linear infinite' : 'none'};
+  }
 `;
 
 export default function AdminDashboardPage() {
@@ -469,6 +500,9 @@ export default function AdminDashboardPage() {
   const { t } = useTranslation(); // Translation hook
   const router = useRouter();
   const { responses, stats, loading, error, loadResponses, viewResponse, exportData } = useAdminData();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastRefresh, setLastRefresh] = useState(new Date());
+  const [refreshSuccess, setRefreshSuccess] = useState(false);
   const {
     filteredResponses,
     paginatedResponses,
@@ -486,6 +520,34 @@ export default function AdminDashboardPage() {
     }
     loadResponses();
   }, [isLoggedIn, router, loadResponses]);
+
+  // Auto-refresh every 30 seconds to get real-time updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log('Auto-refreshing admin dashboard data...');
+      handleRefresh();
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    setRefreshSuccess(false);
+    try {
+      await loadResponses();
+      setLastRefresh(new Date());
+      setRefreshSuccess(true);
+      console.log('Dashboard data refreshed successfully');
+      
+      // Hide success indicator after 3 seconds
+      setTimeout(() => setRefreshSuccess(false), 3000);
+    } catch (error) {
+      console.error('Failed to refresh dashboard data:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   const handleView = (responseId: string) => {
     router.push(`/admin-dashboard/view-response/${responseId}`);
@@ -538,15 +600,89 @@ export default function AdminDashboardPage() {
     setSearchTerm(e.target.value);
   };
 
+  if (loading) {
+    return (
+      <PageContainer>
+        <EnhancedNavbar />
+        <ContentWrapper>
+          <GlassCard style={{ textAlign: 'center', padding: '3rem' }}>
+            <LoadingSpinner />
+            <p style={{ marginTop: '1rem', color: '#6b7280' }}>
+              Loading government project analytics...
+            </p>
+          </GlassCard>
+        </ContentWrapper>
+      </PageContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageContainer>
+        <EnhancedNavbar />
+        <ContentWrapper>
+          <GlassCard>
+            <div style={{ textAlign: 'center', padding: '2rem' }}>
+              <h2 style={{ color: '#ef4444', marginBottom: '1rem' }}>⚠️ Dashboard Connection Error</h2>
+              <p style={{ marginBottom: '1rem', color: '#374151' }}>{error}</p>
+              <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+                This sensitive government project requires proper backend connection.
+              </p>
+              <RefreshButton
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                $isRefreshing={isRefreshing}
+                style={{ margin: '0 auto' }}
+              >
+                <FiRefreshCw className="refresh-icon" />
+                Retry Connection
+              </RefreshButton>
+            </div>
+          </GlassCard>
+        </ContentWrapper>
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer>
       <EnhancedNavbar />
       <ContentWrapper>
         <GlassCard>
-          <Title size="lg">Admin Dashboard</Title>
-          <Subtitle>
-            Manage questionnaire responses and view analytics for the SCSP/TSP Impact Evaluation Survey.
-          </Subtitle>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <div>
+              <Title size="lg">Admin Dashboard</Title>
+              <Subtitle>
+                Manage questionnaire responses and view analytics for the SCSP/TSP Impact Evaluation Survey.
+              </Subtitle>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ fontSize: '0.75rem', color: '#6b7280', textAlign: 'right' }}>
+                <div>Last updated: {lastRefresh.toLocaleTimeString()}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                  <span>📊 Live: {stats.totalResponses} submitted, {stats.totalDrafts} drafts</span>
+                  {refreshSuccess && (
+                    <span style={{ 
+                      color: '#10b981', 
+                      fontSize: '0.7rem',
+                      animation: 'fadeIn 0.3s ease',
+                      marginLeft: '8px'
+                    }}>
+                      ✓ Updated
+                    </span>
+                  )}
+                </div>
+              </div>
+              <RefreshButton
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                $isRefreshing={isRefreshing}
+              >
+                <FiRefreshCw className="refresh-icon" />
+                {isRefreshing ? 'Refreshing...' : 'Refresh Data'}
+              </RefreshButton>
+            </div>
+          </div>
         </GlassCard>
 
         <Grid $minWidth="280px">
