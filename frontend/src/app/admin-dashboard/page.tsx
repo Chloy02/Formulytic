@@ -34,6 +34,7 @@ const PageContainer = styled.div`
   background: #f8fafc;
   display: flex;
   flex-direction: column;
+  padding-top: 80px; /* Add padding to account for fixed navbar */
 `;
 
 const ContentWrapper = styled.div`
@@ -42,6 +43,8 @@ const ContentWrapper = styled.div`
   padding: 2rem 1rem;
   margin: 0 auto;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1; /* Ensure content stays below navbar */
 `;
 
 const HeaderCard = styled.div`
@@ -499,7 +502,7 @@ export default function AdminDashboardPage() {
   const { isLoggedIn } = useAuth();
   const { t } = useTranslation(); // Translation hook
   const router = useRouter();
-  const { responses, stats, loading, error, loadResponses, viewResponse, exportData } = useAdminData();
+  const { responses, allResponses, stats, loading, error, loadResponses, viewResponse, exportData } = useAdminData();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [refreshSuccess, setRefreshSuccess] = useState(false);
@@ -560,32 +563,53 @@ export default function AdminDashboardPage() {
     { name: 'Other', value: stats.genderDistribution.other },
   ];
 
-  // Helper: Prepare district data for BarChart
+  // Helper: Prepare district data for BarChart from allResponses
   const districtCounts: Record<string, number> = {};
-  responses.forEach((r: any) => {
-    if (r.district && r.district !== 'N/A') {
-      districtCounts[r.district] = (districtCounts[r.district] || 0) + 1;
+  const submittedResponses = allResponses.filter(r => r.status === 'submitted');
+  console.log('📊 Chart Data Debug:', {
+    totalAllResponses: allResponses.length,
+    submittedForCharts: submittedResponses.length,
+    sampleResponse: submittedResponses[0],
+    sampleAge: submittedResponses[0]?.answers?.section1?.age,
+    sampleGender: submittedResponses[0]?.answers?.section1?.applicantGender,
+    sampleDistrict: submittedResponses[0]?.answers?.section1?.residentialAddress
+  });
+  
+  submittedResponses.forEach((r: any) => {
+    const district = r.answers?.section1?.district || r.answers?.section1?.residentialAddress || 'Unknown';
+    if (district && district !== 'Unknown' && district !== 'N/A') {
+      districtCounts[district] = (districtCounts[district] || 0) + 1;
     }
   });
   const districtData = Object.entries(districtCounts).map(([district, count]) => ({ district, count }));
+  console.log('📊 District Data:', districtData);
 
-  // Helper: Prepare age data for Histogram
+  // Helper: Prepare age data for Histogram from allResponses
   const ageBins = [0, 18, 25, 35, 45, 60, 100];
   const ageLabels = ['<18', '18-24', '25-34', '35-44', '45-59', '60+'];
   const ageCounts = Array(ageLabels.length).fill(0);
-  responses.forEach((r: any) => {
-    const age = Number(r.age);
-    for (let i = 0; i < ageBins.length - 1; i++) {
-      if (age >= ageBins[i] && age < ageBins[i + 1]) {
-        ageCounts[i]++;
-        break;
+  submittedResponses.forEach((r: any) => {
+    const age = Number(r.answers?.section1?.age || 0);
+    if (age > 0) {
+      for (let i = 0; i < ageBins.length - 1; i++) {
+        if (age >= ageBins[i] && age < ageBins[i + 1]) {
+          ageCounts[i]++;
+          break;
+        }
       }
     }
   });
   const ageData = ageLabels.map((label, i) => ({ ageRange: label, count: ageCounts[i] }));
+  console.log('📊 Age Data:', ageData);
+  console.log('📊 Gender Stats:', stats.genderDistribution);
 
-  // Helper: Get unique locations
-  const uniqueLocations = Array.from(new Set(responses.map((r: any) => r.location).filter(Boolean)));
+  // Helper: Get unique locations from allResponses
+  const uniqueLocations = Array.from(new Set(
+    allResponses
+      .filter(r => r.status === 'submitted')
+      .map((r: any) => r.answers?.section1?.district || r.answers?.section1?.residentialAddress)
+      .filter(Boolean)
+  ));
 
   // Event handlers
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -600,7 +624,7 @@ export default function AdminDashboardPage() {
           <GlassCard style={{ textAlign: 'center', padding: '3rem' }}>
             <LoadingSpinner />
             <p style={{ marginTop: '1rem', color: '#6b7280' }}>
-              Loading government project analytics...
+              Loading analytics...
             </p>
           </GlassCard>
         </ContentWrapper>
@@ -683,9 +707,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.totalResponses}</StatNumber>
                 <StatLabel>Total Responses</StatLabel>
-                <StatChange positive={true}>
-                  <FiTrendingUp /> +12% this month
-                </StatChange>
               </div>
               <StatIcon color="#6366f1">
                 <FiUsers />
@@ -698,27 +719,9 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.recentSubmissions}</StatNumber>
                 <StatLabel>Recent Submissions</StatLabel>
-                <StatChange positive={true}>
-                  <FiTrendingUp /> Last 7 days
-                </StatChange>
               </div>
               <StatIcon color="#10b981">
                 <FiClock />
-              </StatIcon>
-            </StatHeader>
-          </StatCard>
-
-          <StatCard color="#3b82f6">
-            <StatHeader>
-              <div>
-                <StatNumber>{stats.completionRate}%</StatNumber>
-                <StatLabel>Completion Rate</StatLabel>
-                <StatChange positive={true}>
-                  <FiTrendingUp /> +5% from last month
-                </StatChange>
-              </div>
-              <StatIcon color="#3b82f6">
-                <FiBarChart />
               </StatIcon>
             </StatHeader>
           </StatCard>
@@ -728,12 +731,9 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.totalDistricts}</StatNumber>
                 <StatLabel>Districts Covered</StatLabel>
-                <StatChange positive={true}>
-                  <FiMapPin /> Across Karnataka
-                </StatChange>
               </div>
               <StatIcon color="#8b5cf6">
-                <FiGlobe />
+                <FiMapPin />
               </StatIcon>
             </StatHeader>
           </StatCard>
@@ -743,9 +743,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.avgAge}</StatNumber>
                 <StatLabel>Average Age</StatLabel>
-                <StatChange positive={false}>
-                  <FiUserCheck /> Years old
-                </StatChange>
               </div>
               <StatIcon color="#f59e0b">
                 <FiUserCheck />
@@ -762,9 +759,6 @@ export default function AdminDashboardPage() {
                     : 0}%
                 </StatNumber>
                 <StatLabel>Female Respondents</StatLabel>
-                <StatChange positive={true}>
-                  <FiHeart /> Gender diversity
-                </StatChange>
               </div>
               <StatIcon color="#ef4444">
                 <FiHeart />
@@ -777,9 +771,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.totalDrafts}</StatNumber>
                 <StatLabel>Draft Responses</StatLabel>
-                <StatChange positive={false}>
-                  <FiClock /> Incomplete
-                </StatChange>
               </div>
               <StatIcon color="#6B7280">
                 <FiClock />
@@ -792,9 +783,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.devdasiWomen}</StatNumber>
                 <StatLabel>Devadasi Women</StatLabel>
-                <StatChange positive={true}>
-                  <FiUsers /> Beneficiaries tracked
-                </StatChange>
               </div>
               <StatIcon color="#e11d48">
                 <FiUsers />
@@ -807,9 +795,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.widows}</StatNumber>
                 <StatLabel>Widow Beneficiaries</StatLabel>
-                <StatChange positive={true}>
-                  <FiHeart /> Support provided
-                </StatChange>
               </div>
               <StatIcon color="#7c3aed">
                 <FiHeart />
@@ -822,9 +807,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.schemeParticipation.interCasteMarriage}</StatNumber>
                 <StatLabel>Inter-Caste Marriages</StatLabel>
-                <StatChange positive={true}>
-                  <FiHeart /> Incentives provided
-                </StatChange>
               </div>
               <StatIcon color="#059669">
                 <FiHeart />
