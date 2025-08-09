@@ -123,9 +123,9 @@ export const useAdminData = () => {
       new Date(r.submissionDate) >= sevenDaysAgo
     ).length;
 
-    // Extract age from section1.applicantAge
+    // Extract age from section1.age (not applicantAge)
     const totalAge = completedResponses.reduce((sum, r) => {
-      const age = parseInt(r.answers?.section1?.applicantAge || '0');
+      const age = parseInt(r.answers?.section1?.age || '0');
       return sum + age;
     }, 0);
     const avgAge = completedResponses.length > 0 ? Math.round(totalAge / completedResponses.length) : 0;
@@ -371,33 +371,33 @@ export const useAdminData = () => {
         };
         
         return [
-          formatField(r.answers?.section1?.spouseName || 'N/A'),
-          formatField(r.answers?.section1?.applicantAge || 'N/A'),
+          formatField(r.answers?.section1?.applicantName || 'N/A'),
+          formatField(r.answers?.section1?.age || 'N/A'),
           formatField(r.answers?.section1?.applicantGender || 'N/A'),
-          formatField(r.answers?.section1?.district || 'N/A'),
+          formatField(r.answers?.section1?.residentialAddress || 'N/A'),
           formatField(r.answers?.section1?.residentialAddress || 'N/A'),
           formatField(new Date(r.submissionDate).toLocaleDateString()),
           formatField(r.status),
-          formatField(section1.educationLevel),
-          formatField(section1.casteCategory),
-          formatField(section2.previousOccupation),
-          formatField(section2.currentOccupation),
-          formatField(section2.incomeBefore),
-          formatField(section2.currentIncome),
-          formatField(section2.employmentBefore),
-          formatField(section2.currentEmployment),
-          formatField(section2.schemesBenefited),
-          formatField(section2.benefitDate),
-          formatField(section2.utilizationOfBenefits),
-          formatField(section2.spouseEmployment),
-          formatField(section3.socioEconomicStatusBefore),
-          formatField(section3.currentSocioEconomicStatus),
+          formatField(section1.applicantEducation),
+          formatField(section1.applicantCasteCategory),
+          formatField(section1.applicantOccupationBefore),
+          formatField(section2.applicantOccupationAfter),
+          formatField(section1.familyAnnualIncome),
+          formatField(section2.currentFamilyIncome),
+          formatField(section1.applicantEmploymentBefore),
+          formatField(section2.applicantOccupationAfter),
+          formatField(section1.schemes),
+          formatField(section1.grantDate),
+          formatField(section1.utilization),
+          formatField(section1.spouseEmploymentBefore),
+          formatField(section2.socioEconomicStatusBefore),
+          formatField(section2.socioEconomicStatusAfter),
           formatField(section3.financialSecurityRating),
-          formatField(section4.socialLifeImpact),
-          formatField(section4.decisionMaking),
-          formatField(section5.marriageOpposition),
-          formatField(section5.relocationAfterMarriage),
-          formatField(section5.aadhaarProvided),
+          formatField(section3.socialLifeAfterMarriage),
+          formatField(section3.decisionMakingInfluence),
+          formatField(section3.marriageOpposition),
+          formatField(section3.relocationAfterMarriage),
+          formatField(section5.aadhaarCardProvided),
           formatField(section5.additionalComments)
         ].map(field => `"${field}"`).join(',');
       })

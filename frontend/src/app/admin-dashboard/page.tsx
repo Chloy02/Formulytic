@@ -569,7 +569,10 @@ export default function AdminDashboardPage() {
   console.log('📊 Chart Data Debug:', {
     totalAllResponses: allResponses.length,
     submittedForCharts: submittedResponses.length,
-    sampleResponse: submittedResponses[0]
+    sampleResponse: submittedResponses[0],
+    sampleAge: submittedResponses[0]?.answers?.section1?.age,
+    sampleGender: submittedResponses[0]?.answers?.section1?.applicantGender,
+    sampleDistrict: submittedResponses[0]?.answers?.section1?.residentialAddress
   });
   
   submittedResponses.forEach((r: any) => {
@@ -586,7 +589,7 @@ export default function AdminDashboardPage() {
   const ageLabels = ['<18', '18-24', '25-34', '35-44', '45-59', '60+'];
   const ageCounts = Array(ageLabels.length).fill(0);
   submittedResponses.forEach((r: any) => {
-    const age = Number(r.answers?.section1?.applicantAge || 0);
+    const age = Number(r.answers?.section1?.age || 0);
     if (age > 0) {
       for (let i = 0; i < ageBins.length - 1; i++) {
         if (age >= ageBins[i] && age < ageBins[i + 1]) {
@@ -704,9 +707,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.totalResponses}</StatNumber>
                 <StatLabel>Total Responses</StatLabel>
-                <StatChange positive={true}>
-                  <FiTrendingUp /> +12% this month
-                </StatChange>
               </div>
               <StatIcon color="#6366f1">
                 <FiUsers />
@@ -719,27 +719,9 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.recentSubmissions}</StatNumber>
                 <StatLabel>Recent Submissions</StatLabel>
-                <StatChange positive={true}>
-                  <FiTrendingUp /> Last 7 days
-                </StatChange>
               </div>
               <StatIcon color="#10b981">
                 <FiClock />
-              </StatIcon>
-            </StatHeader>
-          </StatCard>
-
-          <StatCard color="#3b82f6">
-            <StatHeader>
-              <div>
-                <StatNumber>{stats.completionRate}%</StatNumber>
-                <StatLabel>Completion Rate</StatLabel>
-                <StatChange positive={true}>
-                  <FiTrendingUp /> +5% from last month
-                </StatChange>
-              </div>
-              <StatIcon color="#3b82f6">
-                <FiBarChart />
               </StatIcon>
             </StatHeader>
           </StatCard>
@@ -749,12 +731,9 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.totalDistricts}</StatNumber>
                 <StatLabel>Districts Covered</StatLabel>
-                <StatChange positive={true}>
-                  <FiMapPin /> Across Karnataka
-                </StatChange>
               </div>
               <StatIcon color="#8b5cf6">
-                <FiGlobe />
+                <FiMapPin />
               </StatIcon>
             </StatHeader>
           </StatCard>
@@ -764,9 +743,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.avgAge}</StatNumber>
                 <StatLabel>Average Age</StatLabel>
-                <StatChange positive={false}>
-                  <FiUserCheck /> Years old
-                </StatChange>
               </div>
               <StatIcon color="#f59e0b">
                 <FiUserCheck />
@@ -783,9 +759,6 @@ export default function AdminDashboardPage() {
                     : 0}%
                 </StatNumber>
                 <StatLabel>Female Respondents</StatLabel>
-                <StatChange positive={true}>
-                  <FiHeart /> Gender diversity
-                </StatChange>
               </div>
               <StatIcon color="#ef4444">
                 <FiHeart />
@@ -798,9 +771,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.totalDrafts}</StatNumber>
                 <StatLabel>Draft Responses</StatLabel>
-                <StatChange positive={false}>
-                  <FiClock /> Incomplete
-                </StatChange>
               </div>
               <StatIcon color="#6B7280">
                 <FiClock />
@@ -813,9 +783,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.devdasiWomen}</StatNumber>
                 <StatLabel>Devadasi Women</StatLabel>
-                <StatChange positive={true}>
-                  <FiUsers /> Beneficiaries tracked
-                </StatChange>
               </div>
               <StatIcon color="#e11d48">
                 <FiUsers />
@@ -828,9 +795,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.widows}</StatNumber>
                 <StatLabel>Widow Beneficiaries</StatLabel>
-                <StatChange positive={true}>
-                  <FiHeart /> Support provided
-                </StatChange>
               </div>
               <StatIcon color="#7c3aed">
                 <FiHeart />
@@ -843,9 +807,6 @@ export default function AdminDashboardPage() {
               <div>
                 <StatNumber>{stats.schemeParticipation.interCasteMarriage}</StatNumber>
                 <StatLabel>Inter-Caste Marriages</StatLabel>
-                <StatChange positive={true}>
-                  <FiHeart /> Incentives provided
-                </StatChange>
               </div>
               <StatIcon color="#059669">
                 <FiHeart />
